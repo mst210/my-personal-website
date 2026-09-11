@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محمدصادق تاج | کارت ویزیت آنلاین</title>
+    <title>محمدصادق تاج</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,7 +12,14 @@
         }
         body {
             font-family: Tahoma, Vazir, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            
+            /* تنظمیات عکس پس‌زمینه */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
             color: #ffffff;
             min-height: 100vh;
             display: flex;
@@ -21,9 +28,9 @@
             padding: 20px;
         }
         .container {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             padding: 40px 30px;
             max-width: 420px;
@@ -34,16 +41,16 @@
         h1 {
             font-size: 28px;
             margin-bottom: 10px;
-            color: #38bdf8;
+            color: #ffffff;
         }
         p {
-            color: #94a3b8;
+            color: #e2e8f0;
             font-size: 14px;
             margin-bottom: 30px;
         }
         .links a {
             display: block;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.15);
             color: #ffffff;
             text-decoration: none;
             padding: 14px 20px;
@@ -51,13 +58,12 @@
             border-radius: 12px;
             font-weight: bold;
             transition: all 0.3s ease;
-            border: 1px solid transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .links a:hover {
-            background: #38bdf8;
+            background: #ffffff;
             color: #0f172a;
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
         }
     </style>
 </head>
