@@ -3,57 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>محمدصادق تاج | سایت شخصی</title>
-
+    <title>محمدصادق تاج | کارت ویزیت آنلاین</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
-            font-family: sans-serif;
-            background: #111;
-            color: white;
+            font-family: Tahoma, Vazir, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 420px;
+            width: 100%;
             text-align: center;
-            padding: 80px 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
-
         h1 {
-            font-size: 42px;
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #38bdf8;
         }
-
         p {
-            color: #bbb;
-            font-size: 18px;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
         }
-
-        a {
+        .links a {
             display: block;
-            max-width: 400px;
-            margin: 15px auto;
-            padding: 15px;
-            border-radius: 12px;
-            background: #222;
-            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
             text-decoration: none;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
-
-        a:hover {
-            background: #333;
+        .links a:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
         }
     </style>
 </head>
-
 <body>
 
-    <h1>محمدصادق تاج</h1>
+    <div class="container">
+        <h1>محمدصادق تاج</h1>
+        <p>به وب‌سایت شخصی من خوش آمدید.</p>
 
-    <p>
-        به سایت شخصی من خوش آمدید.
-    </p>
-
-    <a href="#">Instagram</a>
-    <a href="#">Telegram</a>
-    <a href="#">GitHub</a>
-    <a href="#">LinkedIn</a>
-    <a href="mailto:example@gmail.com">Email</a>
+        <div class="links">
+            <a href="https://instagram.com/your_username" target="_blank">اینستاگرام</a>
+            <a href="https://t.me/your_username" target="_blank">تلگرام</a>
+            <a href="https://github.com/mst210" target="_blank">گیت‌هاب</a>
+            <a href="https://linkedin.com/in/your_username" target="_blank">لینکدین</a>
+            <a href="mailto:your_email@gmail.com">ایمیل ارتباطی</a>
+        </div>
+    </div>
 
 </body>
 </html>
