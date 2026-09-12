@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پنل کاربری | دکتر محمدصادق تاج</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <style>
         :root {
             --primary-blue: #0284c7;
@@ -17,7 +18,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: Tahoma, 'Vazirmatn', sans-serif;
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             background-attachment: fixed;
             color: #ffffff;
@@ -52,6 +53,11 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
 
         main {
@@ -92,6 +98,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            font-family: inherit;
         }
 
         .tab-btn.active {
@@ -128,6 +135,11 @@
             font-size: 14px;
             outline: none;
             font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--accent-teal);
         }
 
         .form-group textarea {
@@ -137,7 +149,7 @@
 
         .submit-btn {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             background: var(--primary-blue);
             color: #fff;
             border: none;
@@ -147,6 +159,7 @@
             cursor: pointer;
             transition: 0.3s;
             margin-top: 10px;
+            font-family: inherit;
         }
 
         .submit-btn:hover { background: #0369a1; }
@@ -154,7 +167,15 @@
         .error-msg {
             color: #ef4444;
             font-size: 12px;
-            margin-top: 10px;
+            margin-top: 12px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .success-msg {
+            color: #34d399;
+            font-size: 12px;
+            margin-top: 12px;
             text-align: center;
             line-height: 1.5;
         }
@@ -324,7 +345,7 @@
                         <label>رمز عبور</label>
                         <input type="password" id="login-password" required placeholder="******">
                     </div>
-                    <button type="submit" class="submit-btn">ورود به پنل</button>
+                    <button type="submit" id="login-submit-btn" class="submit-btn">ورود به پنل</button>
                 </form>
 
                 <!-- فرم ثبت‌نام تکمیلی -->
@@ -372,10 +393,10 @@
                         <input type="password" id="reg-password" required placeholder="******">
                     </div>
 
-                    <button type="submit" class="submit-btn">تکمیل ثبت‌نام و ایجاد حساب</button>
+                    <button type="submit" id="reg-submit-btn" class="submit-btn">تکمیل ثبت‌نام و ایجاد حساب</button>
                 </form>
 
-                <div id="auth-error" class="error-msg"></div>
+                <div id="auth-message"></div>
             </div>
         </div>
 
@@ -488,18 +509,18 @@
     <!-- Firebase SDK Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut, 
-            onAuthStateChanged 
+        import {  
+            getAuth,  
+            createUserWithEmailAndPassword,  
+            signInWithEmailAndPassword,  
+            signOut,  
+            onAuthStateChanged  
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc 
+        import {  
+            getFirestore,  
+            doc,  
+            setDoc,  
+            getDoc  
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // تنظیمات فایربیس
@@ -522,14 +543,14 @@
         const btnTabRegister = document.getElementById('btn-tab-register');
         const loginForm = document.getElementById('login-form');
         const regForm = document.getElementById('register-form');
-        const authError = document.getElementById('auth-error');
+        const authMessage = document.getElementById('auth-message');
 
         btnTabLogin.addEventListener('click', () => {
             loginForm.style.display = 'block';
             regForm.style.display = 'none';
             btnTabLogin.classList.add('active');
             btnTabRegister.classList.remove('active');
-            authError.innerText = '';
+            authMessage.innerHTML = '';
         });
 
         btnTabRegister.addEventListener('click', () => {
@@ -537,13 +558,20 @@
             regForm.style.display = 'block';
             btnTabRegister.classList.add('active');
             btnTabLogin.classList.remove('active');
-            authError.innerText = '';
+            authMessage.innerHTML = '';
         });
+
+        function showMessage(text, isError = true) {
+            authMessage.className = isError ? 'error-msg' : 'success-msg';
+            authMessage.innerText = text;
+        }
 
         // ثبت‌نام کامل کاربر و ذخیره در Firestore
         regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            authError.innerText = 'در حال ثبت اطلاعات و ایجاد حساب...';
+            const submitBtn = document.getElementById('reg-submit-btn');
+            submitBtn.disabled = true;
+            showMessage('در حال ثبت اطلاعات و ایجاد حساب...', false);
 
             const firstName = document.getElementById('reg-fname').value.trim();
             const lastName = document.getElementById('reg-lname').value.trim();
@@ -561,32 +589,47 @@
 
                 // ۲. ذخیره اطلاعات تکمیلی در دیتابیس Firestore
                 await setDoc(doc(db, "users", user.uid), {
-                    firstName: firstName,
-                    lastName: lastName,
-                    phone: phone,
-                    email: email,
-                    province: province,
-                    city: city,
-                    address: address,
+                    firstName,
+                    lastName,
+                    phone,
+                    email,
+                    province,
+                    city,
+                    address,
                     createdAt: new Date().toISOString()
                 });
 
-                authError.innerText = '';
+                showMessage('حساب کاربری با موفقیت ایجاد شد.', false);
             } catch (error) {
-                authError.innerText = 'خطا در ثبت‌نام: ' + error.message;
+                let errorText = 'خطا در ثبت‌نام. لطفاً مجدداً تلاش کنید.';
+                if (error.code === 'auth/email-already-in-use') errorText = 'این ایمیل قبلاً ثبت نام کرده است.';
+                else if (error.code === 'auth/weak-password') errorText = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+                else if (error.code === 'auth/invalid-email') errorText = 'فرمت ایمیل نامعتبر است.';
+                
+                showMessage(errorText, true);
+            } finally {
+                submitBtn.disabled = false;
             }
         });
 
         // ورود کاربر
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            authError.innerText = 'در حال بررسی اطلاعات...';
-            const email = document.getElementById('login-email').value;
+            const submitBtn = document.getElementById('login-submit-btn');
+            submitBtn.disabled = true;
+            showMessage('در حال بررسی اطلاعات...', false);
+
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => { authError.innerText = ''; })
-                .catch((error) => { authError.innerText = 'ایمیل یا رمز عبور اشتباه است.'; });
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                authMessage.innerHTML = '';
+            } catch (error) {
+                showMessage('ایمیل یا رمز عبور اشتباه است.', true);
+            } finally {
+                submitBtn.disabled = false;
+            }
         });
 
         // خروج از حساب
@@ -607,12 +650,12 @@
 
                     if (docSnap.exists()) {
                         const data = docSnap.data();
-                        const fullName = `${data.firstName} ${data.lastName}`;
+                        const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
                         
-                        document.getElementById('user-fullname-display').innerText = fullName;
+                        document.getElementById('user-fullname-display').innerText = fullName || 'کاربر گرامی';
                         document.getElementById('user-email-display').innerText = user.email;
                         
-                        document.getElementById('info-fullname').innerText = fullName;
+                        document.getElementById('info-fullname').innerText = fullName || '-';
                         document.getElementById('info-phone').innerText = data.phone || '-';
                         document.getElementById('info-email').innerText = user.email;
                         document.getElementById('info-location').innerText = `${data.province || ''} - ${data.city || ''}`;
