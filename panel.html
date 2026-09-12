@@ -56,9 +56,7 @@
             transition: 0.3s;
         }
 
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.15); }
 
         main {
             flex-grow: 1;
@@ -180,7 +178,6 @@
             line-height: 1.5;
         }
 
-        /* VPN Warning Notice */
         .vpn-notice {
             margin-top: 16px;
             padding: 10px 14px;
@@ -206,7 +203,6 @@
             .dashboard-grid { grid-template-columns: 1fr; }
         }
 
-        /* Sidebar */
         .sidebar {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -282,7 +278,6 @@
             color: #ef4444;
         }
 
-        /* Content Panel */
         .content-panel {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -350,7 +345,6 @@
                     <button class="tab-btn" id="btn-tab-register">ثبت‌نام کاربر جدید</button>
                 </div>
 
-                <!-- فرم ورود -->
                 <form id="login-form">
                     <div class="form-group">
                         <label>ایمیل</label>
@@ -363,7 +357,6 @@
                     <button type="submit" id="login-submit-btn" class="submit-btn">ورود به پنل</button>
                 </form>
 
-                <!-- فرم ثبت‌نام تکمیلی -->
                 <form id="register-form" style="display: none;">
                     <div class="form-row">
                         <div class="form-group">
@@ -375,7 +368,6 @@
                             <input type="text" id="reg-lname" required placeholder="مثلاً: محمدی">
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label>شماره تلفن همراه</label>
@@ -386,7 +378,6 @@
                             <input type="email" id="reg-email" required placeholder="example@mail.com">
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label>استان</label>
@@ -397,23 +388,19 @@
                             <input type="text" id="reg-city" required placeholder="مثلاً: تهران">
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label>آدرس دقیق پستی</label>
                         <textarea id="reg-address" required placeholder="خیابان، کوچه، پلاک، واحد..."></textarea>
                     </div>
-
                     <div class="form-group">
                         <label>رمز عبور (حداقل ۶ کاراکتر)</label>
                         <input type="password" id="reg-password" required placeholder="******">
                     </div>
-
                     <button type="submit" id="reg-submit-btn" class="submit-btn">تکمیل ثبت‌نام و ایجاد حساب</button>
                 </form>
 
                 <div id="auth-message"></div>
 
-                <!-- هشدار روشن کردن VPN -->
                 <div class="vpn-notice">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size: 15px; flex-shrink: 0;"></i>
                     <span>هنگام استفاده از پنل شخصی، وی‌پی‌ان خود را روشن کنید.</span>
@@ -421,10 +408,8 @@
             </div>
         </div>
 
-        <!-- داشبورد اصلی پس از ورود -->
+        <!-- داشبورد اصلی -->
         <div id="dashboard-section" class="dashboard-grid" style="display: none;">
-            
-            <!-- منوی سمت راست -->
             <aside class="sidebar">
                 <div class="user-profile-summary">
                     <i class="fa-solid fa-circle-user user-avatar-icon"></i>
@@ -433,7 +418,6 @@
                 </div>
                 
                 <ul class="menu-list">
-                    <!-- اضافه شدن بخش سبد خرید بالاتر از همه -->
                     <li class="menu-item active" onclick="switchDashboardTab('cart', this)">
                         <i class="fa-solid fa-shopping-cart"></i> سبد خرید
                     </li>
@@ -455,18 +439,18 @@
                 </ul>
             </aside>
 
-            <!-- محتوای سمت چپ -->
             <section class="content-panel">
-                
                 <!-- تب سبد خرید -->
                 <div id="tab-cart" class="tab-content active">
                     <div class="panel-title">
                         <i class="fa-solid fa-shopping-cart"></i>
                         <span>سبد خرید شما</span>
                     </div>
-                    <div class="empty-state">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <p>سبد خرید شما در حال حاضر خالی است.</p>
+                    <div id="cart-content-area">
+                        <div class="empty-state" id="cart-empty">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <p>سبد خرید شما در حال حاضر خالی است.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -476,9 +460,11 @@
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         <span>سفارشات فعال و در حال پردازش</span>
                     </div>
-                    <div class="empty-state">
-                        <i class="fa-solid fa-box-open"></i>
-                        <p>در حال حاضر هیچ سفارش فعالی برای شما ثبت نشده است.</p>
+                    <div id="active-orders-area">
+                        <div class="empty-state" id="active-empty">
+                            <i class="fa-solid fa-box-open"></i>
+                            <p>در حال حاضر هیچ سفارش فعالی برای شما ثبت نشده است.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -500,7 +486,6 @@
                         <i class="fa-solid fa-id-card"></i>
                         <span>اطلاعات و مشخصات فردی</span>
                     </div>
-                    
                     <div class="profile-row">
                         <span class="profile-label">نام و نام خانوادگی:</span>
                         <span class="profile-value" id="info-fullname">-</span>
@@ -536,7 +521,6 @@
                         <i class="fa-solid fa-phone"></i> شماره پشتیبانی: 09103909971
                     </div>
                 </div>
-
             </section>
         </div>
     </main>
@@ -562,7 +546,6 @@
             getDoc  
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // تنظیمات فایربیس
         const firebaseConfig = {
             apiKey: "AIzaSyBIiroBz28UYsDj5d42hQfOpvWI3m7pZVM",
             authDomain: "taj-medical-panel.firebaseapp.com",
@@ -577,7 +560,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // مدیریت تب‌های ورود و ثبت‌نام
         const btnTabLogin = document.getElementById('btn-tab-login');
         const btnTabRegister = document.getElementById('btn-tab-register');
         const loginForm = document.getElementById('login-form');
@@ -605,7 +587,6 @@
             authMessage.innerText = text;
         }
 
-        // ثبت‌نام کامل کاربر و ذخیره در Firestore
         regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('reg-submit-btn');
@@ -622,19 +603,11 @@
             const password = document.getElementById('reg-password').value;
 
             try {
-                // ۱. ایجاد حساب کاربری در Auth
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // ۲. ذخیره اطلاعات تکمیلی در دیتابیس Firestore
                 await setDoc(doc(db, "users", user.uid), {
-                    firstName,
-                    lastName,
-                    phone,
-                    email,
-                    province,
-                    city,
-                    address,
+                    firstName, lastName, phone, email, province, city, address,
                     createdAt: new Date().toISOString()
                 });
 
@@ -644,14 +617,12 @@
                 if (error.code === 'auth/email-already-in-use') errorText = 'این ایمیل قبلاً ثبت نام کرده است.';
                 else if (error.code === 'auth/weak-password') errorText = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
                 else if (error.code === 'auth/invalid-email') errorText = 'فرمت ایمیل نامعتبر است.';
-                
                 showMessage(errorText, true);
             } finally {
                 submitBtn.disabled = false;
             }
         });
 
-        // ورود کاربر
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('login-submit-btn');
@@ -671,18 +642,18 @@
             }
         });
 
-        // خروج از حساب
         document.getElementById('logout-btn').addEventListener('click', () => {
             signOut(auth);
         });
 
-        // بررسی وضعیت ورود و دریافت اطلاعات کاربر از Firestore
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('dashboard-section').style.display = 'grid';
 
-                // دریافت داده‌ها از Firestore
+                // لود سبد خرید و سفارشات پس از ورود کاربر
+                loadCartAndOrders();
+
                 try {
                     const docRef = doc(db, "users", user.uid);
                     const docSnap = await getDoc(docRef);
@@ -713,7 +684,7 @@
         });
     </script>
 
-    <!-- اسکریپت سوئیچ بین تب‌های داشبورد -->
+    <!-- اسکریپت مدیریت تب‌ها و سبد خرید -->
     <script>
         function switchDashboardTab(tabName, element) {
             const contents = document.querySelectorAll('.tab-content');
@@ -723,7 +694,74 @@
             menuItems.forEach(item => item.classList.remove('active'));
 
             document.getElementById('tab-' + tabName).classList.add('active');
-            element.classList.add('active');
+            if (element) element.classList.add('active');
+        }
+
+        // بارگذاری و رندر کردن سبد خرید و سفارشات فعال
+        function loadCartAndOrders() {
+            const cartArea = document.getElementById('cart-content-area');
+            const activeArea = document.getElementById('active-orders-area');
+
+            // بررسی سبد خرید
+            const savedCartItem = localStorage.getItem('pending_cart_item');
+            if (savedCartItem) {
+                const item = JSON.parse(savedCartItem);
+                cartArea.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <h4 style="color: #fff; font-size: 16px; margin-bottom: 5px;">${item.name}</h4>
+                            <p style="color: var(--accent-teal); font-size: 14px;">قیمت: ${item.price}</p>
+                        </div>
+                        <button onclick="confirmOrder()" style="background: var(--accent-teal); color: #0f172a; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: inherit;">
+                            تایید و انتقال به سفارشات فعال <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                cartArea.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <p>سبد خرید شما در حال حاضر خالی است.</p>
+                    </div>
+                `;
+            }
+
+            // بررسی سفارشات فعال
+            const savedActiveOrder = localStorage.getItem('active_order_confirmed');
+            if (savedActiveOrder) {
+                const item = JSON.parse(savedActiveOrder);
+                activeArea.innerHTML = `
+                    <div style="background: rgba(20, 184, 166, 0.1); border: 1px solid var(--accent-teal); padding: 16px; border-radius: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="color: #fff; font-size: 16px;">${item.name}</h4>
+                            <span style="background: var(--accent-teal); color: #0f172a; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">در حال پردازش</span>
+                        </div>
+                        <p style="color: #cbd5e1; font-size: 13px;">مبلغ: ${item.price}</p>
+                        <p style="color: #94a3b8; font-size: 12px; margin-top: 6px;">تاریخ ثبت: ${item.date}</p>
+                    </div>
+                `;
+            } else {
+                activeArea.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>در حال حاضر هیچ سفارش فعالی برای شما ثبت نشده است.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // دکمه تایید نهایی سفارش
+        function confirmOrder() {
+            const savedCartItem = localStorage.getItem('pending_cart_item');
+            if (!savedCartItem) return;
+
+            localStorage.setItem('active_order_confirmed', savedCartItem);
+            localStorage.removeItem('pending_cart_item');
+
+            loadCartAndOrders();
+
+            // سوئیچ خودکار به تب سفارشات فعال و فعال‌سازی ظاهر آیتم منو
+            switchDashboardTab('active-orders', document.querySelectorAll('.menu-item')[1]);
         }
     </script>
 </body>
