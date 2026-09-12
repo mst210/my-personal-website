@@ -88,8 +88,10 @@
         .nav-links {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             margin: 20px 0;
+            flex-wrap: wrap;
+            padding: 0 10px;
         }
 
         .nav-btn {
@@ -97,7 +99,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #ffffff;
             text-decoration: none;
-            padding: 10px 18px;
+            padding: 10px 16px;
             border-radius: 10px;
             font-size: 14px;
             font-weight: bold;
@@ -111,6 +113,12 @@
             background: var(--primary-blue);
             border-color: var(--primary-blue);
             transform: translateY(-2px);
+        }
+
+        .nav-btn-highlight {
+            background: rgba(20, 184, 166, 0.2);
+            border-color: rgba(20, 184, 166, 0.5);
+            color: #5eead4;
         }
 
         /* --- Ticker / Running Subtitle Bar --- */
@@ -255,18 +263,12 @@
             font-size: 16px;
         }
 
-        .phone-link:hover {
-            text-decoration: underline;
-        }
-
-        /* --- Aparat Player Style --- */
         .aparat-container {
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* --- Footer --- */
         footer {
             text-align: center;
             padding: 20px;
@@ -294,6 +296,7 @@
 
     <!-- Social & Navigation Links -->
     <div class="nav-links">
+        <a href="products.html" class="nav-btn nav-btn-highlight"><i class="fa-solid fa-boxes-stacked"></i> لیست محصولات پزشکی</a>
         <a href="https://instagram.com/mst_2102" target="_blank" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
         <a href="https://t.me/mst_2102" target="_blank" class="nav-btn"><i class="fa-paper-plane"></i> تلگرام</a>
         <a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره من / بیوگرافی</a>
@@ -342,14 +345,14 @@
             <p class="post-content">
                 برای اطلاع از موجودی محصولات و قیمت روز به پشتیبانی آنلاین پیام دهید
                 <br>
-                <a href="tel:09381618740" class="phone-link"><i class="fa-solid fa-phone"></i> ۰۹۱۰۳۹۰۹۹۷۱</a>
+                <a href="tel:09381618740" class="phone-link"><i class="fa-solid fa-phone"></i> ۰۹۳۸۱۶۱۸۷۴۰</a>
             </p>
-            <a href="tel:09381618740" class="post-link-btn">
-                <i class="fa-solid fa-headset"></i> تماس با کارشناس فروش
+            <a href="products.html" class="post-link-btn">
+                <i class="fa-solid fa-store"></i> مشاهده کاتالوگ و محصولات
             </a>
         </article>
 
-        <!-- Post 3 (Pure Video Only) -->
+        <!-- Post 3 (Aparat Video) -->
         <article class="medical-post" style="padding: 16px;">
             <div class="aparat-container">
                 <div id="95351019158"><script type="text/JavaScript" src="https://www.aparat.com/embed/aap8np9?data[rnddiv]=95351019158&data[responsive]=yes"></script></div>
