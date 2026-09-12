@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود / ثبت نام | دکتر محمدصادق تاج</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-blue: #0284c7; --accent-teal: #14b8a6; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Tahoma, 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .auth-card {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+            padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .auth-card h2 { text-align: center; color: var(--accent-teal); margin-bottom: 20px; font-size: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
+        .form-group input {
+            width: 100%; padding: 10px 12px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(15, 23, 42, 0.6);
+            color: #fff; font-size: 14px; outline: none;
+        }
+        .btn-submit {
+            width: 100%; padding: 12px; border: none; border-radius: 8px;
+            background: var(--primary-blue); color: #fff; font-weight: bold; cursor: pointer;
+            transition: 0.3s; margin-top: 10px; font-size: 14px;
+        }
+        .btn-submit:hover { background: #0369a1; }
+        .toggle-mode { text-align: center; margin-top: 15px; font-size: 13px; color: #94a3b8; }
+        .toggle-mode a { color: var(--accent-teal); text-decoration: none; font-weight: bold; cursor: pointer; }
+        .error-msg { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 10px; }
+        .back-home { display: block; text-align: center; margin-top: 15px; font-size: 12px; color: #64748b; text-decoration: none; }
+        .back-home:hover { color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <h2 id="form-title"><i class="fa-solid fa-user-plus"></i> ثبت نام پنل شخصی</h2>
+        <div id="error-message" class="error-msg"></div>
+        
+        <form id="auth-form">
+            <div class="form-group" id="name-group">
+                <label>نام و نام خانوادگی:</label>
+                <input type="text" id="user-name" placeholder="مثلاً: علی محمدی">
+            </div>
+            <div class="form-group">
+                <label>ایمیل:</label>
+                <input type="email" id="user-email" required placeholder="example@gmail.com" dir="ltr">
+            </div>
+            <div class="form-group">
+                <label>رمز عبور (حداقل ۶ کاراکتر):</label>
+                <input type="password" id="user-password" required dir="ltr">
+            </div>
+            <button type="submit" id="submit-btn" class="btn-submit">ثبت نام و ایجاد حساب</button>
+        </form>
+
+        <div class="toggle-mode">
+            <span id="toggle-text">قبلاً ثبت‌نام کرده‌اید؟</span>
+            <a id="toggle-btn" onclick="toggleMode()">ورود به حساب</a>
+        </div>
+        <a href="index.html" class="back-home"><i class="fa-solid fa-arrow-right"></i> بازگشت به صفحه اصلی</a>
+    </div>
+
+    <!-- Firebase SDK Scripts (Compat Version for Simple HTML) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjStT4d8jATJaRqXwNtxDISMvH30ZXn6c",
+            authDomain: "mymedicalsites-48184.firebaseapp.com",
+            projectId: "mymedicalsites-48184",
+            storageBucket: "mymedicalsites-48184.firebasestorage.app",
+            messagingSenderId: "647039366833",
+            appId: "1:647039366833:web:e3ae440228960f02519490"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        let isSignUp = true;
+
+        function toggleMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('form-title').innerHTML = isSignUp ? 
+                '<i class="fa-solid fa-user-plus"></i> ثبت نام پنل شخصی' : 
+                '<i class="fa-solid fa-right-to-bracket"></i> ورود به پنل شخصی';
+            document.getElementById('name-group').style.display = isSignUp ? 'block' : 'none';
+            document.getElementById('submit-btn').textContent = isSignUp ? 'ثبت نام و ایجاد حساب' : 'ورود به حساب';
+            document.getElementById('toggle-text').textContent = isSignUp ? 'قبلاً ثبت‌نام کرده‌اید؟' : 'حساب کاربری ندارید؟';
+            document.getElementById('toggle-btn').textContent = isSignUp ? 'ورود به حساب' : 'ثبت‌نام کنید';
+            document.getElementById('error-message').textContent = '';
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('user-email').value;
+            const password = document.getElementById('user-password').value;
+            const name = document.getElementById('user-name').value;
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = 'در حال پردازش...';
+
+            if (isSignUp) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        return userCredential.user.updateProfile({ displayName: name });
+                    })
+                    .then(() => {
+                        window.location.href = 'panel.html';
+                    })
+                    .catch((error) => { errorDiv.textContent = 'خطا در ثبت‌نام: ' + error.message; });
+            } else {
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => { window.location.href = 'panel.html'; })
+                    .catch((error) => { errorDiv.textContent = 'خطا در ورود: ایمیل یا رمز عبور اشتباه است.'; });
+            }
+        });
+    </script>
+</body>
+</html>
