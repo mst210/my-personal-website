@@ -63,7 +63,7 @@
 
         /* --- Auth Section --- */
         .auth-container {
-            max-width: 450px;
+            max-width: 500px;
             margin: 20px auto;
         }
 
@@ -99,6 +99,16 @@
             border-bottom: 2px solid var(--accent-teal);
         }
 
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
         .form-group { margin-bottom: 15px; }
 
         .form-group label {
@@ -108,7 +118,7 @@
             margin-bottom: 5px;
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px 12px;
             border-radius: 8px;
@@ -117,6 +127,12 @@
             color: #fff;
             font-size: 14px;
             outline: none;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 70px;
         }
 
         .submit-btn {
@@ -151,12 +167,10 @@
         }
 
         @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
 
-        /* Sidebar Navigation */
+        /* Sidebar */
         .sidebar {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -179,16 +193,21 @@
             margin-bottom: 8px;
         }
 
+        .user-name-text {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
         .user-email-text {
             font-size: 12px;
             color: #38bdf8;
             word-break: break-all;
             direction: ltr;
+            margin-top: 4px;
         }
 
-        .menu-list {
-            list-style: none;
-        }
+        .menu-list { list-style: none; }
 
         .menu-item {
             display: flex;
@@ -227,7 +246,7 @@
             color: #ef4444;
         }
 
-        /* Content Area */
+        /* Content Panel */
         .content-panel {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -292,7 +311,7 @@
             <div class="auth-card">
                 <div class="auth-tabs">
                     <button class="tab-btn active" id="btn-tab-login">ورود</button>
-                    <button class="tab-btn" id="btn-tab-register">ثبت‌نام</button>
+                    <button class="tab-btn" id="btn-tab-register">ثبت‌نام کاربر جدید</button>
                 </div>
 
                 <!-- فرم ورود -->
@@ -308,17 +327,52 @@
                     <button type="submit" class="submit-btn">ورود به پنل</button>
                 </form>
 
-                <!-- فرم ثبت‌نام -->
+                <!-- فرم ثبت‌نام تکمیلی -->
                 <form id="register-form" style="display: none;">
-                    <div class="form-group">
-                        <label>ایمیل</label>
-                        <input type="email" id="reg-email" required placeholder="example@mail.com">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>نام</label>
+                            <input type="text" id="reg-fname" required placeholder="مثلاً: علی">
+                        </div>
+                        <div class="form-group">
+                            <label>نام خانوادگی</label>
+                            <input type="text" id="reg-lname" required placeholder="مثلاً: محمدی">
+                        </div>
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>شماره تلفن همراه</label>
+                            <input type="tel" id="reg-phone" required placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+                        </div>
+                        <div class="form-group">
+                            <label>ایمیل</label>
+                            <input type="email" id="reg-email" required placeholder="example@mail.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>استان</label>
+                            <input type="text" id="reg-province" required placeholder="مثلاً: تهران">
+                        </div>
+                        <div class="form-group">
+                            <label>شهر</label>
+                            <input type="text" id="reg-city" required placeholder="مثلاً: تهران">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>آدرس دقیق پستی</label>
+                        <textarea id="reg-address" required placeholder="خیابان، کوچه، پلاک، واحد..."></textarea>
+                    </div>
+
                     <div class="form-group">
                         <label>رمز عبور (حداقل ۶ کاراکتر)</label>
                         <input type="password" id="reg-password" required placeholder="******">
                     </div>
-                    <button type="submit" class="submit-btn">ایجاد حساب کاربری</button>
+
+                    <button type="submit" class="submit-btn">تکمیل ثبت‌نام و ایجاد حساب</button>
                 </form>
 
                 <div id="auth-error" class="error-msg"></div>
@@ -328,10 +382,11 @@
         <!-- داشبورد اصلی پس از ورود -->
         <div id="dashboard-section" class="dashboard-grid" style="display: none;">
             
-            <!-- منوی سمت راست (Sidebar) -->
+            <!-- منوی سمت راست -->
             <aside class="sidebar">
                 <div class="user-profile-summary">
                     <i class="fa-solid fa-circle-user user-avatar-icon"></i>
+                    <div class="user-name-text" id="user-fullname-display">کاربر گرامی</div>
                     <div class="user-email-text" id="user-email-display">user@mail.com</div>
                 </div>
                 
@@ -389,16 +444,24 @@
                     </div>
                     
                     <div class="profile-row">
+                        <span class="profile-label">نام و نام خانوادگی:</span>
+                        <span class="profile-value" id="info-fullname">-</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">شماره همراه:</span>
+                        <span class="profile-value" id="info-phone" style="direction: ltr;">-</span>
+                    </div>
+                    <div class="profile-row">
                         <span class="profile-label">پست الکترونیک (ایمیل):</span>
-                        <span class="profile-value" id="info-email-display">-</span>
+                        <span class="profile-value" id="info-email" style="direction: ltr;">-</span>
                     </div>
                     <div class="profile-row">
-                        <span class="profile-label">وضعیت حساب:</span>
-                        <span class="profile-value" style="color: var(--accent-teal);">فعال و تأیید شده</span>
+                        <span class="profile-label">استان / شهر:</span>
+                        <span class="profile-value" id="info-location">-</span>
                     </div>
                     <div class="profile-row">
-                        <span class="profile-label">نوع کاربری:</span>
-                        <span class="profile-value">کاربر عادی</span>
+                        <span class="profile-label">آدرس پستی:</span>
+                        <span class="profile-value" id="info-address">-</span>
                     </div>
                 </div>
 
@@ -409,10 +472,10 @@
                         <span>ارتباط با پشتیبانی</span>
                     </div>
                     <p style="font-size: 14px; color: #cbd5e1; line-height: 1.8; margin-bottom: 15px;">
-                        جهت پیگیری سفارشات یا مشاوره، می‌توانید از دکمه پشتیبانی آنلاین در گوشه پایین صفحه استفاده کنید یا با شماره تماس زیر ارتباط بگیرید:
+                        جهت پیگیری سفارشات یا مشاوره، می‌توانید با شماره تماس زیر ارتباط بگیرید:
                     </p>
                     <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 15px; color: #38bdf8; text-align: center; font-weight: bold;">
-                        <i class="fa-solid fa-phone"></i> شماره پشتیبانی: 09103909971
+                        <i class="fa-solid fa-phone"></i> شماره پشتیبانی: ۰۹۳۸۱۶۱۸۷۴۰
                     </div>
                 </div>
 
@@ -432,6 +495,12 @@
             signOut, 
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // تنظیمات فایربیس
         const firebaseConfig = {
@@ -446,6 +515,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         // مدیریت تب‌های ورود و ثبت‌نام
         const btnTabLogin = document.getElementById('btn-tab-login');
@@ -470,16 +540,41 @@
             authError.innerText = '';
         });
 
-        // ثبت‌نام کاربر
-        regForm.addEventListener('submit', (e) => {
+        // ثبت‌نام کامل کاربر و ذخیره در Firestore
+        regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            authError.innerText = 'در حال ارتباط با سرور...';
-            const email = document.getElementById('reg-email').value;
+            authError.innerText = 'در حال ثبت اطلاعات و ایجاد حساب...';
+
+            const firstName = document.getElementById('reg-fname').value.trim();
+            const lastName = document.getElementById('reg-lname').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const province = document.getElementById('reg-province').value.trim();
+            const city = document.getElementById('reg-city').value.trim();
+            const address = document.getElementById('reg-address').value.trim();
             const password = document.getElementById('reg-password').value;
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(() => { authError.innerText = ''; })
-                .catch((error) => { authError.innerText = 'خطا در ثبت‌نام: ' + error.message; });
+            try {
+                // ۱. ایجاد حساب کاربری در Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // ۲. ذخیره اطلاعات تکمیلی در دیتابیس Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phone,
+                    email: email,
+                    province: province,
+                    city: city,
+                    address: address,
+                    createdAt: new Date().toISOString()
+                });
+
+                authError.innerText = '';
+            } catch (error) {
+                authError.innerText = 'خطا در ثبت‌نام: ' + error.message;
+            }
         });
 
         // ورود کاربر
@@ -499,13 +594,36 @@
             signOut(auth);
         });
 
-        // بررسی وضعیت ورود
-        onAuthStateChanged(auth, (user) => {
+        // بررسی وضعیت ورود و دریافت اطلاعات کاربر از Firestore
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('dashboard-section').style.display = 'grid';
-                document.getElementById('user-email-display').innerText = user.email;
-                document.getElementById('info-email-display').innerText = user.email;
+
+                // دریافت داده‌ها از Firestore
+                try {
+                    const docRef = doc(db, "users", user.uid);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const fullName = `${data.firstName} ${data.lastName}`;
+                        
+                        document.getElementById('user-fullname-display').innerText = fullName;
+                        document.getElementById('user-email-display').innerText = user.email;
+                        
+                        document.getElementById('info-fullname').innerText = fullName;
+                        document.getElementById('info-phone').innerText = data.phone || '-';
+                        document.getElementById('info-email').innerText = user.email;
+                        document.getElementById('info-location').innerText = `${data.province || ''} - ${data.city || ''}`;
+                        document.getElementById('info-address').innerText = data.address || '-';
+                    } else {
+                        document.getElementById('user-email-display').innerText = user.email;
+                        document.getElementById('info-email').innerText = user.email;
+                    }
+                } catch (e) {
+                    console.error("خطا در دریافت اطلاعات کاربر:", e);
+                }
             } else {
                 document.getElementById('auth-section').style.display = 'block';
                 document.getElementById('dashboard-section').style.display = 'none';
@@ -516,14 +634,12 @@
     <!-- اسکریپت سوئیچ بین تب‌های داشبورد -->
     <script>
         function switchDashboardTab(tabName, element) {
-            // غیرفعال کردن تمام تب‌ها
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => content.classList.remove('active'));
 
             const menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach(item => item.classList.remove('active'));
 
-            // فعال کردن تب انتخاب‌شده
             document.getElementById('tab-' + tabName).classList.add('active');
             element.classList.add('active');
         }
