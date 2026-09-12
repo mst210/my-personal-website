@@ -187,6 +187,23 @@
             text-align: justify;
         }
 
+        .post-link-btn {
+            display: inline-block;
+            margin-top: 15px;
+            background: var(--primary-blue);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .post-link-btn:hover {
+            background: #0369a1;
+        }
+
         /* --- Footer --- */
         footer {
             text-align: center;
@@ -227,19 +244,22 @@
     <main>
         <div class="section-title">
             <i class="fa-notes-medical"></i>
-            <h2>آخرین مطالب و یادداشت‌های پزشکی</h2>
+            <h2>اطلاعات و یادداشت‌های پزشکی</h2>
         </div>
 
-        <!-- Post 1 -->
+        <!-- Post 1: IRIMC Main Portal Link -->
         <article class="medical-post">
             <div class="post-header">
-                <span class="post-tag">پزشکی و سلامت</span>
-                <span class="post-date">امروز</span>
+                <span class="post-tag">سازمان رسمی</span>
+                <span class="post-date">رسمی</span>
             </div>
-            <h3 class="post-title">عنوان مطلب پزشکی اول</h3>
+            <h3 class="post-title">سازمان نظام پزشکی جمهوری اسلامی ایران</h3>
             <p class="post-content">
-                در این بخش می‌توانید توضیحات، مطالب علمی، نکات سلامت یا توصیه‌های پزشکی خود را بنویسید. این قالب به شکلی طراحی شده است که خواندن متن‌های طولانی علمی برای مخاطب بسیار راحت و لذت‌بخش باشد.
+                برای مشاهده آخرین اخبار، آیین‌نامه‌ها، قوانین پزشکی و دسترسی به سامانه‌های خدمات الکترونیک اعضا و مراجعین، می‌توانید به درگاه رسمی سازمان نظام پزشکی مراجعه کنید.
             </p>
+            <a href="https://irimc.org" target="_blank" class="post-link-btn">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> ورود به سایت سازمان نظام پزشکی (irimc.org)
+            </a>
         </article>
 
         <!-- Post 2 -->
