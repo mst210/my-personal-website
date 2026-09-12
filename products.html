@@ -32,6 +32,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-bottom: 80px; /* فضای خالی برای باکس سبد خرید شناور */
         }
 
         /* --- Header Section --- */
@@ -197,6 +198,57 @@
             background: #0369a1;
         }
 
+        /* --- Floating Cart Bar --- */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(20, 184, 166, 0.3);
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.4);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .cart-bar.active {
+            transform: translateY(0);
+        }
+
+        .cart-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .cart-info i {
+            color: var(--accent-teal);
+            font-size: 20px;
+        }
+
+        .checkout-btn {
+            background: var(--accent-teal);
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.3s;
+        }
+
+        .checkout-btn:hover {
+            opacity: 0.9;
+        }
+
         .loading-text {
             text-align: center;
             grid-column: 1 / -1;
@@ -244,27 +296,65 @@
         </div>
     </main>
 
+    <!-- Floating Cart Bar -->
+    <div id="cart-bar" class="cart-bar">
+        <div class="cart-info">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-text">محصولی در سبد خرید نیست</span>
+        </div>
+        <button onclick="checkoutOrder()" class="checkout-btn">تایید و ثبت نهایی سفارش</button>
+    </div>
+
     <!-- Footer -->
     <footer>
         © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
     </footer>
 
-    <!-- Script to Fetch Products from Google Sheets and handle purchase -->
+    <!-- Script to Fetch Products and Manage Cart -->
     <script>
         const SHEET_ID = '138i-vFOWfolwYGW7brhRAiHFjuVtpDU0sF2bHdyMYQg';
         const SHEET_TITLE = 'Sheet1';
         const FULL_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=' + SHEET_TITLE;
 
-        function buyProduct(title, price) {
-            // ذخیره اطلاعات محصول انتخابی در حافظه مرورگر برای ثبت سفارش در پنل کاربری
-            const productData = {
-                title: title,
-                price: price,
-                date: new Date().toLocaleDateString('fa-IR')
+        let cart = [];
+
+        function addToCart(title, price) {
+            cart.push({ title: title, price: price });
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartBar = document.getElementById('cart-bar');
+            const cartText = document.getElementById('cart-text');
+
+            if (cart.length > 0) {
+                cartBar.classList.add('active');
+                cartText.innerHTML = `تعداد محصولات در سبد خرید: <b>${cart.length}</b> مورد`;
+            } else {
+                cartBar.classList.remove('active');
+            }
+        }
+
+        function checkoutOrder() {
+            if (cart.length === 0) return;
+
+            // ذخیره سبد خرید به عنوان سفارش جدید در انتظار پرداخت/بررسی
+            const newOrder = {
+                items: cart,
+                date: new Date().toLocaleDateString('fa-IR'),
+                status: 'در انتظار پرداخت (کارت به کارت)'
             };
-            localStorage.setItem('pending_order', JSON.stringify(productData));
-            
-            // انتقال کاربر به صفحه پنل کاربری (نام فایل پنل را بر حسب پروژه خود تنظیم کنید، مثلاً panel.html)
+
+            // خواندن سفارش‌های قبلی از حافظه مرورگر و اضافه کردن سفارش جدید
+            let activeOrders = JSON.parse(localStorage.getItem('active_orders')) || [];
+            activeOrders.push(newOrder);
+            localStorage.setItem('active_orders', JSON.stringify(activeOrders));
+
+            // پاک کردن سبد خرید محلی
+            cart = [];
+            updateCartUI();
+
+            // هدایت کاربر به پنل کاربری برای مشاهده سفارش‌های فعال
             window.location.href = 'panel.html';
         }
 
@@ -297,8 +387,8 @@
                             '</div>' +
                             '<div>' +
                                 '<div class="product-price">' + formattedPrice + '</div>' +
-                                '<button onclick="buyProduct(\'' + title.replace(/'/g, "\\'") + '\', \'' + formattedPrice + '\')" class="order-btn">' +
-                                    '<i class="fa-solid fa-cart-shopping"></i> خرید محصول' +
+                                '<button onclick="addToCart(\'' + title.replace(/'/g, "\\'") + '\', \'' + formattedPrice + '\')" class="order-btn">' +
+                                    '<i class="fa-solid fa-cart-plus"></i> افزودن به سبد خرید' +
                                 '</button>' +
                             '</div>' +
                         '</div>';
