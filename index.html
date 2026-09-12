@@ -3,309 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فروشگاه آنلاین - طرح دیجی‌کالا</title>
-    <!-- Font Awesome for Icons -->
+    <title>دکتر محمدصادق تاج | وب‌سایت رسمی</title>
+    <!-- Font Awesome for Medical & Social Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --digi-red: #ef4056;
-            --digi-red-dark: #d7384c;
-            --bg-gray: #f0f0f1;
-            --text-main: #3f4044;
-            --text-muted: #81858b;
-            --border-color: #e0e0e2;
+            --primary-blue: #0284c7;
+            --dark-blue: #0f172a;
+            --accent-teal: #14b8a6;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Tahoma, 'Segoe UI', Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-gray);
-            color: var(--text-main);
-            padding-bottom: 50px;
+            font-family: Tahoma, 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- Header Styles --- */
+        /* --- Header Section --- */
         header {
-            background-color: #fff;
-            box-shadow: 0 1px 10px rgba(0,0,0,0.08);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
+            padding: 12px 24px;
         }
 
-        .top-header {
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 24px;
-            max-width: 1366px;
-            margin: 0 auto;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-grow: 1;
-        }
-
-        .logo {
-            color: var(--digi-red);
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
-            letter-spacing: -1px;
-        }
-
-        .search-box {
-            background-color: #f0f0f1;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            width: 500px;
-            max-width: 100%;
-        }
-
-        .search-box i {
-            color: var(--text-muted);
-            margin-left: 10px;
-        }
-
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-size: 14px;
-            color: var(--text-main);
-        }
-
-        .header-left {
+        /* Top Right: Doctor Name & Title */
+        .doctor-info-right {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .auth-btn {
+        .doctor-info-right i {
+            font-size: 28px;
+            color: var(--accent-teal);
+        }
+
+        .doctor-title-box h1 {
+            font-size: 20px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .doctor-title-box span {
+            font-size: 13px;
+            color: #94a3b8;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Top Left: Doctor Avatar/Profile Picture */
+        .doctor-avatar-left {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-teal);
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
+        }
+
+        /* --- Navigation & Links --- */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             gap: 8px;
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 13px;
-            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
-        .cart-btn {
-            position: relative;
-            padding: 8px 12px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 18px;
-            border-right: 1px solid var(--border-color);
+        .nav-btn:hover {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
         }
 
-        .cart-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background-color: var(--digi-red);
-            color: white;
-            font-size: 10px;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Navbar Menu */
-        .nav-bar {
-            border-top: 1px solid var(--border-color);
-            padding: 8px 24px;
-            max-width: 1366px;
-            margin: 0 auto;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 24px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--digi-red);
-        }
-
-        /* --- Main Content --- */
-        .container {
-            max-width: 1366px;
-            margin: 16px auto;
-            padding: 0 16px;
-        }
-
-        /* Banner Slider */
-        .slider-container {
-            background-color: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            height: 300px;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .slide {
+        /* --- Main Content (Medical Posts) --- */
+        main {
+            flex-grow: 1;
+            max-width: 800px;
             width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #ef4056 0%, #ab162b 100%);
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
         }
 
-        /* Amazing Deals Box (پیشنهاد شگفت‌انگیز) */
-        .amazing-container {
-            background-color: var(--digi-red);
-            border-radius: 16px;
-            padding: 20px;
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--accent-teal);
             display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .amazing-title {
-            color: white;
-            text-align: center;
-            min-width: 140px;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
         }
 
-        .amazing-title i {
-            font-size: 48px;
+        /* Medical Post Cards */
+        .medical-post {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .product-card {
-            background-color: white;
-            border-radius: 12px;
-            min-width: 220px;
-            max-width: 220px;
-            padding: 16px;
+        .medical-post:hover {
+            border-color: rgba(20, 184, 166, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .post-header {
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            height: 320px;
-            transition: transform 0.2s;
-            cursor: pointer;
+            align-items: center;
+            margin-bottom: 14px;
         }
 
-        .product-card:hover {
-            transform: translateY(-4px);
+        .post-tag {
+            background: rgba(2, 132, 199, 0.2);
+            color: #38bdf8;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
         }
 
-        .product-img {
-            width: 100%;
-            height: 140px;
-            object-fit: contain;
+        .post-date {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .post-title {
+            font-size: 18px;
+            color: #ffffff;
             margin-bottom: 12px;
+            line-height: 1.5;
         }
 
-        .product-title {
+        .post-content {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 20px;
             font-size: 13px;
-            line-height: 1.6;
-            color: var(--text-main);
-            height: 40px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .product-price-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-        }
-
-        .discount-badge {
-            background-color: var(--digi-red);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .price {
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .old-price {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-decoration: line-through;
-            text-align: left;
-        }
-
-        /* Banner Grid */
-        .banners-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .banner-item {
-            background-color: #fff;
-            border-radius: 12px;
-            height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--text-muted);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-            border: 1px dashed var(--border-color);
-        }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-            .banners-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .search-box {
-                width: 200px;
-            }
+            color: #64748b;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
@@ -313,115 +201,65 @@
 
     <!-- Header Section -->
     <header>
-        <div class="top-header">
-            <div class="header-right">
-                <a href="#" class="logo">DIGIKALA</a>
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="جستجو در دیجی‌کالا...">
+        <div class="header-container">
+            <!-- Top Right: Name & Title -->
+            <div class="doctor-info-right">
+                <i class="fa-solid fa-user-doctor"></i>
+                <div class="doctor-title-box">
+                    <h1>دکتر محمدصادق تاج</h1>
+                    <span>پزشک و پژوهشگر</span>
                 </div>
             </div>
-            <div class="header-left">
-                <a href="#" class="auth-btn">
-                    <i class="fa-regular fa-user"></i>
-                    ورود | ثبت‌نام
-                </a>
-                <a href="#" class="cart-btn">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge">۰</span>
-                </a>
-            </div>
+
+            <!-- Top Left: Doctor Avatar -->
+            <!-- جای آدرس profile.jpg می‌توانید آدرس عکس خودتان را بگذارید -->
+            <img src="profile.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
         </div>
-        <nav class="nav-bar">
-            <ul class="nav-links">
-                <li><a href="#"><i class="fa-solid fa-bars"></i> دسته‌بندی کالاها</a></li>
-                <li><a href="#"><i class="fa-solid fa-percent"></i> شگفت‌انگیزها</a></li>
-                <li><a href="#"><i class="fa-solid fa-fire"></i> پرفروش‌ترین‌ها</a></li>
-                <li><a href="#"><i class="fa-solid fa-gift"></i> کارت هدیه</a></li>
-            </ul>
-        </nav>
     </header>
 
-    <!-- Main Body Container -->
-    <div class="container">
-        
-        <!-- Main Slider -->
-        <div class="slider-container">
-            <div class="slide">
-                بنر اصلی تبلیغاتی (جایگاه اسلایدر)
-            </div>
-        </div>
-
-        <!-- Amazing Deals Section -->
-        <div class="amazing-container">
-            <div class="amazing-title">
-                <i class="fa-solid fa-box-open"></i>
-                <h2>شگفت<br>انگیز</h2>
-            </div>
-
-            <!-- Product 1 -->
-            <div class="product-card">
-                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
-                <div class="product-title">گوشی موبایل سامسونگ مدل Galaxy A54 ظرفیت 256 گیگابایت</div>
-                <div>
-                    <div class="old-price">18,500,000</div>
-                    <div class="product-price-box">
-                        <span class="discount-badge">12%</span>
-                        <span class="price">16,280,000 تومان</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 2 -->
-            <div class="product-card">
-                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
-                <div class="product-title">هدفون بی‌سیم اپل مدل AirPods Pro 2</div>
-                <div>
-                    <div class="old-price">10,200,000</div>
-                    <div class="product-price-box">
-                        <span class="discount-badge">8%</span>
-                        <span class="price">9,380,000 تومان</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 3 -->
-            <div class="product-card">
-                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
-                <div class="product-title">ساعت هوشمند شیائومی مدل Redmi Watch 3 Active</div>
-                <div>
-                    <div class="old-price">2,100,000</div>
-                    <div class="product-price-box">
-                        <span class="discount-badge">25%</span>
-                        <span class="price">1,575,000 تومان</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 4 -->
-            <div class="product-card">
-                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
-                <div class="product-title">لپ‌تاپ 15.3 اینچی اپل مدل MacBook Air MQKW3 2023</div>
-                <div>
-                    <div class="old-price">68,000,000</div>
-                    <div class="product-price-box">
-                        <span class="discount-badge">5%</span>
-                        <span class="price">64,600,000 تومان</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Banners Grid -->
-        <div class="banners-grid">
-            <div class="banner-item">بنر تبلیغاتی ۱</div>
-            <div class="banner-item">بنر تبلیغاتی ۲</div>
-            <div class="banner-item">بنر تبلیغاتی ۳</div>
-            <div class="banner-item">بنر تبلیغاتی ۴</div>
-        </div>
-
+    <!-- Social & Navigation Links -->
+    <div class="nav-links">
+        <a href="https://instagram.com/mst_2102" target="_blank" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
+        <a href="https://t.me/mst_2102" target="_blank" class="nav-btn"><i class="fa-paper-plane"></i> تلگرام</a>
+        <a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره من / بیوگرافی</a>
     </div>
+
+    <!-- Main Content Area: Medical Articles -->
+    <main>
+        <div class="section-title">
+            <i class="fa-notes-medical"></i>
+            <h2>آخرین مطالب و یادداشت‌های پزشکی</h2>
+        </div>
+
+        <!-- Post 1 -->
+        <article class="medical-post">
+            <div class="post-header">
+                <span class="post-tag">پزشکی و سلامت</span>
+                <span class="post-date">امروز</span>
+            </div>
+            <h3 class="post-title">عنوان مطلب پزشکی اول</h3>
+            <p class="post-content">
+                در این بخش می‌توانید توضیحات، مطالب علمی، نکات سلامت یا توصیه‌های پزشکی خود را بنویسید. این قالب به شکلی طراحی شده است که خواندن متن‌های طولانی علمی برای مخاطب بسیار راحت و لذت‌بخش باشد.
+            </p>
+        </article>
+
+        <!-- Post 2 -->
+        <article class="medical-post">
+            <div class="post-header">
+                <span class="post-tag">پیشگیری</span>
+                <span class="post-date">روزهای اخیر</span>
+            </div>
+            <h3 class="post-title">عنوان مطلب پزشکی دوم</h3>
+            <p class="post-content">
+                محتوای پست دوم را در این قسمت قرار دهید. برای افزودن مطالب جدیدتر، کافیست همین کادر `<article class="medical-post">...</article>` را کپی کرده و متن آن را تغییر دهید.
+            </p>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
+    </footer>
 
 </body>
 </html>
