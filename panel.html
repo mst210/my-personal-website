@@ -9,7 +9,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -60,7 +61,7 @@
             padding: 25px 0 40px;
         }
 
-        /* ================= HEADER ================= */
+        /* HEADER */
 
         .top-header {
             display: flex;
@@ -128,7 +129,7 @@
             font-weight: 700;
         }
 
-        /* ================= AUTH ================= */
+        /* AUTH */
 
         .auth-section {
             max-width: 560px;
@@ -242,7 +243,7 @@
             line-height: 1.8;
         }
 
-        /* ================= DASHBOARD ================= */
+        /* DASHBOARD */
 
         .dashboard {
             display: none;
@@ -320,7 +321,7 @@
             color: #38bdf8;
         }
 
-        /* ================= EMPTY ================= */
+        /* EMPTY */
 
         .empty-state {
             padding: 55px 20px;
@@ -340,7 +341,7 @@
             margin: 0;
         }
 
-        /* ================= CART ================= */
+        /* CART */
 
         .cart-item {
             display: flex;
@@ -459,7 +460,7 @@
             cursor: pointer;
         }
 
-        /* ================= ORDERS ================= */
+        /* ORDERS */
 
         .active-order-card {
             padding: 18px;
@@ -534,7 +535,7 @@
             color: #4ade80;
         }
 
-        /* ================= PROFILE ================= */
+        /* PROFILE */
 
         .profile-grid {
             display: grid;
@@ -565,7 +566,7 @@
             font-size: 13px;
         }
 
-        /* ================= SUPPORT ================= */
+        /* SUPPORT */
 
         .support-card {
             padding: 20px;
@@ -583,7 +584,7 @@
             font-weight: 700;
         }
 
-        /* ================= FOOTER ================= */
+        /* FOOTER */
 
         footer {
             text-align: center;
@@ -592,10 +593,9 @@
             margin-top: 25px;
         }
 
-        /* ================= MOBILE ================= */
+        /* MOBILE */
 
         @media (max-width: 800px) {
-
             .dashboard-layout {
                 grid-template-columns: 1fr;
             }
@@ -633,7 +633,6 @@
         }
 
         @media (max-width: 600px) {
-
             .page-container {
                 width: 96%;
                 padding-top: 12px;
@@ -671,998 +670,696 @@
 
 <body>
 
-<div class="page-container">
+    <div class="page-container">
 
-    <!-- ================= HEADER ================= -->
+        <!-- HEADER -->
+        <header class="top-header">
 
-    <header class="top-header">
-
-        <div class="header-title">
-            <h1>پنل اختصاصی کاربر</h1>
-            <p>دکتر محمدصادق تاج | دانشجوی پزشکی</p>
-        </div>
-
-        <div class="header-actions">
-
-            <button
-                onclick="openCart()"
-                class="back-btn cart-header-button"
-                style="cursor:pointer;">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                سبد خرید
-
-                <span
-                    id="header-cart-count"
-                    class="cart-count-badge">
-                    ۰
-                </span>
-
-            </button>
-
-            <a href="index.html" class="back-btn">
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-                بازگشت
-
-            </a>
-
-        </div>
-
-    </header>
-
-
-    <!-- ================= AUTH ================= -->
-
-    <section id="auth-section" class="auth-section">
-
-        <!-- LOGIN -->
-
-        <div id="login-form" class="auth-card">
-
-            <div class="auth-icon">
-                <i class="fa-solid fa-user"></i>
+            <div class="header-title">
+                <h1>پنل اختصاصی کاربر</h1>
+                <p>دکتر محمدصادق تاج | دانشجوی پزشکی</p>
             </div>
 
-            <h2>ورود به حساب</h2>
-
-            <p>
-                برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
-            </p>
-
-            <form id="login-form-element">
-
-                <div class="form-group">
-
-                    <label>ایمیل</label>
-
-                    <input
-                        id="login-email"
-                        type="email"
-                        class="form-control"
-                        required
-                        autocomplete="email"
-                        placeholder="example@gmail.com">
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>رمز عبور</label>
-
-                    <input
-                        id="login-password"
-                        type="password"
-                        class="form-control"
-                        required
-                        autocomplete="current-password"
-                        placeholder="رمز عبور">
-
-                </div>
-
-
-                <button type="submit" class="submit-btn">
-
-                    <i class="fa-solid fa-right-to-bracket"></i>
-
-                    ورود
-
-                </button>
-
-            </form>
-
-
-            <div class="auth-switch">
-
-                حساب کاربری ندارید؟
-
-                <span onclick="showRegister()">
-                    ثبت نام کنید
-                </span>
-
-            </div>
-
-
-            <div class="vpn-warning">
-
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                در صورت بروز مشکل هنگام ورود یا ثبت نام،
-                اتصال VPN خود را بررسی کنید.
-
-            </div>
-
-        </div>
-
-
-        <!-- REGISTER -->
-
-        <div id="register-form"
-            class="auth-card"
-            style="display:none;">
-
-            <div class="auth-icon">
-
-                <i class="fa-solid fa-user-plus"></i>
-
-            </div>
-
-            <h2>ایجاد حساب کاربری</h2>
-
-            <p>
-                اطلاعات خود را برای ایجاد حساب وارد کنید.
-            </p>
-
-
-            <form id="register-form-element">
-
-                <div class="form-grid">
-
-                    <div class="form-group">
-
-                        <label>نام</label>
-
-                        <input
-                            id="reg-firstname"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>نام خانوادگی</label>
-
-                        <input
-                            id="reg-lastname"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>شماره موبایل</label>
-
-                    <input
-                        id="reg-phone"
-                        type="tel"
-                        class="form-control"
-                        required
-                        placeholder="09xxxxxxxxx">
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>ایمیل</label>
-
-                    <input
-                        id="reg-email"
-                        type="email"
-                        class="form-control"
-                        required>
-
-                </div>
-
-
-                <div class="form-grid">
-
-                    <div class="form-group">
-
-                        <label>استان</label>
-
-                        <input
-                            id="reg-province"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>شهر</label>
-
-                        <input
-                            id="reg-city"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>آدرس پستی</label>
-
-                    <textarea
-                        id="reg-address"
-                        class="form-control"
-                        rows="3"
-                        required></textarea>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>رمز عبور</label>
-
-                    <input
-                        id="reg-password"
-                        type="password"
-                        class="form-control"
-                        minlength="6"
-                        required>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="submit-btn">
-
-                    <i class="fa-solid fa-user-plus"></i>
-
-                    ثبت نام
-
-                </button>
-
-            </form>
-
-
-            <div class="auth-switch">
-
-                قبلاً ثبت نام کرده‌اید؟
-
-                <span onclick="showLogin()">
-                    وارد شوید
-                </span>
-
-            </div>
-
-
-            <div class="vpn-warning">
-
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                در صورت بروز مشکل هنگام ثبت نام،
-                اتصال VPN خود را بررسی کنید.
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= DASHBOARD ================= -->
-
-    <section id="dashboard" class="dashboard">
-
-        <div class="dashboard-layout">
-
-
-            <!-- ================= SIDEBAR ================= -->
-
-            <aside class="sidebar">
-
-
-                <!-- سبد خرید - بالاتر از سفارشات فعال -->
-
-                <div
-                    id="cart-menu-item"
-                    class="menu-item"
-                    onclick="switchDashboardTab('cart', this)">
+            <div class="header-actions">
+
+                <button id="header-cart-button"
+                    onclick="openCart()"
+                    class="back-btn cart-header-button"
+                    style="cursor:pointer;">
 
                     <i class="fa-solid fa-cart-shopping"></i>
+                    سبد خرید
 
-                    <span>
-                        سبد خرید
-                    </span>
+                    <span id="header-cart-count" class="cart-count-badge">۰</span>
 
-                    <span
-                        id="cart-count"
-                        style="
-                        background:#ef4444;
-                        color:#fff;
-                        font-size:11px;
-                        min-width:20px;
-                        height:20px;
-                        padding:0 5px;
-                        border-radius:50%;
-                        display:inline-flex;
-                        align-items:center;
-                        justify-content:center;
-                        margin-right:auto;
-                        ">
-                        ۰
-                    </span>
+                </button>
 
-                </div>
+                <a href="index.html" class="back-btn">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    بازگشت
+                </a>
+
+            </div>
+
+        </header>
 
 
-                <!-- سفارشات فعال -->
+        <!-- AUTH SECTION -->
+        <section id="auth-section" class="auth-section">
 
-                <div
-                    id="active-menu-item"
-                    class="menu-item active"
-                    onclick="switchDashboardTab('active', this)">
+            <!-- LOGIN -->
+            <div id="login-form" class="auth-card">
 
-                    <i class="fa-solid fa-box"></i>
-
-                    <span>
-                        سفارشات فعال
-                    </span>
-
-                </div>
-
-
-                <!-- سفارشات گذشته -->
-
-                <div
-                    class="menu-item"
-                    onclick="switchDashboardTab('past', this)">
-
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-
-                    <span>
-                        سفارشات گذشته
-                    </span>
-
-                </div>
-
-
-                <!-- اطلاعات حساب -->
-
-                <div
-                    class="menu-item"
-                    onclick="switchDashboardTab('profile', this)">
-
+                <div class="auth-icon">
                     <i class="fa-solid fa-user"></i>
-
-                    <span>
-                        اطلاعات حساب
-                    </span>
-
                 </div>
 
+                <h2>ورود به حساب</h2>
 
-                <!-- پشتیبانی -->
+                <p>
+                    برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
+                </p>
 
-                <div
-                    class="menu-item"
-                    onclick="switchDashboardTab('support', this)">
+                <form id="login-form-element">
 
-                    <i class="fa-solid fa-headset"></i>
+                    <div class="form-group">
+                        <label>ایمیل</label>
+                        <input
+                            id="login-email"
+                            type="email"
+                            class="form-control"
+                            required
+                            autocomplete="email"
+                            placeholder="example@gmail.com">
+                    </div>
 
-                    <span>
-                        پشتیبانی
-                    </span>
+                    <div class="form-group">
+                        <label>رمز عبور</label>
+                        <input
+                            id="login-password"
+                            type="password"
+                            class="form-control"
+                            required
+                            autocomplete="current-password"
+                            placeholder="رمز عبور">
+                    </div>
 
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        ورود
+                    </button>
+
+                </form>
+
+                <div class="auth-switch">
+                    حساب کاربری ندارید؟
+                    <span onclick="showRegister()">ثبت نام کنید</span>
                 </div>
 
-
-                <!-- خروج -->
-
-                <div
-                    class="menu-item logout"
-                    onclick="logoutUser()">
-
-                    <i class="fa-solid fa-right-from-bracket"></i>
-
-                    <span>
-                        خروج
-                    </span>
-
+                <div class="vpn-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    در صورت بروز مشکل هنگام ورود یا ثبت نام، اتصال VPN خود را بررسی کنید.
                 </div>
 
-            </aside>
+            </div>
 
 
-            <!-- ================= MAIN PANEL ================= -->
+            <!-- REGISTER -->
+            <div id="register-form" class="auth-card" style="display:none;">
 
-            <main class="main-panel">
+                <div class="auth-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+
+                <h2>ایجاد حساب کاربری</h2>
+
+                <p>
+                    اطلاعات خود را برای ایجاد حساب وارد کنید.
+                </p>
+
+                <form id="register-form-element">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>نام</label>
+                            <input id="reg-firstname"
+                                type="text"
+                                class="form-control"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>نام خانوادگی</label>
+                            <input id="reg-lastname"
+                                type="text"
+                                class="form-control"
+                                required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>شماره موبایل</label>
+                        <input id="reg-phone"
+                            type="tel"
+                            class="form-control"
+                            required
+                            placeholder="09xxxxxxxxx">
+                    </div>
+
+                    <div class="form-group">
+                        <label>ایمیل</label>
+                        <input id="reg-email"
+                            type="email"
+                            class="form-control"
+                            required>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>استان</label>
+                            <input id="reg-province"
+                                type="text"
+                                class="form-control"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>شهر</label>
+                            <input id="reg-city"
+                                type="text"
+                                class="form-control"
+                                required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>آدرس پستی</label>
+                        <textarea
+                            id="reg-address"
+                            class="form-control"
+                            rows="3"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>رمز عبور</label>
+                        <input id="reg-password"
+                            type="password"
+                            class="form-control"
+                            minlength="6"
+                            required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-user-plus"></i>
+                        ثبت نام
+                    </button>
+
+                </form>
+
+                <div class="auth-switch">
+                    قبلاً ثبت نام کرده‌اید؟
+                    <span onclick="showLogin()">وارد شوید</span>
+                </div>
+
+                <div class="vpn-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    در صورت بروز مشکل هنگام ثبت نام، اتصال VPN خود را بررسی کنید.
+                </div>
+
+            </div>
+
+        </section>
 
 
-                <!-- ================= ACTIVE ORDERS ================= -->
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="dashboard">
 
-                <div
-                    id="tab-active"
-                    class="tab-content active">
+            <div class="dashboard-layout">
 
-                    <div class="panel-title">
+                <!-- SIDEBAR -->
+                <aside class="sidebar">
+
+                    <div class="menu-item active"
+                        onclick="switchDashboardTab('active', this)">
 
                         <i class="fa-solid fa-box"></i>
-
-                        <span>
-                            سفارشات فعال
-                        </span>
+                        <span>سفارشات فعال</span>
 
                     </div>
 
 
-                    <div id="active-orders">
-
-                        <div class="empty-state">
-
-                            <i class="fa-solid fa-box-open"></i>
-
-                            <p>
-                                در حال دریافت سفارشات...
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================= PAST ORDERS ================= -->
-
-                <div
-                    id="tab-past"
-                    class="tab-content">
-
-                    <div class="panel-title">
+                    <div class="menu-item"
+                        onclick="switchDashboardTab('past', this)">
 
                         <i class="fa-solid fa-clock-rotate-left"></i>
-
-                        <span>
-                            سفارشات گذشته
-                        </span>
+                        <span>سفارشات گذشته</span>
 
                     </div>
 
 
-                    <div id="past-orders">
+                    <div id="cart-menu-item"
+                        class="menu-item"
+                        onclick="switchDashboardTab('cart', this)">
 
-                        <div class="empty-state">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>سبد خرید</span>
 
+                        <span id="cart-count"
+                            style="
+                            background:#ef4444;
+                            color:#fff;
+                            font-size:11px;
+                            min-width:20px;
+                            height:20px;
+                            padding:0 5px;
+                            border-radius:50%;
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            margin-right:auto;
+                        ">۰</span>
+
+                    </div>
+
+
+                    <div class="menu-item"
+                        onclick="switchDashboardTab('profile', this)">
+
+                        <i class="fa-solid fa-user"></i>
+                        <span>اطلاعات حساب</span>
+
+                    </div>
+
+
+                    <div class="menu-item"
+                        onclick="switchDashboardTab('support', this)">
+
+                        <i class="fa-solid fa-headset"></i>
+                        <span>پشتیبانی</span>
+
+                    </div>
+
+
+                    <div class="menu-item logout"
+                        onclick="logoutUser()">
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>خروج</span>
+
+                    </div>
+
+                </aside>
+
+
+                <!-- MAIN PANEL -->
+                <main class="main-panel">
+
+
+                    <!-- ACTIVE ORDERS -->
+                    <div id="tab-active" class="tab-content active">
+
+                        <div class="panel-title">
+                            <i class="fa-solid fa-box"></i>
+                            <span>سفارشات فعال</span>
+                        </div>
+
+                        <div id="active-orders">
+
+                            <div class="empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <p>در حال دریافت سفارشات...</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PAST ORDERS -->
+                    <div id="tab-past" class="tab-content">
+
+                        <div class="panel-title">
                             <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>سفارشات گذشته</span>
+                        </div>
+
+                        <div id="past-orders">
+
+                            <div class="empty-state">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <p>هنوز سفارش گذشته‌ای ندارید.</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CART -->
+                    <div id="tab-cart" class="tab-content">
+
+                        <div class="panel-title">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>سبد خرید من</span>
+                        </div>
+
+                        <div id="cart-items"></div>
+
+                        <div id="cart-empty" class="empty-state">
+
+                            <i class="fa-solid fa-cart-shopping"></i>
 
                             <p>
-                                هنوز سفارش گذشته‌ای ندارید.
+                                سبد خرید شما خالی است.
                             </p>
 
                         </div>
 
-                    </div>
 
-                </div>
+                        <div id="cart-summary"
+                            class="cart-summary"
+                            style="display:none;">
 
+                            <div class="cart-total-row">
 
-                <!-- ================= CART ================= -->
+                                <span class="cart-total-label">
+                                    مجموع سبد خرید:
+                                </span>
 
-                <div
-                    id="tab-cart"
-                    class="tab-content">
+                                <strong id="cart-total"
+                                    class="cart-total-value">
+                                    ۰ تومان
+                                </strong>
 
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                        <span>
-                            سبد خرید من
-                        </span>
-
-                    </div>
+                            </div>
 
 
-                    <div id="cart-items"></div>
+                            <button onclick="submitCart()"
+                                class="submit-btn">
+
+                                <i class="fa-solid fa-paper-plane"></i>
+                                تأیید و ثبت سفارش
+
+                            </button>
 
 
-                    <div
-                        id="cart-empty"
-                        class="empty-state">
+                            <button onclick="clearCart()"
+                                class="clear-cart-btn">
 
-                        <i class="fa-solid fa-cart-shopping"></i>
+                                <i class="fa-solid fa-trash"></i>
+                                خالی کردن سبد
 
-                        <p>
-                            سبد خرید شما خالی است.
-                        </p>
-
-                    </div>
-
-
-                    <div
-                        id="cart-summary"
-                        class="cart-summary"
-                        style="display:none;">
-
-                        <div class="cart-total-row">
-
-                            <span class="cart-total-label">
-                                مجموع سبد خرید:
-                            </span>
-
-                            <strong
-                                id="cart-total"
-                                class="cart-total-value">
-                                ۰ تومان
-                            </strong>
+                            </button>
 
                         </div>
-
-
-                        <button
-                            onclick="submitCart()"
-                            class="submit-btn">
-
-                            <i class="fa-solid fa-paper-plane"></i>
-
-                            تأیید و ثبت سفارش
-
-                        </button>
-
-
-                        <button
-                            onclick="clearCart()"
-                            class="clear-cart-btn">
-
-                            <i class="fa-solid fa-trash"></i>
-
-                            خالی کردن سبد
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================= PROFILE ================= -->
-
-                <div
-                    id="tab-profile"
-                    class="tab-content">
-
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-user"></i>
-
-                        <span>
-                            اطلاعات حساب
-                        </span>
 
                     </div>
 
 
-                    <div class="profile-grid">
+                    <!-- PROFILE -->
+                    <div id="tab-profile" class="tab-content">
 
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                نام و نام خانوادگی
-                            </span>
-
-                            <div
-                                id="profile-name"
-                                class="profile-value">
-                                -
-                            </div>
-
+                        <div class="panel-title">
+                            <i class="fa-solid fa-user"></i>
+                            <span>اطلاعات حساب</span>
                         </div>
 
 
-                        <div class="profile-box">
+                        <div class="profile-grid">
 
-                            <span class="profile-label">
-                                شماره موبایل
-                            </span>
-
-                            <div
-                                id="profile-phone"
-                                class="profile-value">
-                                -
+                            <div class="profile-box">
+                                <span class="profile-label">نام و نام خانوادگی</span>
+                                <div id="profile-name"
+                                    class="profile-value">
+                                    -
+                                </div>
                             </div>
 
-                        </div>
 
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                ایمیل
-                            </span>
-
-                            <div
-                                id="profile-email"
-                                class="profile-value">
-                                -
+                            <div class="profile-box">
+                                <span class="profile-label">شماره موبایل</span>
+                                <div id="profile-phone"
+                                    class="profile-value">
+                                    -
+                                </div>
                             </div>
 
-                        </div>
 
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                استان
-                            </span>
-
-                            <div
-                                id="profile-province"
-                                class="profile-value">
-                                -
+                            <div class="profile-box">
+                                <span class="profile-label">ایمیل</span>
+                                <div id="profile-email"
+                                    class="profile-value">
+                                    -
+                                </div>
                             </div>
 
-                        </div>
 
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                شهر
-                            </span>
-
-                            <div
-                                id="profile-city"
-                                class="profile-value">
-                                -
+                            <div class="profile-box">
+                                <span class="profile-label">استان</span>
+                                <div id="profile-province"
+                                    class="profile-value">
+                                    -
+                                </div>
                             </div>
 
-                        </div>
+
+                            <div class="profile-box">
+                                <span class="profile-label">شهر</span>
+                                <div id="profile-city"
+                                    class="profile-value">
+                                    -
+                                </div>
+                            </div>
 
 
-                        <div class="profile-box full">
-
-                            <span class="profile-label">
-                                آدرس پستی
-                            </span>
-
-                            <div
-                                id="profile-address"
-                                class="profile-value">
-                                -
+                            <div class="profile-box full">
+                                <span class="profile-label">آدرس پستی</span>
+                                <div id="profile-address"
+                                    class="profile-value">
+                                    -
+                                </div>
                             </div>
 
                         </div>
 
                     </div>
 
-                </div>
+
+                    <!-- SUPPORT -->
+                    <div id="tab-support" class="tab-content">
+
+                        <div class="panel-title">
+                            <i class="fa-solid fa-headset"></i>
+                            <span>پشتیبانی</span>
+                        </div>
 
 
-                <!-- ================= SUPPORT ================= -->
+                        <div class="support-card">
 
-                <div
-                    id="tab-support"
-                    class="tab-content">
+                            <h3>
+                                <i class="fa-solid fa-phone"></i>
+                                ارتباط با پشتیبانی
+                            </h3>
 
-                    <div class="panel-title">
+                            <p style="color:#94a3b8; line-height:2;">
+                                برای پیگیری سفارش یا دریافت راهنمایی،
+                                می‌توانید با شماره زیر تماس بگیرید.
+                            </p>
 
-                        <i class="fa-solid fa-headset"></i>
+                            <a href="tel:09381618740"
+                                class="support-phone">
 
-                        <span>
-                            پشتیبانی
-                        </span>
+                                ۰۹۳۸۱۶۱۸۷۴۰
 
-                    </div>
+                            </a>
 
-
-                    <div class="support-card">
-
-                        <h3>
-                            <i class="fa-solid fa-phone"></i>
-                            ارتباط با پشتیبانی
-                        </h3>
-
-                        <p style="color:#94a3b8; line-height:2;">
-
-                            برای پیگیری سفارش یا دریافت راهنمایی،
-                            می‌توانید با شماره زیر تماس بگیرید.
-
-                        </p>
-
-
-                        <a
-                            href="tel:09381618740"
-                            class="support-phone">
-
-                            ۰۹۳۸۱۶۱۸۷۴۰
-
-                        </a>
+                        </div>
 
                     </div>
 
-                </div>
+                </main>
+
+            </div>
+
+        </section>
 
 
-            </main>
+        <footer>
+            © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
+        </footer>
 
-        </div>
-
-    </section>
-
-
-    <footer>
-        © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
-    </footer>
-
-</div>
+    </div>
 
 
-<!-- ================= FIREBASE ================= -->
+    <!-- FIREBASE -->
+    <script type="module">
 
-<script type="module">
+        import { initializeApp }
+            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-    import { initializeApp }
-        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-    import {
-        getAuth,
-        createUserWithEmailAndPassword,
-        signInWithEmailAndPassword,
-        signOut,
-        onAuthStateChanged
-    }
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged
+        }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    import {
-        getFirestore,
-        doc,
-        setDoc,
-        getDoc,
-        collection,
-        getDocs,
-        query,
-        orderBy
-    }
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            getDoc,
+            collection,
+            getDocs,
+            query,
+            orderBy
+        }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 
-    /* ================= FIREBASE CONFIG ================= */
+        /* FIREBASE CONFIG */
 
-    const firebaseConfig = {
-
-        apiKey:
-            "AIzaSyBIiroBz28UyX4sDj5d42hQfOpvWI3m7pZVM",
-
-        authDomain:
-            "taj-medical-panel.firebaseapp.com",
-
-        projectId:
-            "taj-medical-panel",
-
-        storageBucket:
-            "taj-medical-panel.firebasestorage.app",
-
-        messagingSenderId:
-            "691798594131",
-
-        appId:
-            "1:691798594131:web:95a52a15ab780058b9aca6",
-
-        measurementId:
-            "G-7DQ20FR1KM"
-
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIiroBz28UYsDj5d42hQfOpvWI3m7pZVM",
+            authDomain: "taj-medical-panel.firebaseapp.com",
+            projectId: "taj-medical-panel",
+            storageBucket: "taj-medical-panel.firebasestorage.app",
+            messagingSenderId: "691798594131",
+            appId: "1:691798594131:web:95a52a15ab780058b9aca6",
+            measurementId: "G-7DQ20FR1KM"
+        };
 
 
-    const app =
-        initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig);
 
-    const auth =
-        getAuth(app);
+        const auth = getAuth(app);
 
-    const db =
-        getFirestore(app);
+        const db = getFirestore(app);
 
 
-    /* ================= CART ================= */
+        /* CART */
 
-    const CART_KEY =
-        "taj_medical_cart";
+        const CART_KEY = "taj_medical_cart";
 
 
-    function getCart() {
+        function getCart() {
 
-        try {
+            try {
 
-            const cart =
-                JSON.parse(
-                    localStorage.getItem(CART_KEY)
-                );
+                const cart =
+                    JSON.parse(
+                        localStorage.getItem(CART_KEY)
+                    );
 
-            return Array.isArray(cart)
-                ? cart
-                : [];
+                return Array.isArray(cart) ? cart : [];
 
-        } catch (error) {
+            } catch (error) {
 
-            console.error(error);
+                console.error(error);
 
-            return [];
+                return [];
+
+            }
 
         }
 
-    }
 
+        function saveCart(cart) {
 
-    function saveCart(cart) {
-
-        localStorage.setItem(
-            CART_KEY,
-            JSON.stringify(cart)
-        );
-
-        renderCart();
-
-    }
-
-
-    function formatPrice(price) {
-
-        return Number(price || 0)
-            .toLocaleString("fa-IR");
-
-    }
-
-
-    function escapeHtml(value) {
-
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-
-    }
-
-
-    function renderCart() {
-
-        const cart =
-            getCart();
-
-
-        const container =
-            document.getElementById(
-                "cart-items"
+            localStorage.setItem(
+                CART_KEY,
+                JSON.stringify(cart)
             );
 
-        const empty =
-            document.getElementById(
-                "cart-empty"
-            );
-
-        const summary =
-            document.getElementById(
-                "cart-summary"
-            );
-
-        const totalElement =
-            document.getElementById(
-                "cart-total"
-            );
-
-        const cartCount =
-            document.getElementById(
-                "cart-count"
-            );
-
-        const headerCount =
-            document.getElementById(
-                "header-cart-count"
-            );
-
-
-        if (!container)
-            return;
-
-
-        let totalQuantity = 0;
-
-        let totalPrice = 0;
-
-
-        cart.forEach(item => {
-
-            const quantity =
-                Number(item.quantity) || 1;
-
-            const price =
-                Number(item.price) || 0;
-
-
-            totalQuantity +=
-                quantity;
-
-            totalPrice +=
-                price * quantity;
-
-        });
-
-
-        if (cartCount) {
-
-            cartCount.textContent =
-                totalQuantity.toLocaleString("fa-IR");
+            renderCart();
 
         }
 
 
-        if (headerCount) {
+        function formatPrice(price) {
 
-            headerCount.textContent =
-                totalQuantity.toLocaleString("fa-IR");
-
-        }
-
-
-        if (!cart.length) {
-
-            container.innerHTML = "";
-
-            empty.style.display =
-                "block";
-
-            summary.style.display =
-                "none";
-
-            return;
+            return Number(price || 0)
+                .toLocaleString("fa-IR");
 
         }
 
 
-        empty.style.display =
-            "none";
+        function renderCart() {
 
-        summary.style.display =
-            "block";
+            const cart = getCart();
+
+            const container =
+                document.getElementById("cart-items");
+
+            const empty =
+                document.getElementById("cart-empty");
+
+            const summary =
+                document.getElementById("cart-summary");
+
+            const totalElement =
+                document.getElementById("cart-total");
+
+            const cartCount =
+                document.getElementById("cart-count");
+
+            const headerCount =
+                document.getElementById("header-cart-count");
 
 
-        container.innerHTML =
-            cart.map(
-                (item, index) => {
+            if (!container) return;
+
+
+            let totalQuantity = 0;
+            let totalPrice = 0;
+
+
+            cart.forEach(item => {
+
+                const quantity =
+                    Number(item.quantity) || 1;
+
+                const price =
+                    Number(item.price) || 0;
+
+                totalQuantity += quantity;
+
+                totalPrice += price * quantity;
+
+            });
+
+
+            if (cartCount) {
+
+                cartCount.textContent =
+                    totalQuantity.toLocaleString("fa-IR");
+
+            }
+
+
+            if (headerCount) {
+
+                headerCount.textContent =
+                    totalQuantity.toLocaleString("fa-IR");
+
+            }
+
+
+            if (!cart.length) {
+
+                container.innerHTML = "";
+
+                empty.style.display = "block";
+
+                summary.style.display = "none";
+
+                return;
+
+            }
+
+
+            empty.style.display = "none";
+
+            summary.style.display = "block";
+
+
+            container.innerHTML =
+                cart.map((item, index) => {
 
                     const title =
                         item.name ||
                         item.title ||
                         "محصول";
 
-
                     const price =
                         Number(item.price) || 0;
-
 
                     const quantity =
                         Number(item.quantity) || 1;
@@ -1681,17 +1378,13 @@
                                 ${
                                     image
                                     ?
-                                    `
-                                    <img
+                                    `<img
                                         src="${escapeHtml(image)}"
                                         alt="${escapeHtml(title)}"
-                                        onerror="this.style.display='none';"
-                                    >
-                                    `
+                                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-box\\'></i>';"
+                                    >`
                                     :
-                                    `
-                                    <i class="fa-solid fa-box"></i>
-                                    `
+                                    `<i class="fa-solid fa-box"></i>`
                                 }
 
                             </div>
@@ -1734,7 +1427,8 @@
 
                             <button
                                 class="remove-cart-btn"
-                                onclick="removeFromCart(${index})">
+                                onclick="removeFromCart(${index})"
+                                title="حذف">
 
                                 <i class="fa-solid fa-trash"></i>
 
@@ -1744,397 +1438,384 @@
 
                     `;
 
+                }).join("");
+
+
+            totalElement.textContent =
+                formatPrice(totalPrice) + " تومان";
+
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        window.changeQuantity =
+            function(index, change) {
+
+                const cart = getCart();
+
+                if (!cart[index]) return;
+
+
+                cart[index].quantity =
+                    (Number(cart[index].quantity) || 1)
+                    + change;
+
+
+                if (cart[index].quantity <= 0) {
+
+                    cart.splice(index, 1);
+
                 }
-            ).join("");
 
 
-        totalElement.textContent =
-            formatPrice(totalPrice) +
-            " تومان";
+                saveCart(cart);
 
-    }
+            };
 
 
-    window.changeQuantity =
-        function(index, change) {
+        window.removeFromCart =
+            function(index) {
 
-            const cart =
-                getCart();
+                const cart = getCart();
 
-
-            if (!cart[index])
-                return;
+                if (!cart[index]) return;
 
 
-            cart[index].quantity =
-                (Number(
-                    cart[index].quantity
-                ) || 1) + change;
+                cart.splice(index, 1);
+
+                saveCart(cart);
+
+            };
 
 
-            if (
-                cart[index].quantity <= 0
-            ) {
+        window.clearCart =
+            function() {
 
-                cart.splice(
-                    index,
-                    1
-                );
-
-            }
+                if (!getCart().length) return;
 
 
-            saveCart(cart);
-
-        };
-
-
-    window.removeFromCart =
-        function(index) {
-
-            const cart =
-                getCart();
+                const confirmed =
+                    confirm(
+                        "آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟"
+                    );
 
 
-            if (!cart[index])
-                return;
+                if (!confirmed) return;
 
 
-            cart.splice(
-                index,
-                1
-            );
+                localStorage.removeItem(CART_KEY);
+
+                renderCart();
+
+            };
 
 
-            saveCart(cart);
+        /* SUBMIT ORDER */
 
-        };
+        window.submitCart =
+            async function() {
 
+                const cart = getCart();
 
-    window.clearCart =
-        function() {
+                if (!cart.length) {
 
-            if (!getCart().length)
-                return;
+                    alert(
+                        "سبد خرید شما خالی است."
+                    );
 
+                    return;
 
-            if (
-                !confirm(
-                    "آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟"
-                )
-            ) {
-
-                return;
-
-            }
+                }
 
 
-            localStorage.removeItem(
-                CART_KEY
-            );
+                const user =
+                    auth.currentUser;
 
 
-            renderCart();
+                if (!user) {
 
-        };
+                    alert(
+                        "لطفاً ابتدا وارد حساب کاربری خود شوید."
+                    );
 
+                    return;
 
-    /* ================= SUBMIT ORDER ================= */
-
-    window.submitCart =
-        async function() {
-
-            const cart =
-                getCart();
+                }
 
 
-            if (!cart.length) {
+                const total =
+                    cart.reduce(
+                        (sum, item) => {
 
-                alert(
-                    "سبد خرید شما خالی است."
-                );
+                            const price =
+                                Number(item.price) || 0;
 
-                return;
+                            const quantity =
+                                Number(item.quantity) || 1;
 
-            }
+                            return sum +
+                                price * quantity;
 
+                        },
+                        0
+                    );
+
+
+                const orderId =
+                    "order_" +
+                    Date.now();
+
+
+                const order = {
+
+                    orderId: orderId,
+
+                    items:
+                        cart.map(item => ({
+
+                            id: item.id || "",
+
+                            name:
+                                item.name ||
+                                item.title ||
+                                "محصول",
+
+                            title:
+                                item.title ||
+                                item.name ||
+                                "محصول",
+
+                            price:
+                                Number(item.price) || 0,
+
+                            quantity:
+                                Number(item.quantity) || 1,
+
+                            image:
+                                item.image || ""
+
+                        })),
+
+                    total: total,
+
+                    status: "active",
+
+                    statusText:
+                        "در انتظار بررسی",
+
+                    createdAt:
+                        new Date().toISOString()
+
+                };
+
+
+                try {
+
+                    /* ذخیره سفارش در Firebase */
+
+                    await setDoc(
+                        doc(
+                            db,
+                            "users",
+                            user.uid,
+                            "orders",
+                            orderId
+                        ),
+                        order
+                    );
+
+
+                    /* خالی کردن سبد */
+
+                    localStorage.removeItem(
+                        CART_KEY
+                    );
+
+
+                    renderCart();
+
+
+                    /* دوباره سفارشات را بخوان */
+
+                    await loadActiveOrders();
+
+
+                    /* رفتن به سفارشات فعال */
+
+                    const activeMenu =
+                        document.querySelector(
+                            ".menu-item"
+                        );
+
+
+                    switchDashboardTab(
+                        "active",
+                        activeMenu
+                    );
+
+
+                    alert(
+                        "سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد."
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Order error:",
+                        error
+                    );
+
+
+                    alert(
+                        "ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید."
+                    );
+
+                }
+
+            };
+
+
+        /* LOAD ACTIVE ORDERS */
+
+        async function loadActiveOrders() {
 
             const user =
                 auth.currentUser;
 
 
-            if (!user) {
-
-                alert(
-                    "لطفاً ابتدا وارد حساب کاربری خود شوید."
-                );
-
-                return;
-
-            }
+            if (!user) return;
 
 
-            const total =
-                cart.reduce(
-                    (sum, item) => {
-
-                        const price =
-                            Number(item.price) || 0;
-
-                        const quantity =
-                            Number(item.quantity) || 1;
-
-                        return sum +
-                            price * quantity;
-
-                    },
-                    0
+            const container =
+                document.getElementById(
+                    "active-orders"
                 );
 
 
-            const orderId =
-                "order_" +
-                Date.now();
-
-
-            const order = {
-
-                orderId: orderId,
-
-                items:
-                    cart.map(item => ({
-
-                        id:
-                            item.id || "",
-
-                        name:
-                            item.name ||
-                            item.title ||
-                            "محصول",
-
-                        title:
-                            item.title ||
-                            item.name ||
-                            "محصول",
-
-                        price:
-                            Number(item.price) || 0,
-
-                        quantity:
-                            Number(item.quantity) || 1,
-
-                        image:
-                            item.image || ""
-
-                    })),
-
-                total:
-                    total,
-
-                status:
-                    "active",
-
-                statusText:
-                    "در انتظار بررسی",
-
-                createdAt:
-                    new Date().toISOString()
-
-            };
+            if (!container) return;
 
 
             try {
 
-                await setDoc(
-                    doc(
+                const ordersRef =
+                    collection(
                         db,
                         "users",
                         user.uid,
-                        "orders",
-                        orderId
-                    ),
-                    order
-                );
-
-
-                localStorage.removeItem(
-                    CART_KEY
-                );
-
-
-                renderCart();
-
-
-                await loadActiveOrders();
-
-
-                const activeMenu =
-                    document.getElementById(
-                        "active-menu-item"
+                        "orders"
                     );
 
 
-                switchDashboardTab(
-                    "active",
-                    activeMenu
-                );
+                const q =
+                    query(
+                        ordersRef,
+                        orderBy(
+                            "createdAt",
+                            "desc"
+                        )
+                    );
 
 
-                alert(
-                    "سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد."
-                );
+                const snapshot =
+                    await getDocs(q);
 
 
-            } catch (error) {
-
-                console.error(
-                    "Order error:",
-                    error
-                );
+                const activeOrders = [];
 
 
-                alert(
-                    "ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید."
-                );
+                snapshot.forEach(
+                    docSnap => {
 
-            }
-
-        };
+                        const order =
+                            docSnap.data();
 
 
-    /* ================= ACTIVE ORDERS ================= */
+                        if (
+                            order.status ===
+                            "active"
+                        ) {
 
-    async function loadActiveOrders() {
+                            activeOrders.push({
 
-        const user =
-            auth.currentUser;
+                                id:
+                                    docSnap.id,
 
+                                ...order
 
-        if (!user)
-            return;
+                            });
 
-
-        const container =
-            document.getElementById(
-                "active-orders"
-            );
-
-
-        if (!container)
-            return;
-
-
-        try {
-
-            const ordersRef =
-                collection(
-                    db,
-                    "users",
-                    user.uid,
-                    "orders"
-                );
-
-
-            const q =
-                query(
-                    ordersRef,
-                    orderBy(
-                        "createdAt",
-                        "desc"
-                    )
-                );
-
-
-            const snapshot =
-                await getDocs(q);
-
-
-            const activeOrders = [];
-
-
-            snapshot.forEach(
-                docSnap => {
-
-                    const order =
-                        docSnap.data();
-
-
-                    if (
-                        order.status ===
-                        "active"
-                    ) {
-
-                        activeOrders.push({
-
-                            id:
-                                docSnap.id,
-
-                            ...order
-
-                        });
+                        }
 
                     }
+                );
+
+
+                if (!activeOrders.length) {
+
+                    container.innerHTML = `
+
+                        <div class="empty-state">
+
+                            <i class="fa-solid fa-box-open"></i>
+
+                            <p>
+                                در حال حاضر سفارش فعالی ندارید.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                    return;
 
                 }
-            );
 
 
-            if (!activeOrders.length) {
+                container.innerHTML =
+                    activeOrders
+                        .map(order => {
 
-                container.innerHTML = `
-
-                    <div class="empty-state">
-
-                        <i class="fa-solid fa-box-open"></i>
-
-                        <p>
-                            در حال حاضر سفارش فعالی ندارید.
-                        </p>
-
-                    </div>
-
-                `;
-
-                return;
-
-            }
-
-
-            container.innerHTML =
-                activeOrders
-                    .map(order => {
-
-                        const date =
-                            order.createdAt
-                            ?
-                            new Date(
+                            const date =
                                 order.createdAt
-                            ).toLocaleDateString(
-                                "fa-IR"
-                            )
-                            :
-                            "نامشخص";
+                                ?
+                                new Date(
+                                    order.createdAt
+                                ).toLocaleDateString(
+                                    "fa-IR"
+                                )
+                                :
+                                "نامشخص";
 
 
-                        const items =
-                            Array.isArray(
+                            const items =
+                                Array.isArray(
+                                    order.items
+                                )
+                                ?
                                 order.items
-                            )
-                            ?
-                            order.items
-                            :
-                            [];
+                                :
+                                [];
 
 
-                        const itemsHtml =
-                            items
-                                .map(item => {
+                            const itemsHtml =
+                                items.map(item => {
 
                                     const price =
                                         Number(
                                             item.price
                                         ) || 0;
-
 
                                     const quantity =
                                         Number(
@@ -2185,212 +1866,208 @@
 
                                     `;
 
-                                })
-                                .join("");
+                                }).join("");
 
 
-                        return `
+                            return `
 
-                            <div class="active-order-card">
+                                <div class="active-order-card">
 
-                                <div class="order-header">
+                                    <div class="order-header">
 
-                                    <div>
+                                        <div>
 
-                                        <strong>
-                                            سفارش ${escapeHtml(order.id)}
-                                        </strong>
+                                            <strong>
+                                                سفارش ${escapeHtml(order.id)}
+                                            </strong>
 
-                                        <small>
-                                            تاریخ ثبت:
-                                            ${date}
-                                        </small>
+                                            <small>
+                                                تاریخ ثبت:
+                                                ${date}
+                                            </small>
+
+                                        </div>
+
+
+                                        <span class="order-status">
+
+                                            ${
+                                                escapeHtml(
+                                                    order.statusText ||
+                                                    "در انتظار بررسی"
+                                                )
+                                            }
+
+                                        </span>
 
                                     </div>
 
 
-                                    <span class="order-status">
+                                    <div class="order-products">
 
-                                        ${
-                                            escapeHtml(
-                                                order.statusText ||
-                                                "در انتظار بررسی"
-                                            )
-                                        }
+                                        ${itemsHtml}
 
-                                    </span>
-
-                                </div>
+                                    </div>
 
 
-                                <div class="order-products">
+                                    <div class="order-footer">
 
-                                    ${itemsHtml}
+                                        <span>
+                                            مبلغ کل
+                                        </span>
 
-                                </div>
+                                        <strong>
 
+                                            ${
+                                                Number(
+                                                    order.total || 0
+                                                ).toLocaleString(
+                                                    "fa-IR"
+                                                )
+                                            }
 
-                                <div class="order-footer">
+                                            تومان
 
-                                    <span>
-                                        مبلغ کل
-                                    </span>
+                                        </strong>
 
-                                    <strong>
-
-                                        ${
-                                            Number(
-                                                order.total || 0
-                                            ).toLocaleString(
-                                                "fa-IR"
-                                            )
-                                        }
-
-                                        تومان
-
-                                    </strong>
+                                    </div>
 
                                 </div>
 
-                            </div>
+                            `;
 
-                        `;
-
-                    })
-                    .join("");
+                        })
+                        .join("");
 
 
-        } catch (error) {
+            } catch (error) {
 
-            console.error(
-                "Load active orders error:",
-                error
-            );
-
-
-            container.innerHTML = `
-
-                <div class="empty-state">
-
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <p>
-                        دریافت سفارشات با خطا مواجه شد.
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-
-    /* ================= PAST ORDERS ================= */
-
-    async function loadPastOrders() {
-
-        const user =
-            auth.currentUser;
-
-
-        if (!user)
-            return;
-
-
-        const container =
-            document.getElementById(
-                "past-orders"
-            );
-
-
-        if (!container)
-            return;
-
-
-        try {
-
-            const ordersRef =
-                collection(
-                    db,
-                    "users",
-                    user.uid,
-                    "orders"
+                console.error(
+                    "Load active orders error:",
+                    error
                 );
 
-
-            const q =
-                query(
-                    ordersRef,
-                    orderBy(
-                        "createdAt",
-                        "desc"
-                    )
-                );
-
-
-            const snapshot =
-                await getDocs(q);
-
-
-            const pastOrders = [];
-
-
-            snapshot.forEach(
-                docSnap => {
-
-                    const order =
-                        docSnap.data();
-
-
-                    if (
-                        order.status ===
-                        "completed"
-                        ||
-                        order.status ===
-                        "cancelled"
-                    ) {
-
-                        pastOrders.push({
-
-                            id:
-                                docSnap.id,
-
-                            ...order
-
-                        });
-
-                    }
-
-                }
-            );
-
-
-            if (!pastOrders.length) {
 
                 container.innerHTML = `
 
                     <div class="empty-state">
 
-                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
 
                         <p>
-                            هنوز سفارش گذشته‌ای ندارید.
+                            دریافت سفارشات با خطا مواجه شد.
                         </p>
 
                     </div>
 
                 `;
 
-                return;
-
             }
 
+        }
 
-            container.innerHTML =
-                pastOrders
-                    .map(order => {
+
+        /* PAST ORDERS */
+
+        async function loadPastOrders() {
+
+            const user =
+                auth.currentUser;
+
+
+            if (!user) return;
+
+
+            const container =
+                document.getElementById(
+                    "past-orders"
+                );
+
+
+            if (!container) return;
+
+
+            try {
+
+                const ordersRef =
+                    collection(
+                        db,
+                        "users",
+                        user.uid,
+                        "orders"
+                    );
+
+
+                const q =
+                    query(
+                        ordersRef,
+                        orderBy(
+                            "createdAt",
+                            "desc"
+                        )
+                    );
+
+
+                const snapshot =
+                    await getDocs(q);
+
+
+                const pastOrders = [];
+
+
+                snapshot.forEach(
+                    docSnap => {
+
+                        const order =
+                            docSnap.data();
+
+
+                        if (
+                            order.status ===
+                            "completed"
+                            ||
+                            order.status ===
+                            "cancelled"
+                        ) {
+
+                            pastOrders.push({
+
+                                id:
+                                    docSnap.id,
+
+                                ...order
+
+                            });
+
+                        }
+
+                    }
+                );
+
+
+                if (!pastOrders.length) {
+
+                    container.innerHTML = `
+
+                        <div class="empty-state">
+
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+
+                            <p>
+                                هنوز سفارش گذشته‌ای ندارید.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                container.innerHTML =
+                    pastOrders.map(order => {
 
                         const date =
                             order.createdAt
@@ -2463,571 +2140,556 @@
 
                         `;
 
-                    })
-                    .join("");
+                    }).join("");
 
 
-        } catch (error) {
+            } catch (error) {
 
-            console.error(
-                "Past orders error:",
-                error
-            );
+                console.error(
+                    "Past orders error:",
+                    error
+                );
+
+            }
 
         }
 
-    }
+
+        /* DASHBOARD TABS */
+
+        window.switchDashboardTab =
+            function(tab, element) {
+
+                document
+                    .querySelectorAll(".tab-content")
+                    .forEach(item => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    });
 
 
-    /* ================= TABS ================= */
+                document
+                    .querySelectorAll(".menu-item")
+                    .forEach(item => {
 
-    window.switchDashboardTab =
-        function(tab, element) {
+                        item.classList.remove(
+                            "active"
+                        );
 
-            document
-                .querySelectorAll(
-                    ".tab-content"
-                )
-                .forEach(item => {
+                    });
 
-                    item.classList.remove(
+
+                const target =
+                    document.getElementById(
+                        "tab-" + tab
+                    );
+
+
+                if (target) {
+
+                    target.classList.add(
                         "active"
                     );
-
-                });
-
-
-            document
-                .querySelectorAll(
-                    ".menu-item"
-                )
-                .forEach(item => {
-
-                    item.classList.remove(
-                        "active"
-                    );
-
-                });
-
-
-            const target =
-                document.getElementById(
-                    "tab-" + tab
-                );
-
-
-            if (target) {
-
-                target.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            if (element) {
-
-                element.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            if (tab === "active") {
-
-                loadActiveOrders();
-
-            }
-
-
-            if (tab === "past") {
-
-                loadPastOrders();
-
-            }
-
-
-            if (tab === "cart") {
-
-                renderCart();
-
-            }
-
-        };
-
-
-    /* ================= OPEN CART ================= */
-
-    window.openCart =
-        function() {
-
-            const cartMenu =
-                document.getElementById(
-                    "cart-menu-item"
-                );
-
-
-            switchDashboardTab(
-                "cart",
-                cartMenu
-            );
-
-
-            window.scrollTo({
-
-                top: 0,
-
-                behavior: "smooth"
-
-            });
-
-        };
-
-
-    /* ================= AUTH SWITCH ================= */
-
-    window.showRegister =
-        function() {
-
-            document.getElementById(
-                "login-form"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "register-form"
-            ).style.display =
-                "block";
-
-        };
-
-
-    window.showLogin =
-        function() {
-
-            document.getElementById(
-                "register-form"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "login-form"
-            ).style.display =
-                "block";
-
-        };
-
-
-    /* ================= LOGIN ================= */
-
-    document
-        .getElementById(
-            "login-form-element"
-        )
-        .addEventListener(
-            "submit",
-            async event => {
-
-                event.preventDefault();
-
-
-                const email =
-                    document.getElementById(
-                        "login-email"
-                    ).value.trim();
-
-
-                const password =
-                    document.getElementById(
-                        "login-password"
-                    ).value;
-
-
-                try {
-
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-
-                } catch (error) {
-
-                    console.error(error);
-
-
-                    let message =
-                        "ورود انجام نشد.";
-
-
-                    if (
-                        error.code ===
-                        "auth/invalid-credential"
-                    ) {
-
-                        message =
-                            "ایمیل یا رمز عبور اشتباه است.";
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "auth/user-not-found"
-                    ) {
-
-                        message =
-                            "حساب کاربری پیدا نشد.";
-
-                    }
-
-
-                    alert(message);
 
                 }
 
-            }
-        );
+
+                if (element) {
+
+                    element.classList.add(
+                        "active"
+                    );
+
+                }
 
 
-    /* ================= REGISTER ================= */
+                if (tab === "active") {
 
-    document
-        .getElementById(
-            "register-form-element"
-        )
-        .addEventListener(
-            "submit",
-            async event => {
+                    loadActiveOrders();
 
-                event.preventDefault();
+                }
 
 
-                const fname =
+                if (tab === "past") {
+
+                    loadPastOrders();
+
+                }
+
+
+                if (tab === "cart") {
+
+                    renderCart();
+
+                }
+
+            };
+
+
+        /* OPEN CART */
+
+        window.openCart =
+            function() {
+
+                const cartMenu =
                     document.getElementById(
-                        "reg-firstname"
-                    ).value.trim();
+                        "cart-menu-item"
+                    );
 
 
-                const lname =
-                    document.getElementById(
-                        "reg-lastname"
-                    ).value.trim();
+                switchDashboardTab(
+                    "cart",
+                    cartMenu
+                );
 
 
-                const phone =
-                    document.getElementById(
-                        "reg-phone"
-                    ).value.trim();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            };
 
 
-                const email =
-                    document.getElementById(
-                        "reg-email"
-                    ).value.trim();
+        /* AUTH FORMS */
+
+        window.showRegister =
+            function() {
+
+                document.getElementById(
+                    "login-form"
+                ).style.display = "none";
 
 
-                const province =
-                    document.getElementById(
-                        "reg-province"
-                    ).value.trim();
+                document.getElementById(
+                    "register-form"
+                ).style.display = "block";
+
+            };
 
 
-                const city =
-                    document.getElementById(
-                        "reg-city"
-                    ).value.trim();
+        window.showLogin =
+            function() {
+
+                document.getElementById(
+                    "register-form"
+                ).style.display = "none";
 
 
-                const address =
-                    document.getElementById(
-                        "reg-address"
-                    ).value.trim();
+                document.getElementById(
+                    "login-form"
+                ).style.display = "block";
+
+            };
 
 
-                const password =
-                    document.getElementById(
-                        "reg-password"
-                    ).value;
+        /* LOGIN */
+
+        document
+            .getElementById(
+                "login-form-element"
+            )
+            .addEventListener(
+                "submit",
+                async event => {
+
+                    event.preventDefault();
 
 
-                try {
+                    const email =
+                        document.getElementById(
+                            "login-email"
+                        ).value.trim();
 
-                    const credential =
-                        await createUserWithEmailAndPassword(
+
+                    const password =
+                        document.getElementById(
+                            "login-password"
+                        ).value;
+
+
+                    try {
+
+                        await signInWithEmailAndPassword(
                             auth,
                             email,
                             password
                         );
 
 
-                    const user =
-                        credential.user;
+                    } catch (error) {
+
+                        console.error(error);
 
 
-                    await setDoc(
-                        doc(
-                            db,
-                            "users",
-                            user.uid
-                        ),
-                        {
+                        let message =
+                            "ورود انجام نشد.";
 
-                            firstName:
-                                fname,
 
-                            lastName:
-                                lname,
+                        if (
+                            error.code ===
+                            "auth/invalid-credential"
+                        ) {
 
-                            fullName:
-                                fname +
-                                " " +
-                                lname,
-
-                            phone:
-                                phone,
-
-                            email:
-                                email,
-
-                            province:
-                                province,
-
-                            city:
-                                city,
-
-                            address:
-                                address,
-
-                            createdAt:
-                                new Date()
-                                    .toISOString()
+                            message =
+                                "ایمیل یا رمز عبور اشتباه است.";
 
                         }
-                    );
 
 
-                    alert(
-                        "حساب کاربری شما با موفقیت ایجاد شد."
-                    );
+                        if (
+                            error.code ===
+                            "auth/user-not-found"
+                        ) {
 
+                            message =
+                                "حساب کاربری پیدا نشد.";
+
+                        }
+
+
+                        alert(message);
+
+                    }
+
+                }
+            );
+
+
+        /* REGISTER */
+
+        document
+            .getElementById(
+                "register-form-element"
+            )
+            .addEventListener(
+                "submit",
+                async event => {
+
+                    event.preventDefault();
+
+
+                    const fname =
+                        document.getElementById(
+                            "reg-firstname"
+                        ).value.trim();
+
+
+                    const lname =
+                        document.getElementById(
+                            "reg-lastname"
+                        ).value.trim();
+
+
+                    const phone =
+                        document.getElementById(
+                            "reg-phone"
+                        ).value.trim();
+
+
+                    const email =
+                        document.getElementById(
+                            "reg-email"
+                        ).value.trim();
+
+
+                    const province =
+                        document.getElementById(
+                            "reg-province"
+                        ).value.trim();
+
+
+                    const city =
+                        document.getElementById(
+                            "reg-city"
+                        ).value.trim();
+
+
+                    const address =
+                        document.getElementById(
+                            "reg-address"
+                        ).value.trim();
+
+
+                    const password =
+                        document.getElementById(
+                            "reg-password"
+                        ).value;
+
+
+                    try {
+
+                        const credential =
+                            await createUserWithEmailAndPassword(
+                                auth,
+                                email,
+                                password
+                            );
+
+
+                        const user =
+                            credential.user;
+
+
+                        await setDoc(
+                            doc(
+                                db,
+                                "users",
+                                user.uid
+                            ),
+                            {
+
+                                firstName: fname,
+
+                                lastName: lname,
+
+                                fullName:
+                                    fname +
+                                    " " +
+                                    lname,
+
+                                phone: phone,
+
+                                email: email,
+
+                                province:
+                                    province,
+
+                                city: city,
+
+                                address:
+                                    address,
+
+                                createdAt:
+                                    new Date()
+                                        .toISOString()
+
+                            }
+                        );
+
+
+                        alert(
+                            "حساب کاربری شما با موفقیت ایجاد شد."
+                        );
+
+
+                    } catch (error) {
+
+                        console.error(error);
+
+
+                        let message =
+                            "ثبت نام انجام نشد.";
+
+
+                        if (
+                            error.code ===
+                            "auth/email-already-in-use"
+                        ) {
+
+                            message =
+                                "این ایمیل قبلاً ثبت شده است.";
+
+                        }
+
+
+                        if (
+                            error.code ===
+                            "auth/weak-password"
+                        ) {
+
+                            message =
+                                "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+
+                        }
+
+
+                        alert(message);
+
+                    }
+
+                }
+            );
+
+
+        /* LOGOUT */
+
+        window.logoutUser =
+            async function() {
+
+                try {
+
+                    await signOut(auth);
 
                 } catch (error) {
 
                     console.error(error);
 
+                }
 
-                    let message =
-                        "ثبت نام انجام نشد.";
+            };
 
 
-                    if (
-                        error.code ===
-                        "auth/email-already-in-use"
-                    ) {
+        /* USER AUTH STATE */
 
-                        message =
-                            "این ایمیل قبلاً ثبت شده است.";
+        onAuthStateChanged(
+            auth,
+            async user => {
+
+                const authSection =
+                    document.getElementById(
+                        "auth-section"
+                    );
+
+
+                const dashboard =
+                    document.getElementById(
+                        "dashboard"
+                    );
+
+
+                if (user) {
+
+                    authSection.style.display =
+                        "none";
+
+
+                    dashboard.style.display =
+                        "block";
+
+
+                    /* اطلاعات کاربر */
+
+                    try {
+
+                        const userDoc =
+                            await getDoc(
+                                doc(
+                                    db,
+                                    "users",
+                                    user.uid
+                                )
+                            );
+
+
+                        if (userDoc.exists()) {
+
+                            const data =
+                                userDoc.data();
+
+
+                            document.getElementById(
+                                "profile-name"
+                            ).textContent =
+                                data.fullName || "-";
+
+
+                            document.getElementById(
+                                "profile-phone"
+                            ).textContent =
+                                data.phone || "-";
+
+
+                            document.getElementById(
+                                "profile-email"
+                            ).textContent =
+                                data.email ||
+                                user.email ||
+                                "-";
+
+
+                            document.getElementById(
+                                "profile-province"
+                            ).textContent =
+                                data.province || "-";
+
+
+                            document.getElementById(
+                                "profile-city"
+                            ).textContent =
+                                data.city || "-";
+
+
+                            document.getElementById(
+                                "profile-address"
+                            ).textContent =
+                                data.address || "-";
+
+                        } else {
+
+                            document.getElementById(
+                                "profile-email"
+                            ).textContent =
+                                user.email || "-";
+
+                        }
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "Profile error:",
+                            error
+                        );
 
                     }
 
 
+                    /* سبد */
+
+                    renderCart();
+
+
+                    /* سفارشات */
+
+                    await loadActiveOrders();
+
+                    await loadPastOrders();
+
+
+                    /* اگر از products.html آمده */
+
+                    const params =
+                        new URLSearchParams(
+                            window.location.search
+                        );
+
+
                     if (
-                        error.code ===
-                        "auth/weak-password"
+                        params.get("cart") === "1"
                     ) {
 
-                        message =
-                            "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+                        setTimeout(
+                            () => {
+
+                                openCart();
+
+                            },
+                            300
+                        );
 
                     }
 
 
-                    alert(message);
+                } else {
+
+                    authSection.style.display =
+                        "block";
+
+
+                    dashboard.style.display =
+                        "none";
 
                 }
 
             }
         );
 
-
-    /* ================= LOGOUT ================= */
-
-    window.logoutUser =
-        async function() {
-
-            try {
-
-                await signOut(auth);
-
-            } catch (error) {
-
-                console.error(error);
-
-            }
-
-        };
-
-
-    /* ================= AUTH STATE ================= */
-
-    onAuthStateChanged(
-        auth,
-        async user => {
-
-            const authSection =
-                document.getElementById(
-                    "auth-section"
-                );
-
-
-            const dashboard =
-                document.getElementById(
-                    "dashboard"
-                );
-
-
-            if (user) {
-
-                authSection.style.display =
-                    "none";
-
-
-                dashboard.style.display =
-                    "block";
-
-
-                /* اطلاعات کاربر */
-
-                try {
-
-                    const userDoc =
-                        await getDoc(
-                            doc(
-                                db,
-                                "users",
-                                user.uid
-                            )
-                        );
-
-
-                    if (userDoc.exists()) {
-
-                        const data =
-                            userDoc.data();
-
-
-                        document.getElementById(
-                            "profile-name"
-                        ).textContent =
-                            data.fullName || "-";
-
-
-                        document.getElementById(
-                            "profile-phone"
-                        ).textContent =
-                            data.phone || "-";
-
-
-                        document.getElementById(
-                            "profile-email"
-                        ).textContent =
-                            data.email ||
-                            user.email ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-province"
-                        ).textContent =
-                            data.province || "-";
-
-
-                        document.getElementById(
-                            "profile-city"
-                        ).textContent =
-                            data.city || "-";
-
-
-                        document.getElementById(
-                            "profile-address"
-                        ).textContent =
-                            data.address || "-";
-
-                    } else {
-
-                        document.getElementById(
-                            "profile-email"
-                        ).textContent =
-                            user.email || "-";
-
-                    }
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Profile error:",
-                        error
-                    );
-
-                }
-
-
-                /* سبد خرید */
-
-                renderCart();
-
-
-                /* سفارشات */
-
-                await loadActiveOrders();
-
-                await loadPastOrders();
-
-
-                /* اگر از products.html?cart=1 آمده */
-
-                const params =
-                    new URLSearchParams(
-                        window.location.search
-                    );
-
-
-                if (
-                    params.get("cart") === "1"
-                ) {
-
-                    setTimeout(
-                        () => {
-
-                            openCart();
-
-                        },
-                        300
-                    );
-
-                }
-
-            } else {
-
-                authSection.style.display =
-                    "block";
-
-
-                dashboard.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
-</script>
+    </script>
 
 </body>
+
 </html>
