@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محصولات</title>
+    <title>پنل کاربری</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
             --card-bg: #1e293b;
             --accent-teal: #14b8a6;
             --text-color: #f8fafc;
@@ -18,103 +19,241 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .product-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
+        /* سایدبار */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            padding: 20px;
         }
-        .product-title {
+        .sidebar-title {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .product-price {
+            margin-bottom: 30px;
+            text-align: center;
             color: var(--accent-teal);
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
         }
-        .buy-btn {
+        .menu-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
+            transition: 0.2s;
+        }
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(20, 184, 166, 0.1);
+            color: var(--accent-teal);
+        }
+        /* محتوای اصلی */
+        .content-panel {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+        }
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #475569;
+        }
+        .submit-btn {
             background-color: var(--accent-teal);
             color: #0f172a;
             border: none;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            width: 100%;
+            margin-top: 15px;
             transition: 0.2s;
         }
-        .buy-btn:hover {
+        .submit-btn:hover {
             opacity: 0.9;
+        }
+        .order-card {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>محصولات ما</h1>
-        <div class="products-grid">
-            <!-- محصول اول -->
-            <div class="product-card">
-                <div>
-                    <div class="product-title">دوره جامع پایتون</div>
-                    <div class="product-price">۱,۲۰۰,۰۰۰ تومان</div>
-                </div>
-                <button class="buy-btn" onclick="buyProduct('دوره جامع پایتون', '۱,۲۰۰,۰۰۰ تومان')">خرید محصول</button>
-            </div>
-
-            <!-- محصول دوم -->
-            <div class="product-card">
-                <div>
-                    <div class="product-title">آموزش فرانت‌اند پیشرفته</div>
-                    <div class="product-price">۹50,000 تومان</div>
-                </div>
-                <button class="buy-btn" onclick="buyProduct('آموزش فرانت‌اند پیشرفته', '۹50,000 تومان')">خرید محصول</button>
-            </div>
-
-            <!-- محصول سوم -->
-            <div class="product-card">
-                <div>
-                    <div class="product-title">مشاوره تخصصی هوش مصنوعی</div>
-                    <div class="product-price">۵۰۰,۰۰۰ تومان</div>
-                </div>
-                <button class="buy-btn" onclick="buyProduct('مشاوره تخصصی هوش مصنوعی', '۵۰۰,۰۰۰ تومان')">خرید محصول</button>
-            </div>
+    <!-- سایدبار -->
+    <div class="sidebar">
+        <div class="sidebar-title">پنل کاربری</div>
+        <div class="menu-item active" onclick="switchTab('cart', this)">
+            <i class="fa-solid fa-basket-shopping"></i> سبد خرید
+        </div>
+        <div class="menu-item" onclick="switchTab('active-orders', this)">
+            <i class="fa-solid fa-clock-rotate-left"></i> سفارشات فعال
+        </div>
+        <div class="menu-item" onclick="window.location.href='products.html'">
+            <i class="fa-solid fa-store"></i> بازگشت به محصولات
         </div>
     </div>
 
+    <!-- محتوای پنل -->
+    <div class="content-panel">
+        
+        <!-- تب سبد خرید -->
+        <div id="tab-cart" class="tab-content active">
+            <div class="panel-title">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <span>سبد خرید شما</span>
+            </div>
+            <div id="cart-content-box">
+                <!-- محتوا پویا بارگذاری می‌شود -->
+            </div>
+        </div>
+
+        <!-- تب سفارشات فعال -->
+        <div id="tab-active-orders" class="tab-content">
+            <div class="panel-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>سفارشات فعال و در حال پردازش</span>
+            </div>
+            <div id="active-orders-box">
+                <!-- سفارشات فعال اینجا نمایش داده می‌شوند -->
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        function buyProduct(title, price) {
-            // ذخیره محصول به عنوان سبد خرید موقت
-            const cartItem = {
-                title: title,
-                price: price,
-                date: new Date().toLocaleDateString('fa-IR')
-            };
-            localStorage.setItem('user_cart', JSON.stringify(cartItem));
-            
-            // انتقال کاربر به پنل کاربری
-            window.location.href = 'panel.html';
+        // مدیریت سوییچ بین تب‌ها
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(item => {
+                if(!item.getAttribute('onclick').includes('products.html')) {
+                    item.classList.remove('active');
+                }
+            });
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if(element) element.classList.add('active');
+
+            if (tabId === 'cart') loadCart();
+            if (tabId === 'active-orders') loadActiveOrders();
         }
+
+        // بارگذاری سبد خرید
+        function loadCart() {
+            const cartBox = document.getElementById('cart-content-box');
+            const savedCart = localStorage.getItem('user_cart');
+
+            if (!savedCart) {
+                cartBox.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <p>سبد خرید شما خالی است.</p>
+                    </div>`;
+                return;
+            }
+
+            const item = JSON.parse(savedCart);
+            cartBox.innerHTML = `
+                <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: bold; font-size: 16px; color: #fff;">${item.title}</span>
+                        <span style="color: var(--accent-teal); font-weight: bold;">${item.price}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #94a3b8;">تاریخ افزودن: ${item.date}</div>
+                    <button onclick="confirmCheckout()" class="submit-btn">
+                        <i class="fa-solid fa-check"></i> تایید نهایی و انتقال به سفارشات فعال
+                    </button>
+                </div>`;
+        }
+
+        // تایید نهایی سبد خرید و انتقال به سفارشات فعال
+        function confirmCheckout() {
+            const savedCart = localStorage.getItem('user_cart');
+            if (!savedCart) return;
+
+            const item = JSON.parse(savedCart);
+            
+            // افزودن به لیست سفارشات فعال
+            let activeOrders = JSON.parse(localStorage.getItem('active_orders')) || [];
+            activeOrders.push(item);
+            localStorage.setItem('active_orders', JSON.stringify(activeOrders));
+
+            // حذف از سبد خرید
+            localStorage.removeItem('user_cart');
+
+            alert('سفارش شما با موفقیت تایید و به لیست سفارشات فعال منتقل شد.');
+            
+            // هدایت به تب سفارشات فعال
+            switchTab('active-orders', document.querySelectorAll('.menu-item')[1]);
+        }
+
+        // بارگذاری سفارشات فعال
+        function loadActiveOrders() {
+            const activeBox = document.getElementById('active-orders-box');
+            const activeOrders = JSON.parse(localStorage.getItem('active_orders')) || [];
+
+            if (activeOrders.length === 0) {
+                activeBox.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>در حال حاضر هیچ سفارش فعالی برای شما ثبت نشده است.</p>
+                    </div>`;
+                return;
+            }
+
+            let html = `<div style="display: flex; flex-direction: column; gap: 12px;">`;
+            activeOrders.forEach(ord => {
+                html += `
+                    <div class="order-card">
+                        <div>
+                            <div style="font-weight: bold; color: #fff; margin-bottom: 5px;">${ord.title}</div>
+                            <div style="font-size: 12px; color: var(--accent-teal);">${ord.price}</div>
+                        </div>
+                        <span style="background: rgba(20, 184, 166, 0.2); color: var(--accent-teal); padding: 4px 10px; border-radius: 6px; font-size: 12px;">در حال پردازش</span>
+                    </div>`;
+            });
+            html += `</div>`;
+            activeBox.innerHTML = html;
+        }
+
+        // اجرای اولیه هنگام لود صفحه پنل
+        loadCart();
     </script>
 </body>
 </html>
