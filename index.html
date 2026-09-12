@@ -75,6 +75,14 @@
             margin-top: 2px;
         }
 
+        /* Container for Avatar and Registration Button on Left Side */
+        .doctor-profile-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
         .doctor-avatar-left {
             width: 55px;
             height: 55px;
@@ -82,6 +90,26 @@
             border: 2px solid var(--accent-teal);
             object-fit: cover;
             box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
+        }
+
+        .header-register-btn {
+            background: var(--accent-teal);
+            color: #0f172a;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.4);
+        }
+
+        .header-register-btn:hover {
+            background: #2dd4bf;
+            transform: translateY(-1px);
         }
 
         /* --- Navigation & Links --- */
@@ -383,14 +411,20 @@
                     <span>پزشک و پژوهشگر</span>
                 </div>
             </div>
-            <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
+            
+            <!-- عکس سمت چپ به همراه دکمه ثبت‌نام زیر آن -->
+            <div class="doctor-profile-left">
+                <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
+                <a href="#register-section" class="header-register-btn">
+                    <i class="fa-solid fa-user-plus"></i> دکمه ثبت‌نام
+                </a>
+            </div>
         </div>
     </header>
 
     <!-- Social & Navigation Links -->
     <div class="nav-links">
         <a href="products.html" class="nav-btn nav-btn-highlight"><i class="fa-solid fa-boxes-stacked"></i> لیست محصولات پزشکی</a>
-        <a href="#register-section" class="nav-btn"><i class="fa-solid fa-user-plus"></i> ثبت‌نام اولیه</a>
         <a href="https://instagram.com/mst_2102" target="_blank" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
         <a href="https://t.me/mst_2102" target="_blank" class="nav-btn"><i class="fa-paper-plane"></i> تلگرام</a>
         <a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره من / بیوگرافی</a>
@@ -454,7 +488,7 @@
             </div>
             <h3 class="post-title">فرم ثبت‌نام و درخواست مشاوره / خدمات</h3>
             <p class="post-content">
-                جهت ثبت‌نام و دریافت آخرین اخبار یا هماهنگی خدمات پزشکی و تجهیزات، لطفاً اطلاعات خود را فرم زیر وارد نمایید:
+                جهت ثبت‌نام و دریافت آخرین اخبار یا هماهنگی خدمات پزشکی و تجهیزات، لطفاً اطلاعات خود را در فرم زیر وارد نمایید:
             </p>
             
             <form class="register-form" action="#" method="POST" onsubmit="alert('اطلاعات شما با موفقیت ثبت شد.'); return false;">
@@ -474,7 +508,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="service-type"><div class="fa-solid fa-list-check"></div> نوع درخواست:</label>
+                    <label for="service-type"><i class="fa-solid fa-list-check"></i> نوع درخواست:</label>
                     <select id="service-type" name="service-type">
                         <option value="consultation">مشاوره عمومی / پزشکی</option>
                         <option value="products">خرید و استعلام تجهیزات پزشکی</option>
