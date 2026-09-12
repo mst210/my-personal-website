@@ -168,7 +168,7 @@
         }
 
         .ticker-box:hover .ticker-text {
-            animation-play-state: paused; /* هنگام رفتن موس روی متن، حرکت متوقف می‌شود */
+            animation-play-state: paused;
         }
 
         /* --- Main Content --- */
@@ -273,6 +273,14 @@
             text-decoration: underline;
         }
 
+        /* --- Aparat Player Style --- */
+        .aparat-container {
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         /* --- Footer --- */
         footer {
             text-align: center;
@@ -310,11 +318,11 @@
     <div class="ticker-wrap">
         <div class="ticker-box">
             <div class="ticker-badge">
-                <i class="fa-solid fa-bullhorn"></i>
+                <i class="fa-solid fa-bullhorn"></i> اطلاعیه
             </div>
             <div class="ticker-content-container">
                 <div class="ticker-text">
-                    به درگاه رسمی دکتر محمدصادق تاج خوش آمدید
+                    برای دریافت مطالب کنکوری به پشتیبانی پیام دهید
                 </div>
             </div>
         </div>
@@ -352,11 +360,23 @@
             <p class="post-content">
                 جهت ارتباط با کارشناس فروش محصولات و دریافت لیست موجودی با شماره زیر تماس بگیرید:
                 <br>
-                <a href="tel:09381618740" class="phone-link"><i class="fa-solid fa-phone"></i> ۰۹۱۰۳۹۰۹۹۷۱</a>
+                <a href="tel:09381618740" class="phone-link"><i class="fa-solid fa-phone"></i> ۰۹۳۸۱۶۱۸۷۴۰</a>
             </p>
             <a href="tel:09381618740" class="post-link-btn">
                 <i class="fa-solid fa-headset"></i> تماس با کارشناس فروش
             </a>
+        </article>
+
+        <!-- Post 3 (Aparat Video) -->
+        <article class="medical-post">
+            <div class="post-header">
+                <span class="post-tag">ویدیو آموزشی</span>
+                <span class="post-date">آپارات</span>
+            </div>
+            <h3 class="post-title">ویدیو آموزشی</h3>
+            <div class="aparat-container">
+                <div id="95351019158"><script type="text/JavaScript" src="https://www.aparat.com/embed/aap8np9?data[rnddiv]=95351019158&data[responsive]=yes"></script></div>
+            </div>
         </article>
     </main>
 
