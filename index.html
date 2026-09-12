@@ -3,116 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دکتر محمدصادق تاج</title>
+    <title>فروشگاه آنلاین - طرح دیجی‌کالا</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --digi-red: #ef4056;
+            --digi-red-dark: #d7384c;
+            --bg-gray: #f0f0f1;
+            --text-main: #3f4044;
+            --text-muted: #81858b;
+            --border-color: #e0e0e2;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: Tahoma, 'Segoe UI', Arial, sans-serif;
         }
+
         body {
-            font-family: Tahoma, Vazir, sans-serif;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: #ffffff;
-            min-height: 100vh;
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
+
+        /* --- Header Styles --- */
+        header {
+            background-color: #fff;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            max-width: 1366px;
+            margin: 0 auto;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        .logo {
+            color: var(--digi-red);
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .search-box {
+            background-color: #f0f0f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            width: 500px;
+            max-width: 100%;
+        }
+
+        .search-box i {
+            color: var(--text-muted);
+            margin-left: 10px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .auth-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .cart-btn {
+            position: relative;
+            padding: 8px 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 18px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--digi-red);
+            color: white;
+            font-size: 10px;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 1.2s ease-out forwards;
-        }
-        h1 {
-            font-size: 26px;
-            margin-bottom: 10px;
-            color: #ffffff;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.3s forwards;
-        }
-        p {
-            color: #e2e8f0;
-            font-size: 15px;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
-        }
-        .heart-text {
-            color: #ff4d6d;
-            font-weight: bold;
-            display: block;
-            margin-top: 6px;
-            direction: ltr;
-            animation: pulse 1.5s infinite alternate;
-        }
-        .links a {
-            display: block;
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 14px 20px;
-            margin-bottom: 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0;
-        }
-        .links a:nth-child(1) { animation: fadeInUp 0.8s ease-out 0.9s forwards; }
-        .links a:nth-child(2) { animation: fadeInUp 0.8s ease-out 1.1s forwards; }
-        .links a:nth-child(3) { 
-            animation: fadeInUp 0.8s ease-out 1.3s forwards; 
-            background: rgba(56, 189, 248, 0.25);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-        .links a:hover {
-            background: #ffffff;
-            color: #0f172a;
-            transform: translateY(-3px);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        /* Navbar Menu */
+        .nav-bar {
+            border-top: 1px solid var(--border-color);
+            padding: 8px 24px;
+            max-width: 1366px;
+            margin: 0 auto;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 24px;
         }
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.05); }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--digi-red);
+        }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 1366px;
+            margin: 16px auto;
+            padding: 0 16px;
+        }
+
+        /* Banner Slider */
+        .slider-container {
+            background-color: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 300px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ef4056 0%, #ab162b 100%);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* Amazing Deals Box (پیشنهاد شگفت‌انگیز) */
+        .amazing-container {
+            background-color: var(--digi-red);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .amazing-title {
+            color: white;
+            text-align: center;
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .amazing-title i {
+            font-size: 48px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 12px;
+            min-width: 220px;
+            max-width: 220px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 320px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 140px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .product-title {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-main);
+            height: 40px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-price-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .discount-badge {
+            background-color: var(--digi-red);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .old-price {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            text-align: left;
+        }
+
+        /* Banner Grid */
+        .banners-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .banner-item {
+            background-color: #fff;
+            border-radius: 12px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-muted);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1px dashed var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .banners-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .search-box {
+                width: 200px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>دکتر محمدصادق تاج</h1>
-        <p>
-            به وب‌سایت شخصی من خوش آمدید.
-            <span class="heart-text"> </span>
-        </p>
-
-        <div class="links">
-            <a href="https://instagram.com/mst_2102" target="_blank">اینستاگرام</a>
-            <a href="https://t.me/mst_2102" target="_blank">تلگرام</a>
-            <a href="about.html">📖 درباره من / بیوگرافی</a>
+    <!-- Header Section -->
+    <header>
+        <div class="top-header">
+            <div class="header-right">
+                <a href="#" class="logo">DIGIKALA</a>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="جستجو در دیجی‌کالا...">
+                </div>
+            </div>
+            <div class="header-left">
+                <a href="#" class="auth-btn">
+                    <i class="fa-regular fa-user"></i>
+                    ورود | ثبت‌نام
+                </a>
+                <a href="#" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge">۰</span>
+                </a>
+            </div>
         </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="#"><i class="fa-solid fa-bars"></i> دسته‌بندی کالاها</a></li>
+                <li><a href="#"><i class="fa-solid fa-percent"></i> شگفت‌انگیزها</a></li>
+                <li><a href="#"><i class="fa-solid fa-fire"></i> پرفروش‌ترین‌ها</a></li>
+                <li><a href="#"><i class="fa-solid fa-gift"></i> کارت هدیه</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Body Container -->
+    <div class="container">
+        
+        <!-- Main Slider -->
+        <div class="slider-container">
+            <div class="slide">
+                بنر اصلی تبلیغاتی (جایگاه اسلایدر)
+            </div>
+        </div>
+
+        <!-- Amazing Deals Section -->
+        <div class="amazing-container">
+            <div class="amazing-title">
+                <i class="fa-solid fa-box-open"></i>
+                <h2>شگفت<br>انگیز</h2>
+            </div>
+
+            <!-- Product 1 -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
+                <div class="product-title">گوشی موبایل سامسونگ مدل Galaxy A54 ظرفیت 256 گیگابایت</div>
+                <div>
+                    <div class="old-price">18,500,000</div>
+                    <div class="product-price-box">
+                        <span class="discount-badge">12%</span>
+                        <span class="price">16,280,000 تومان</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
+                <div class="product-title">هدفون بی‌سیم اپل مدل AirPods Pro 2</div>
+                <div>
+                    <div class="old-price">10,200,000</div>
+                    <div class="product-price-box">
+                        <span class="discount-badge">8%</span>
+                        <span class="price">9,380,000 تومان</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
+                <div class="product-title">ساعت هوشمند شیائومی مدل Redmi Watch 3 Active</div>
+                <div>
+                    <div class="old-price">2,100,000</div>
+                    <div class="product-price-box">
+                        <span class="discount-badge">25%</span>
+                        <span class="price">1,575,000 تومان</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/150" alt="Product" class="product-img">
+                <div class="product-title">لپ‌تاپ 15.3 اینچی اپل مدل MacBook Air MQKW3 2023</div>
+                <div>
+                    <div class="old-price">68,000,000</div>
+                    <div class="product-price-box">
+                        <span class="discount-badge">5%</span>
+                        <span class="price">64,600,000 تومان</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Banners Grid -->
+        <div class="banners-grid">
+            <div class="banner-item">بنر تبلیغاتی ۱</div>
+            <div class="banner-item">بنر تبلیغاتی ۲</div>
+            <div class="banner-item">بنر تبلیغاتی ۳</div>
+            <div class="banner-item">بنر تبلیغاتی ۴</div>
+        </div>
+
     </div>
 
 </body>
