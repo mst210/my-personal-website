@@ -51,7 +51,6 @@
             justify-content: space-between;
         }
 
-        /* Top Right: Doctor Name & Title */
         .doctor-info-right {
             display: flex;
             align-items: center;
@@ -76,7 +75,6 @@
             margin-top: 2px;
         }
 
-        /* Top Left: Doctor Avatar/Profile Picture */
         .doctor-avatar-left {
             width: 55px;
             height: 55px;
@@ -115,7 +113,7 @@
             transform: translateY(-2px);
         }
 
-        /* --- Main Content (Medical Posts) --- */
+        /* --- Main Content --- */
         main {
             flex-grow: 1;
             max-width: 800px;
@@ -135,7 +133,6 @@
             padding-bottom: 10px;
         }
 
-        /* Medical Post Cards */
         .medical-post {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -233,7 +230,6 @@
     <!-- Header Section -->
     <header>
         <div class="header-container">
-            <!-- Top Right: Name & Title -->
             <div class="doctor-info-right">
                 <i class="fa-solid fa-user-doctor"></i>
                 <div class="doctor-title-box">
@@ -241,8 +237,6 @@
                     <span>پزشک و پژوهشگر</span>
                 </div>
             </div>
-
-            <!-- Top Left: Doctor Avatar -->
             <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
         </div>
     </header>
@@ -254,14 +248,14 @@
         <a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره من / بیوگرافی</a>
     </div>
 
-    <!-- Main Content Area: Medical Articles -->
+    <!-- Main Content Area -->
     <main>
         <div class="section-title">
             <i class="fa-notes-medical"></i>
             <h2>اطلاعات و خدمات پزشکی</h2>
         </div>
 
-        <!-- Post 1: IRIMC Main Portal Link -->
+        <!-- Post 1 -->
         <article class="medical-post">
             <div class="post-header">
                 <span class="post-tag">سازمان رسمی</span>
@@ -276,7 +270,7 @@
             </a>
         </article>
 
-        <!-- Post 2: Medical Products Sales -->
+        <!-- Post 2 -->
         <article class="medical-post">
             <div class="post-header">
                 <span class="post-tag">تجهیزات و خدمات</span>
@@ -298,6 +292,11 @@
     <footer>
         © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
     </footer>
+
+    <!-- Goftino Online Support Widget -->
+    <script type="text/javascript">
+      !function(){var i="JHf7dD",d=document,g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.type="text/javascript",g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}();
+    </script>
 
 </body>
 </html>
