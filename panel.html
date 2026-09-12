@@ -222,7 +222,7 @@
 
     <footer>© کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.</footer>
 
-    <!-- Firebase Script (Modular SDK) -->
+    <!-- Firebase SDK Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -233,22 +233,22 @@
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // تنظیمات فایربیس اختصاصی پروژه شما
+        // تنظیمات فایربیس اختصاصی جدید شما
         const firebaseConfig = {
-            apiKey: "AIzaSyBiiroBz28UYSdj5d42hQfOpvWI3m7pZVM",
+            apiKey: "AIzaSyBIiroBz28UYsDj5d42hQfOpvWI3m7pZVM",
             authDomain: "taj-medical-panel.firebaseapp.com",
             projectId: "taj-medical-panel",
             storageBucket: "taj-medical-panel.firebasestorage.app",
             messagingSenderId: "691798594131",
-            appId: "1:691798594131:web:b05b00257322b198b9aca6",
-            measurementId: "G-G69NTEEMN0"
+            appId: "1:691798594131:web:95a52a15ab780058b9aca6",
+            measurementId: "G-7DQ20FR1KM"
         };
 
-        // راه‌اندازی
+        // راه‌اندازی فایربیس
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // مدیریت تب‌ها
+        // مدیریت تب‌های ورود و ثبت‌نام
         const btnTabLogin = document.getElementById('btn-tab-login');
         const btnTabRegister = document.getElementById('btn-tab-register');
         const loginForm = document.getElementById('login-form');
@@ -271,7 +271,7 @@
             authError.innerText = '';
         });
 
-        // ثبت‌نام
+        // ثبت‌نام کاربر جدید
         regForm.addEventListener('submit', (e) => {
             e.preventDefault();
             authError.innerText = 'در حال ارتباط با سرور...';
@@ -287,7 +287,7 @@
                 });
         });
 
-        // ورود
+        // ورود کاربر
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             authError.innerText = 'در حال بررسی اطلاعات...';
@@ -303,12 +303,12 @@
                 });
         });
 
-        // خروج
+        // خروج از حساب
         document.getElementById('logout-btn').addEventListener('click', () => {
             signOut(auth);
         });
 
-        // وضعیت لاگین
+        // بررسی وضعیت لاگین بودن کاربر
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth-section').style.display = 'none';
