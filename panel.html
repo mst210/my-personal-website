@@ -180,6 +180,21 @@
             line-height: 1.5;
         }
 
+        /* VPN Warning Notice */
+        .vpn-notice {
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            border-radius: 8px;
+            color: #facc15;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.6;
+        }
+
         /* --- Dashboard Layout --- */
         .dashboard-grid {
             display: grid;
@@ -314,7 +329,7 @@
         .profile-label { color: #94a3b8; }
         .profile-value { color: #ffffff; font-weight: bold; }
 
-        footer { text-align: center; padding: 20px; font-size: 13px; color: #64748b; margin-top: auto; }
+        <footer>© کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.</footer>
     </style>
 </head>
 <body>
@@ -397,6 +412,12 @@
                 </form>
 
                 <div id="auth-message"></div>
+
+                <!-- هشدار روشن کردن VPN -->
+                <div class="vpn-notice">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 15px; flex-shrink: 0;"></i>
+                    <span>هنگام استفاده از پنل شخصی، وی‌پی‌ان خود را روشن کنید.</span>
+                </div>
             </div>
         </div>
 
