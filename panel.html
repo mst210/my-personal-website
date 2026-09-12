@@ -4,17 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پنل کاربری - دکتر محمدصادق تاج</title>
-    <!-- استایل‌های صفحه (می‌توانید فایل CSS خود را اینجا قرار دهید یا داخل تگ استایل بنویسید) -->
     <style>
-        body { font-family: Tahoma, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; direction: rtl; }
-        .dashboard-container { display: flex; height: 100vh; }
-        .sidebar { width: 250px; background: #2c3e50; color: #fff; padding: 20px; }
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { background: #3498db; color: #fff; border: none; padding: 10px 20px; cursor: pointer; }
-        button:hover { background: #2980b9; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            direction: rtl;
+            color: #333;
+        }
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+        /* منوی کناری */
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: #fff;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+            padding-bottom: 15px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .sidebar ul li:hover, .sidebar ul li.active {
+            background: #34495e;
+        }
+        /* محتوای اصلی */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: #f9fbfc;
+        }
+        .welcome-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .welcome-box h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #3498db;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            transition: background 0.3s;
+        }
+        #register-btn {
+            background: #27ae60;
+        }
+        #register-btn:hover {
+            background: #219653;
+        }
+        #login-btn {
+            background: #3498db;
+        }
+        #login-btn:hover {
+            background: #2980b9;
+        }
+        #error-msg {
+            margin-top: 15px;
+            font-size: 13px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -22,35 +135,42 @@
     <div class="dashboard-container">
         <!-- منوی کناری -->
         <div class="sidebar">
-            <h2>پنل کاربری</h2>
-            <ul>
-                <li>پروفایل</li>
-                <li>سفارش‌ها</li>
-                <li>خروج</li>
-            </ul>
+            <div>
+                <h2>پنل کاربری دکتر تاج</h2>
+                <ul>
+                    <li class="active">پروفایل</li>
+                    <li>سفارش‌های فعال</li>
+                    <li>سفارش‌های پیشین</li>
+                    <li>پشتیبانی</li>
+                </ul>
+            </div>
+            <div style="font-size: 12px; text-align: center; color: #95a5a6;">
+                سیستم مدیریت درمانگاه
+            </div>
         </div>
 
-        <!-- محتوای اصلی -->
+        <!-- محتوای اصلی صفحه -->
         <div class="main-content">
-            <h1>خوش آمدید</h1>
-            <div id="auth-section">
-                <h3>ثبت‌نام / ورود</h3>
+            <div class="welcome-box">
+                <h3>ورود / ثبت‌نام در پنل</h3>
                 <div class="form-group">
                     <label>ایمیل:</label>
                     <input type="email" id="email" placeholder="example@gmail.com">
                 </div>
                 <div class="form-group">
                     <label>رمز عبور:</label>
-                    <input type="password" id="password" placeholder="رمز عبور">
+                    <input type="password" id="password" placeholder="••••••••">
                 </div>
-                <button id="register-btn">ثبت‌نام</button>
-                <button id="login-btn">ورود</button>
-                <p id="error-msg" style="color: red;"></p>
+                <div class="btn-container">
+                    <button id="register-btn">ثبت‌نام</button>
+                    <button id="login-btn">ورود</button>
+                </div>
+                <p id="error-msg"></p>
             </div>
         </div>
     </div>
 
-    <!-- اسکریپت‌های اتصال به فایربیس و پروکسی -->
+    <!-- اسکریپت فایربیس و اتصال به پروکسی Cloudflare -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -72,45 +192,64 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // هدایت درخواست‌های احراز هویت به ورکر Cloudflare برای دور زدن تحریم بدون نیاز به VPN
+        // خط کلیدی برای عبور از تحریم فایربیس در ایران بدون نیاز به VPN
         auth.config.apiHost = "https://auth-proxy.mst-taj1383.workers.dev";
 
-        // منطق دکمه ثبت‌نام
+        const errorMsg = document.getElementById('error-msg');
+
+        // عملکرد دکمه ثبت‌نام
         document.getElementById('register-btn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-msg');
+
+            if (!email || !password) {
+                errorMsg.style.color = "orange";
+                errorMsg.textContent = "لطفاً ایمیل و رمز عبور را وارد کنید.";
+                return;
+            }
 
             try {
-                errorMsg.textContent = "در حال ارسال اطلاعات...";
+                errorMsg.style.color = "#3498db";
+                errorMsg.textContent = "در حال ارتباط با سرور...";
+                
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
-                // ذخیره اطلاعات تکمیلی در فایراستور
+                // ثبت اطلاعات اولیه در فایراستور
                 await setDoc(doc(db, "users", user.uid), {
                     email: email,
                     createdAt: new Date().toISOString()
                 });
 
-                alert("ثبت‌نام با موفقیت انجام شد!");
-                errorMsg.textContent = "";
+                errorMsg.style.color = "green";
+                errorMsg.textContent = "ثبت‌نام با موفقیت انجام شد!";
             } catch (error) {
+                errorMsg.style.color = "red";
                 errorMsg.textContent = "خطا: " + error.message;
             }
         });
 
-        // منطق دکمه ورود
+        // عملکرد دکمه ورود
         document.getElementById('login-btn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-msg');
+
+            if (!email || !password) {
+                errorMsg.style.color = "orange";
+                errorMsg.textContent = "لطفاً ایمیل و رمز عبور را وارد کنید.";
+                return;
+            }
 
             try {
+                errorMsg.style.color = "#3498db";
                 errorMsg.textContent = "در حال ورود...";
+                
                 await signInWithEmailAndPassword(auth, email, password);
-                alert("ورود با موفقیت انجام شد!");
-                errorMsg.textContent = "";
+                
+                errorMsg.style.color = "green";
+                errorMsg.textContent = "ورود با موفقیت انجام شد!";
             } catch (error) {
+                errorMsg.style.color = "red";
                 errorMsg.textContent = "خطا: " + error.message;
             }
         });
