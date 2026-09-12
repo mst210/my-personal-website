@@ -6,6 +6,8 @@
     <title>لیست محصولات پزشکی | دکتر محمدصادق تاج</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vazirmatn Font -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <style>
         :root {
             --primary-blue: #0284c7;
@@ -23,7 +25,7 @@
         }
 
         body {
-            font-family: Tahoma, 'Vazirmatn', sans-serif;
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             background-attachment: fixed;
             color: #ffffff;
@@ -87,6 +89,7 @@
             align-items: center;
             gap: 6px;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .back-btn:hover {
@@ -187,6 +190,7 @@
             cursor: pointer;
             border: none;
             width: 100%;
+            font-family: inherit;
         }
 
         .order-btn:hover {
@@ -245,16 +249,24 @@
         © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
     </footer>
 
-    <!-- Goftino Online Support Widget -->
-    <script type="text/javascript">
-      !function(){var i="JHf7dD",d=document,g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.type="text/javascript",g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}();
-    </script>
-
-    <!-- Script to Fetch Products from Google Sheets -->
+    <!-- Script to Fetch Products from Google Sheets and handle purchase -->
     <script>
         const SHEET_ID = '138i-vFOWfolwYGW7brhRAiHFjuVtpDU0sF2bHdyMYQg';
         const SHEET_TITLE = 'Sheet1';
         const FULL_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=' + SHEET_TITLE;
+
+        function buyProduct(title, price) {
+            // ذخیره اطلاعات محصول انتخابی در حافظه مرورگر برای ثبت سفارش در پنل کاربری
+            const productData = {
+                title: title,
+                price: price,
+                date: new Date().toLocaleDateString('fa-IR')
+            };
+            localStorage.setItem('pending_order', JSON.stringify(productData));
+            
+            // انتقال کاربر به صفحه پنل کاربری (نام فایل پنل را بر حسب پروژه خود تنظیم کنید، مثلاً panel.html)
+            window.location.href = 'panel.html';
+        }
 
         fetch(FULL_URL)
             .then(function(res) { return res.text(); })
@@ -285,8 +297,8 @@
                             '</div>' +
                             '<div>' +
                                 '<div class="product-price">' + formattedPrice + '</div>' +
-                                '<button onclick="if(window.Goftino){Goftino.open()}" class="order-btn">' +
-                                    '<i class="fa-solid fa-headset"></i> ثبت سفارش / مشاوره' +
+                                '<button onclick="buyProduct(\'' + title.replace(/'/g, "\\'") + '\', \'' + formattedPrice + '\')" class="order-btn">' +
+                                    '<i class="fa-solid fa-cart-shopping"></i> خرید محصول' +
                                 '</button>' +
                             '</div>' +
                         '</div>';
