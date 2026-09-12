@@ -75,14 +75,6 @@
             margin-top: 2px;
         }
 
-        /* Container for Avatar and Registration Button on Left Side */
-        .doctor-profile-left {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
         .doctor-avatar-left {
             width: 55px;
             height: 55px;
@@ -90,26 +82,6 @@
             border: 2px solid var(--accent-teal);
             object-fit: cover;
             box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
-        }
-
-        .header-register-btn {
-            background: var(--accent-teal);
-            color: #0f172a;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.4);
-        }
-
-        .header-register-btn:hover {
-            background: #2dd4bf;
-            transform: translateY(-1px);
         }
 
         /* --- Navigation & Links --- */
@@ -147,6 +119,12 @@
             background: rgba(20, 184, 166, 0.2);
             border-color: rgba(20, 184, 166, 0.5);
             color: #5eead4;
+        }
+
+        .nav-btn-panel {
+            background: rgba(2, 132, 199, 0.25);
+            border-color: rgba(56, 189, 248, 0.4);
+            color: #38bdf8;
         }
 
         /* --- Ticker / Running Subtitle Bar --- */
@@ -297,68 +275,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* --- Form Registration Styles --- */
-        .register-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-group label {
-            font-size: 13px;
-            color: #cbd5e1;
-        }
-
-        .form-group input, 
-        .form-group select, 
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: #ffffff;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, 
-        .form-group select:focus, 
-        .form-group textarea:focus {
-            border-color: var(--accent-teal);
-        }
-
-        .submit-btn {
-            background: var(--accent-teal);
-            color: #0f172a;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .submit-btn:hover {
-            background: #2dd4bf;
-            transform: translateY(-2px);
-        }
-
         /* --- Visitor Counter Box --- */
         .visitor-counter-box {
             max-width: 320px;
@@ -411,19 +327,13 @@
                     <span>پزشک و پژوهشگر</span>
                 </div>
             </div>
-            
-            <!-- عکس سمت چپ به همراه دکمه ثبت‌نام زیر آن -->
-            <div class="doctor-profile-left">
-                <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
-                <a href="#register-section" class="header-register-btn">
-                    <i class="fa-solid fa-user-plus"></i> ثبت‌نام
-                </a>
-            </div>
+            <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
         </div>
     </header>
 
     <!-- Social & Navigation Links -->
     <div class="nav-links">
+        <a href="panel.html" class="nav-btn nav-btn-panel"><i class="fa-solid fa-user-gear"></i> ورود / پنل شخصی</a>
         <a href="products.html" class="nav-btn nav-btn-highlight"><i class="fa-solid fa-boxes-stacked"></i> لیست محصولات پزشکی</a>
         <a href="https://instagram.com/mst_2102" target="_blank" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
         <a href="https://t.me/mst_2102" target="_blank" class="nav-btn"><i class="fa-paper-plane"></i> تلگرام</a>
@@ -480,49 +390,7 @@
             </a>
         </article>
 
-        <!-- Post 3 (Registration Form Card) -->
-        <article class="medical-post" id="register-section">
-            <div class="post-header">
-                <span class="post-tag">فرم ارتباطی</span>
-                <span class="post-date">ثبت‌نام</span>
-            </div>
-            <h3 class="post-title">فرم ثبت‌نام و درخواست مشاوره / خدمات</h3>
-            <p class="post-content">
-                جهت ثبت‌نام و دریافت آخرین اخبار یا هماهنگی خدمات پزشکی و تجهیزات، لطفاً اطلاعات خود را در فرم زیر وارد نمایید:
-            </p>
-            
-            <form class="register-form" action="#" method="POST" onsubmit="alert('اطلاعات شما با موفقیت ثبت شد.'); return false;">
-                <div class="form-group">
-                    <label for="fullname"><i class="fa-solid fa-user"></i> نام و نام خانوادگی:</label>
-                    <input type="text" id="fullname" name="fullname" placeholder="مثال: علی محمدی" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="mobile"><i class="fa-solid fa-mobile-screen"></i> شماره موبایل:</label>
-                    <input type="tel" id="mobile" name="mobile" placeholder="09123456789" required pattern="[0-9]{11}">
-                </div>
-
-                <div class="form-group">
-                    <label for="email"><i class="fa-solid fa-envelope"></i> ایمیل (اختیاری):</label>
-                    <input type="email" id="email" name="email" placeholder="example@mail.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="service-type"><i class="fa-solid fa-list-check"></i> نوع درخواست:</label>
-                    <select id="service-type" name="service-type">
-                        <option value="consultation">مشاوره عمومی / پزشکی</option>
-                        <option value="products">خرید و استعلام تجهیزات پزشکی</option>
-                        <option value="other">سایر موارد</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                    <i class="fa-solid fa-paper-plane"></i> ثبت اطلاعات
-                </button>
-            </form>
-        </article>
-
-        <!-- Post 4 (Aparat Video) -->
+        <!-- Post 3 (Aparat Video) -->
         <article class="medical-post" style="padding: 16px;">
             <div class="aparat-container">
                 <div id="95351019158"><script type="text/JavaScript" src="https://www.aparat.com/embed/aap8np9?data[rnddiv]=95351019158&data[responsive]=yes"></script></div>
