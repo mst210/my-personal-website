@@ -329,7 +329,7 @@
         .profile-label { color: #94a3b8; }
         .profile-value { color: #ffffff; font-weight: bold; }
 
-        <footer>© کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.</footer>
+        footer { text-align: center; padding: 20px; color: #64748b; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -433,7 +433,11 @@
                 </div>
                 
                 <ul class="menu-list">
-                    <li class="menu-item active" onclick="switchDashboardTab('active-orders', this)">
+                    <!-- اضافه شدن بخش سبد خرید بالاتر از همه -->
+                    <li class="menu-item active" onclick="switchDashboardTab('cart', this)">
+                        <i class="fa-solid fa-shopping-cart"></i> سبد خرید
+                    </li>
+                    <li class="menu-item" onclick="switchDashboardTab('active-orders', this)">
                         <i class="fa-solid fa-clock-rotate-left"></i> سفارشات فعال
                     </li>
                     <li class="menu-item" onclick="switchDashboardTab('past-orders', this)">
@@ -454,8 +458,20 @@
             <!-- محتوای سمت چپ -->
             <section class="content-panel">
                 
+                <!-- تب سبد خرید -->
+                <div id="tab-cart" class="tab-content active">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        <span>سبد خرید شما</span>
+                    </div>
+                    <div class="empty-state">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <p>سبد خرید شما در حال حاضر خالی است.</p>
+                    </div>
+                </div>
+
                 <!-- تب سفارشات فعال -->
-                <div id="tab-active-orders" class="tab-content active">
+                <div id="tab-active-orders" class="tab-content">
                     <div class="panel-title">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         <span>سفارشات فعال و در حال پردازش</span>
