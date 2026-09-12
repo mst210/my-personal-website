@@ -134,6 +134,7 @@
             font-size: 12px;
             margin-top: 10px;
             text-align: center;
+            line-height: 1.5;
         }
 
         .logout-btn {
@@ -167,8 +168,8 @@
         <!-- فرم ورود / ثبت‌نام -->
         <div id="auth-section" class="auth-card">
             <div class="auth-tabs">
-                <button class="tab-btn active" onclick="switchTab('login')">ورود</button>
-                <button class="tab-btn" onclick="switchTab('register')">ثبت‌نام</button>
+                <button class="tab-btn active" id="btn-tab-login">ورود</button>
+                <button class="tab-btn" id="btn-tab-register">ثبت‌نام</button>
             </div>
 
             <!-- فرم ورود -->
@@ -215,18 +216,24 @@
                 </p>
             </div>
 
-            <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> خروج از حساب</button>
+            <button id="logout-btn" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> خروج از حساب</button>
         </div>
     </main>
 
     <footer>© کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.</footer>
 
-    <!-- Firebase SDK Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <!-- Firebase Script (Modular SDK) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    <script>
-        // تنظیمات پروژه فایربیس اختصاصی شما
+        // تنظیمات فایربیس اختصاصی پروژه شما
         const firebaseConfig = {
             apiKey: "AIzaSyBiiroBz28UYSdj5d42hQfOpvWI3m7pZVM",
             authDomain: "taj-medical-panel.firebaseapp.com",
@@ -237,61 +244,72 @@
             measurementId: "G-G69NTEEMN0"
         };
 
-        // راه‌اندازی فایربیس
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        // راه‌اندازی
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        // مدیریت تب‌های ورود و ثبت‌نام
-        function switchTab(type) {
-            const loginForm = document.getElementById('login-form');
-            const regForm = document.getElementById('register-form');
-            const tabs = document.querySelectorAll('.tab-btn');
-            document.getElementById('auth-error').innerText = '';
+        // مدیریت تب‌ها
+        const btnTabLogin = document.getElementById('btn-tab-login');
+        const btnTabRegister = document.getElementById('btn-tab-register');
+        const loginForm = document.getElementById('login-form');
+        const regForm = document.getElementById('register-form');
+        const authError = document.getElementById('auth-error');
 
-            if (type === 'login') {
-                loginForm.style.display = 'block';
-                regForm.style.display = 'none';
-                tabs[0].classList.add('active');
-                tabs[1].classList.remove('active');
-            } else {
-                loginForm.style.display = 'none';
-                regForm.style.display = 'block';
-                tabs[1].classList.add('active');
-                tabs[0].classList.remove('active');
-            }
-        }
+        btnTabLogin.addEventListener('click', () => {
+            loginForm.style.display = 'block';
+            regForm.style.display = 'none';
+            btnTabLogin.classList.add('active');
+            btnTabRegister.classList.remove('active');
+            authError.innerText = '';
+        });
 
-        // ثبت‌نام کاربر جدید
-        document.getElementById('register-form').addEventListener('submit', (e) => {
+        btnTabRegister.addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            regForm.style.display = 'block';
+            btnTabRegister.classList.add('active');
+            btnTabLogin.classList.remove('active');
+            authError.innerText = '';
+        });
+
+        // ثبت‌نام
+        regForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            authError.innerText = 'در حال ارتباط با سرور...';
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-password').value;
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .catch(error => {
-                    document.getElementById('auth-error').innerText = 'خطا در ثبت‌نام: ' + error.message;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    authError.innerText = '';
+                })
+                .catch((error) => {
+                    authError.innerText = 'خطا در ثبت‌نام: ' + error.message;
                 });
         });
 
-        // ورود کاربر
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        // ورود
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            authError.innerText = 'در حال بررسی اطلاعات...';
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            auth.signInWithEmailAndPassword(email, password)
-                .catch(error => {
-                    document.getElementById('auth-error').innerText = 'ایمیل یا رمز عبور اشتباه است.';
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    authError.innerText = '';
+                })
+                .catch((error) => {
+                    authError.innerText = 'ایمیل یا رمز عبور اشتباه است.';
                 });
         });
 
-        // خروج از حساب
-        function logout() {
-            auth.signOut();
-        }
+        // خروج
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth);
+        });
 
-        // بررسی وضعیت لاگین بودن کاربر
-        auth.onAuthStateChanged(user => {
+        // وضعیت لاگین
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('dashboard-section').style.display = 'block';
