@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل کاربری | دکتر محمدصادق تاج</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0284c7;
+            --accent-teal: #14b8a6;
+            --dark-bg: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Tahoma, 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        main {
+            flex-grow: 1;
+            max-width: 450px;
+            width: 90%;
+            margin: 40px auto;
+        }
+
+        .auth-card, .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-teal);
+            border-bottom: 2px solid var(--accent-teal);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(15, 23, 42, 0.6);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover { background: #0369a1; }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover { background: #dc2626; }
+
+        footer { text-align: center; padding: 20px; font-size: 13px; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <h2 style="font-size: 18px; color: var(--accent-teal);"><i class="fa-solid fa-user-gear"></i> پنل کاربری</h2>
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> صفحه اصلی</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- فرم ورود / ثبت‌نام -->
+        <div id="auth-section" class="auth-card">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">ورود</button>
+                <button class="tab-btn" onclick="switchTab('register')">ثبت‌نام</button>
+            </div>
+
+            <!-- فرم ورود -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label>ایمیل</label>
+                    <input type="email" id="login-email" required placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور</label>
+                    <input type="password" id="login-password" required placeholder="******">
+                </div>
+                <button type="submit" class="submit-btn">ورود به پنل</button>
+            </form>
+
+            <!-- فرم ثبت‌نام -->
+            <form id="register-form" style="display: none;">
+                <div class="form-group">
+                    <label>ایمیل</label>
+                    <input type="email" id="reg-email" required placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور (حداقل ۶ کاراکتر)</label>
+                    <input type="password" id="reg-password" required placeholder="******">
+                </div>
+                <button type="submit" class="submit-btn">ایجاد حساب کاربری</button>
+            </form>
+
+            <div id="auth-error" class="error-msg"></div>
+        </div>
+
+        <!-- داشبورد شخصی کاربر (پس از ورود) -->
+        <div id="dashboard-section" class="dashboard-card" style="display: none;">
+            <h3 style="color: var(--accent-teal); margin-bottom: 10px;">خوش آمدید!</h3>
+            <p style="font-size: 14px; color: #cbd5e1;">شما با موفقیت وارد پنل شخصی خود شده‌اید.</p>
+            <p style="font-size: 13px; color: #38bdf8; margin-top: 8px; direction: ltr; text-align: right;" id="user-email-display"></p>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <h4 style="font-size: 15px; margin-bottom: 8px;"><i class="fa-solid fa-folder-open" style="color: var(--accent-teal);"></i> اطلاعات و پرونده شخصی</h4>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
+                    در این بخش می‌توانید به پیگیری سفارشات، استعلام و خدمات اختصاصی خود بپردازید.
+                </p>
+            </div>
+
+            <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> خروج از حساب</button>
+        </div>
+    </main>
+
+    <footer>© کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.</footer>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // تنظیمات پروژه فایربیس اختصاصی شما
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiiroBz28UYSdj5d42hQfOpvWI3m7pZVM",
+            authDomain: "taj-medical-panel.firebaseapp.com",
+            projectId: "taj-medical-panel",
+            storageBucket: "taj-medical-panel.firebasestorage.app",
+            messagingSenderId: "691798594131",
+            appId: "1:691798594131:web:b05b00257322b198b9aca6",
+            measurementId: "G-G69NTEEMN0"
+        };
+
+        // راه‌اندازی فایربیس
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // مدیریت تب‌های ورود و ثبت‌نام
+        function switchTab(type) {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const tabs = document.querySelectorAll('.tab-btn');
+            document.getElementById('auth-error').innerText = '';
+
+            if (type === 'login') {
+                loginForm.style.display = 'block';
+                regForm.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                regForm.style.display = 'block';
+                tabs[1].classList.add('active');
+                tabs[0].classList.remove('active');
+            }
+        }
+
+        // ثبت‌نام کاربر جدید
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .catch(error => {
+                    document.getElementById('auth-error').innerText = 'خطا در ثبت‌نام: ' + error.message;
+                });
+        });
+
+        // ورود کاربر
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .catch(error => {
+                    document.getElementById('auth-error').innerText = 'ایمیل یا رمز عبور اشتباه است.';
+                });
+        });
+
+        // خروج از حساب
+        function logout() {
+            auth.signOut();
+        }
+
+        // بررسی وضعیت لاگین بودن کاربر
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('user-email-display').innerText = 'حساب فعلی: ' + user.email;
+            } else {
+                document.getElementById('auth-section').style.display = 'block';
+                document.getElementById('dashboard-section').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
