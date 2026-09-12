@@ -113,6 +113,64 @@
             transform: translateY(-2px);
         }
 
+        /* --- Ticker / Running Subtitle Bar --- */
+        .ticker-wrap {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .ticker-box {
+            background: rgba(20, 184, 166, 0.15);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .ticker-badge {
+            background: var(--accent-teal);
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            margin-left: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ticker-content-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .ticker-text {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: marquee 14s linear infinite;
+            color: #38bdf8;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(100%, 0, 0); }
+        }
+
+        .ticker-box:hover .ticker-text {
+            animation-play-state: paused; /* هنگام رفتن موس روی متن، حرکت متوقف می‌شود */
+        }
+
         /* --- Main Content --- */
         main {
             flex-grow: 1;
@@ -246,6 +304,20 @@
         <a href="https://instagram.com/mst_2102" target="_blank" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
         <a href="https://t.me/mst_2102" target="_blank" class="nav-btn"><i class="fa-paper-plane"></i> تلگرام</a>
         <a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره من / بیوگرافی</a>
+    </div>
+
+    <!-- Running Subtitle (Ticker Bar) -->
+    <div class="ticker-wrap">
+        <div class="ticker-box">
+            <div class="ticker-badge">
+                <i class="fa-solid fa-bullhorn"></i> اطلاعیه
+            </div>
+            <div class="ticker-content-container">
+                <div class="ticker-text">
+                    برای دریافت مطالب کنکوری به پشتیبانی پیام دهید
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Main Content Area -->
