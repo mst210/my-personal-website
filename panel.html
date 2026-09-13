@@ -2248,61 +2248,8 @@
         return readAuth();
     }
 
-    function tokenNeedsRefresh(session) {
-        try {
-            if (!session?.idToken) return false;
-            const payload = JSON.parse(atob(session.idToken.split(".")[1]));
-            if (!payload.exp) return false;
-            return (payload.exp * 1000) - Date.now() < 5 * 60 * 1000;
-        } catch {
-            return false;
-        }
-    }
-
-    async function refreshSessionToken(session) {
-        if (!session?.refreshToken) return session;
-        const refreshResponse = await fetch(
-            `${API_BASE}/auth/refresh`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    refreshToken: session.refreshToken
-                })
-            }
-        );
-
-        if (!refreshResponse.ok) return session;
-
-        const refreshed = await refreshResponse.json();
-        const nextSession = {
-            ...session,
-            idToken: refreshed.idToken,
-            refreshToken: refreshed.refreshToken || session.refreshToken,
-            expiresIn: refreshed.expiresIn
-        };
-
-        localStorage.setItem(
-            AUTH_STORAGE_KEY,
-            JSON.stringify(nextSession)
-        );
-
-        return nextSession;
-    }
-
     async function apiFetch(path, options = {}, retry = true) {
-        let session = currentSession();
-
-        if (tokenNeedsRefresh(session)) {
-            try {
-                session = await refreshSessionToken(session);
-            } catch (e) {
-                console.warn("Pre request token refresh failed", e);
-            }
-        }
-
+        const session = currentSession();
         const headers = new Headers(options.headers || {});
 
         headers.set("Content-Type", "application/json");
@@ -2517,16 +2464,9 @@
                 console.warn("Session restore failed:", error);
             }
 
-            // Do not destroy a valid local session because of a temporary
-            // /auth/session network or token verification failure.
-            const fallbackSession = currentSession();
-
-            if (fallbackSession?.user) {
-                auth.currentUser = fallbackSession.user;
-                callback(fallbackSession.user);
-            } else {
-                callback(null);
-            }
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            auth.currentUser = null;
+            callback(null);
         });
 
         return () => {
@@ -2602,7 +2542,7 @@
 
     async function getDoc(ref) {
         const result = await apiFetch(
-            `/api/firestore?path=${encodeURIComponent(ref.path)}`
+            `/firestore?path=${encodeURIComponent(ref.path)}`
         );
 
         return {
@@ -2613,7 +2553,7 @@
 
     async function getDocs(ref) {
         const result = await apiFetch(
-            `/api/firestore?path=${encodeURIComponent(ref.path)}`
+            `/firestore?path=${encodeURIComponent(ref.path)}`
         );
 
         return makeQuerySnapshot(result.documents || []);
@@ -2621,7 +2561,7 @@
 
     async function setDoc(ref, data) {
         return apiFetch(
-            `/api/firestore?path=${encodeURIComponent(ref.path)}`,
+            `/firestore?path=${encodeURIComponent(ref.path)}`,
             {
                 method: "PUT",
                 body: JSON.stringify({ data })
@@ -2639,7 +2579,7 @@
 
             try {
                 const result = await apiFetch(
-                    `/api/firestore?path=${encodeURIComponent(ref.path)}`
+                    `/firestore?path=${encodeURIComponent(ref.path)}`
                 );
 
                 const items = result.documents || [];
@@ -2989,20 +2929,11 @@
 
     function startNotificationsRealtime() {
 
-        let user = auth.currentUser;
+        const user =
+            auth.currentUser;
 
-        // Restore user after page refresh if Firebase proxy state
-        // has not been initialized yet.
-        if (!user) {
-            const session = currentSession();
-            if (session?.user) {
-                user = session.user;
-                auth.currentUser = user;
-            }
-        }
 
         if (!user) {
-            console.warn("No authenticated user for orders");
             return;
         }
 
@@ -5782,17 +5713,11 @@
        AUTH STATE
     ========================================================= */
 
-    // Wait for proxy authentication restoration before loading dashboard data.
-    // This prevents refresh from losing profile/orders state.
-    let authRestored = false;
-
     onAuthStateChanged(
 
         auth,
 
         async user => {
-
-            authRestored = true;
 
             const authSection =
                 document.getElementById(
@@ -5984,10 +5909,9 @@
 
     /* =========================================================
        INITIAL CART
-       Removed: cart must wait until authentication is restored.
-       Calling renderCart() here caused refresh sessions to load
-       before auth state was ready.
     ========================================================= */
+
+    renderCart();
 
 </script>
 
