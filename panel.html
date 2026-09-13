@@ -2488,13 +2488,7 @@
         authListeners.push(callback);
 
         Promise.resolve().then(async () => {
-            let session = currentSession();
-
-            // Wait briefly for session restoration after page refresh.
-            if (!session?.idToken || !session?.user) {
-                await new Promise(resolve => setTimeout(resolve, 800));
-                session = currentSession();
-            }
+            const session = currentSession();
 
             if (!session?.idToken || !session?.user) {
                 callback(null);
@@ -2608,7 +2602,7 @@
 
     async function getDoc(ref) {
         const result = await apiFetch(
-            `/firestore?path=${encodeURIComponent(ref.path)}`
+            `/api/firestore?path=${encodeURIComponent(ref.path)}`
         );
 
         return {
@@ -2619,7 +2613,7 @@
 
     async function getDocs(ref) {
         const result = await apiFetch(
-            `/firestore?path=${encodeURIComponent(ref.path)}`
+            `/api/firestore?path=${encodeURIComponent(ref.path)}`
         );
 
         return makeQuerySnapshot(result.documents || []);
@@ -2627,7 +2621,7 @@
 
     async function setDoc(ref, data) {
         return apiFetch(
-            `/firestore?path=${encodeURIComponent(ref.path)}`,
+            `/api/firestore?path=${encodeURIComponent(ref.path)}`,
             {
                 method: "PUT",
                 body: JSON.stringify({ data })
@@ -2645,7 +2639,7 @@
 
             try {
                 const result = await apiFetch(
-                    `/firestore?path=${encodeURIComponent(ref.path)}`
+                    `/api/firestore?path=${encodeURIComponent(ref.path)}`
                 );
 
                 const items = result.documents || [];
