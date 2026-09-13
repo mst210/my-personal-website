@@ -2198,453 +2198,102 @@
 <!-- ================= FIREBASE ================= -->
 
 <script type="module">
-    /*
-     * Firebase access is now proxied through the same-origin Cloudflare Worker.
-     * The UI below keeps the original Firestore/Auth-shaped API so the rest of
-     * the page remains unchanged.
-     */
 
-    const API_BASE = "/api";
-    const AUTH_STORAGE_KEY = "taj_medical_proxy_auth_v1";
+    import {
+        initializeApp
+    }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-    const auth = {
-        currentUser: null
+
+    import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+        onAuthStateChanged
+    }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+        collection,
+        getDocs,
+        query,
+        orderBy,
+        onSnapshot
+    }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+    /* =========================================================
+       FIREBASE CONFIG
+    ========================================================= */
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyBIiroBz28UYsDj5d42hQfOpvWI3m7pZVM",
+
+        authDomain:
+            "taj-medical-panel.firebaseapp.com",
+
+        projectId:
+            "taj-medical-panel",
+
+        storageBucket:
+            "taj-medical-panel.firebasestorage.app",
+
+        messagingSenderId:
+            "691798594131",
+
+        appId:
+            "1:691798594131:web:95a52a15ab780058b9aca6",
+
+        measurementId:
+            "G-7DQ20FR1KM"
+
     };
 
-    const db = {};
 
-    const authListeners = [];
+    const app =
+        initializeApp(firebaseConfig);
 
-    function notifyAuthState() {
-        for (const listener of authListeners) {
-            try { listener(auth.currentUser); } catch (e) { console.error(e); }
-        }
-    }
 
-    function saveAuth(session) {
-        if (!session) {
-            localStorage.removeItem(AUTH_STORAGE_KEY);
-            auth.currentUser = null;
-            notifyAuthState();
-            return;
-        }
+    const auth =
+        getAuth(app);
 
-        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
-        auth.currentUser = session.user || null;
-        notifyAuthState();
-    }
 
-    function readAuth() {
-        try {
-            const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-            if (!raw) return null;
-            return JSON.parse(raw);
-        } catch {
-            return null;
-        }
-    }
+    const db =
+        getFirestore(app);
 
-    function currentSession() {
-        return readAuth();
-    }
-
-    async function apiFetch(path, options = {}, retry = true) {
-        const session = currentSession();
-        const headers = new Headers(options.headers || {});
-
-        headers.set("Content-Type", "application/json");
-
-        if (session?.idToken) {
-            headers.set("Authorization", `Bearer ${session.idToken}`);
-        }
-
-        let response = await fetch(API_BASE + path, {
-            ...options,
-            headers
-        });
-
-        if (response.status === 401 && retry && session?.refreshToken) {
-            try {
-                const refreshResponse = await fetch(
-                    `${API_BASE}/auth/refresh`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            refreshToken: session.refreshToken
-                        })
-                    }
-                );
-
-                if (refreshResponse.ok) {
-                    const refreshed = await refreshResponse.json();
-
-                    const nextSession = {
-                        ...session,
-                        idToken: refreshed.idToken,
-                        refreshToken:
-                            refreshed.refreshToken ||
-                            session.refreshToken,
-                        expiresIn: refreshed.expiresIn
-                    };
-
-                    localStorage.setItem(
-                        AUTH_STORAGE_KEY,
-                        JSON.stringify(nextSession)
-                    );
-
-                    return apiFetch(path, options, false);
-                }
-            } catch (refreshError) {
-                console.error("Auth refresh error:", refreshError);
-            }
-        }
-
-        let payload = null;
-
-        try {
-            payload = await response.json();
-        } catch {
-            payload = null;
-        }
-
-        if (!response.ok) {
-            const error = new Error(
-                payload?.message ||
-                payload?.error ||
-                `HTTP ${response.status}`
-            );
-
-            error.code =
-                payload?.code ||
-                payload?.errorCode ||
-                `http/${response.status}`;
-
-            throw error;
-        }
-
-        return payload;
-    }
-
-    function firebaseError(code, message) {
-        const error = new Error(message || code);
-        error.code = code;
-        return error;
-    }
-
-    async function createUserWithEmailAndPassword(_auth, email, password) {
-        try {
-            const result = await apiFetch(
-                "/auth/register",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        email,
-                        password
-                    })
-                },
-                false
-            );
-
-            saveAuth(result);
-            return {
-                user: result.user
-            };
-        } catch (error) {
-            if (error.code === "EMAIL_EXISTS") {
-                throw firebaseError(
-                    "auth/email-already-in-use",
-                    "Email already exists"
-                );
-            }
-
-            if (error.code === "WEAK_PASSWORD") {
-                throw firebaseError(
-                    "auth/weak-password",
-                    "Weak password"
-                );
-            }
-
-            if (error.code === "INVALID_EMAIL") {
-                throw firebaseError(
-                    "auth/invalid-email",
-                    "Invalid email"
-                );
-            }
-
-            throw error;
-        }
-    }
-
-    async function signInWithEmailAndPassword(_auth, email, password) {
-        try {
-            const result = await apiFetch(
-                "/auth/login",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        email,
-                        password
-                    })
-                },
-                false
-            );
-
-            saveAuth(result);
-
-            return {
-                user: result.user
-            };
-        } catch (error) {
-            if (
-                error.code === "INVALID_LOGIN_CREDENTIALS" ||
-                error.code === "INVALID_PASSWORD" ||
-                error.code === "EMAIL_NOT_FOUND"
-            ) {
-                throw firebaseError(
-                    "auth/invalid-credential",
-                    "Invalid credentials"
-                );
-            }
-
-            if (error.code === "USER_DISABLED") {
-                throw firebaseError(
-                    "auth/user-disabled",
-                    "User disabled"
-                );
-            }
-
-            if (error.code === "TOO_MANY_ATTEMPTS_TRY_LATER") {
-                throw firebaseError(
-                    "auth/too-many-requests",
-                    "Too many requests"
-                );
-            }
-
-            throw error;
-        }
-    }
-
-    async function signOut(_auth) {
-        saveAuth(null);
-    }
-
-    function onAuthStateChanged(_auth, callback) {
-        authListeners.push(callback);
-
-        Promise.resolve().then(async () => {
-            const session = currentSession();
-
-            if (!session?.idToken || !session?.user) {
-                callback(null);
-                return;
-            }
-
-            try {
-                const result = await apiFetch("/auth/session");
-
-                if (result?.user) {
-                    const nextSession = {
-                        ...session,
-                        user: result.user
-                    };
-
-                    localStorage.setItem(
-                        AUTH_STORAGE_KEY,
-                        JSON.stringify(nextSession)
-                    );
-
-                    auth.currentUser = result.user;
-                    callback(result.user);
-                    return;
-                }
-            } catch (error) {
-                console.warn("Session restore failed:", error);
-            }
-
-            localStorage.removeItem(AUTH_STORAGE_KEY);
-            auth.currentUser = null;
-            callback(null);
-        });
-
-        return () => {
-            const index = authListeners.indexOf(callback);
-            if (index >= 0) {
-                authListeners.splice(index, 1);
-            }
-        };
-    }
-
-    /*
-     * Minimal Firestore-compatible facade.
-     * It talks only to /api/firestore, which is handled by Cloudflare Worker.
-     */
-
-    function pathJoin(parts) {
-        return parts
-            .filter(Boolean)
-            .map(String)
-            .map(part => part.replace(/^\/+|\/+$/g, ""))
-            .join("/");
-    }
-
-    function doc(_db, ...parts) {
-        return {
-            __type: "doc",
-            path: pathJoin(parts)
-        };
-    }
-
-    function collection(_db, ...parts) {
-        return {
-            __type: "collection",
-            path: pathJoin(parts)
-        };
-    }
-
-    function query(ref, ...constraints) {
-        return {
-            ...ref,
-            constraints
-        };
-    }
-
-    function orderBy(field, direction = "asc") {
-        return {
-            __type: "orderBy",
-            field,
-            direction
-        };
-    }
-
-    function makeDocumentSnapshot(item) {
-        return {
-            id: item.id,
-            exists: () => Boolean(item.exists),
-            data: () => item.data || {}
-        };
-    }
-
-    function makeQuerySnapshot(items) {
-        return {
-            docs: items.map(makeDocumentSnapshot),
-            empty: items.length === 0,
-            size: items.length,
-            forEach(callback) {
-                items.forEach(item => {
-                    callback(makeDocumentSnapshot(item));
-                });
-            }
-        };
-    }
-
-    async function getDoc(ref) {
-        const result = await apiFetch(
-            `/firestore?path=${encodeURIComponent(ref.path)}`
-        );
-
-        return {
-            exists: () => Boolean(result.exists),
-            data: () => result.data || {}
-        };
-    }
-
-    async function getDocs(ref) {
-        const result = await apiFetch(
-            `/firestore?path=${encodeURIComponent(ref.path)}`
-        );
-
-        return makeQuerySnapshot(result.documents || []);
-    }
-
-    async function setDoc(ref, data) {
-        return apiFetch(
-            `/firestore?path=${encodeURIComponent(ref.path)}`,
-            {
-                method: "PUT",
-                body: JSON.stringify({ data })
-            }
-        );
-    }
-
-    function onSnapshot(ref, callback, errorCallback) {
-        let stopped = false;
-        let timer = null;
-        let lastFingerprint = "";
-
-        const run = async () => {
-            if (stopped) return;
-
-            try {
-                const result = await apiFetch(
-                    `/firestore?path=${encodeURIComponent(ref.path)}`
-                );
-
-                const items = result.documents || [];
-
-                /*
-                 * We poll Firestore every 10 seconds instead of using the
-                 * Firebase browser SDK's WebSocket connection. This keeps all
-                 * Firebase traffic behind Cloudflare.
-                 */
-                const fingerprint = JSON.stringify(
-                    items.map(item => ({
-                        id: item.id,
-                        data: item.data
-                    }))
-                );
-
-                if (fingerprint !== lastFingerprint) {
-                    lastFingerprint = fingerprint;
-                    callback(makeQuerySnapshot(items));
-                }
-
-                if (!stopped) {
-                    timer = setTimeout(run, 10000);
-                }
-            } catch (error) {
-                if (!stopped && errorCallback) {
-                    errorCallback(error);
-                }
-
-                if (!stopped) {
-                    timer = setTimeout(run, 15000);
-                }
-            }
-        };
-
-        run();
-
-        return () => {
-            stopped = true;
-
-            if (timer) {
-                clearTimeout(timer);
-                timer = null;
-            }
-        };
-    }
 
     /* =========================================================
        GOOGLE SHEETS
+       این قسمت عمداً بدون تغییر نگه داشته شده است.
     ========================================================= */
 
     const GOOGLE_SHEET_URL =
         "https://script.google.com/macros/s/AKfycbwth07BOHgpF1rm1KJ2hmBrpwGfpoymmiGQhtzA6lYHmkuQidlBfYmyQ82jGHLI-mekyw/exec";
+
 
     /* =========================================================
        GLOBAL STATE
     ========================================================= */
 
     let ordersUnsubscribe = null;
+
     let notificationsUnsubscribe = null;
 
     let firstOrdersSnapshot = true;
+
     let previousOrders = new Map();
 
     let notificationTimer = null;
+
 
     /* =========================================================
        CONSTANTS
@@ -2653,44 +2302,60 @@
     const CART_KEY =
         "taj_medical_cart";
 
+
     const NOTIFICATION_CACHE_KEY =
         "taj_medical_notifications";
 
+
     const STATUS_STEPS = [
+
         {
             key: "در انتظار بررسی",
             label: "ثبت سفارش",
             icon: "fa-file-circle-check"
         },
+
         {
             key: "در حال پردازش",
             label: "در حال پردازش",
             icon: "fa-gears"
         },
+
         {
             key: "آماده ارسال",
             label: "آماده ارسال",
             icon: "fa-box"
         },
+
         {
             key: "ارسال شد",
             label: "ارسال شد",
             icon: "fa-truck"
         },
+
         {
             key: "تکمیل شد",
             label: "تحویل",
             icon: "fa-circle-check"
         }
+
     ];
 
+
     const STATUS_INDEX = {
+
         "در انتظار بررسی": 0,
+
         "در حال پردازش": 1,
+
         "آماده ارسال": 2,
+
         "ارسال شد": 3,
+
         "تکمیل شد": 4
+
     };
+
 
     /* =========================================================
        HELPERS
