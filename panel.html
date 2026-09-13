@@ -884,6 +884,24 @@
                 <!-- SIDEBAR -->
                 <aside class="sidebar">
 
+                    <div class="menu-item active"
+                        onclick="switchDashboardTab('active', this)">
+
+                        <i class="fa-solid fa-box"></i>
+                        <span>سفارشات فعال</span>
+
+                    </div>
+
+
+                    <div class="menu-item"
+                        onclick="switchDashboardTab('past', this)">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>سفارشات گذشته</span>
+
+                    </div>
+
+
                     <div id="cart-menu-item"
                         class="menu-item"
                         onclick="switchDashboardTab('cart', this)">
@@ -905,15 +923,6 @@
                             justify-content:center;
                             margin-right:auto;
                         ">۰</span>
-
-                    </div>
-
-
-                    <div class="menu-item active"
-                        onclick="switchDashboardTab('active', this)">
-
-                        <i class="fa-solid fa-box"></i>
-                        <span>سفارشات فعال</span>
 
                     </div>
 
@@ -1190,8 +1199,7 @@
             collection,
             getDocs,
             query,
-            orderBy,
-            onSnapshot
+            orderBy
         }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -1514,298 +1522,278 @@
 
 
         /* SUBMIT ORDER */
+
         window.submitCart =
             async function() {
+
                 const cart = getCart();
+
                 if (!cart.length) {
-                    alert("سبد خرید شما خالی است.");
+
+                    alert(
+                        "سبد خرید شما خالی است."
+                    );
+
                     return;
+
                 }
 
-                const user = auth.currentUser;
+
+                const user =
+                    auth.currentUser;
+
+
                 if (!user) {
-                    alert("لطفاً ابتدا وارد حساب کاربری خود شوید.");
+
+                    alert(
+                        "لطفاً ابتدا وارد حساب کاربری خود شوید."
+                    );
+
                     return;
+
                 }
 
-                const total = cart.reduce((sum, item) => {
-                    const price = Number(item.price) || 0;
-                    const quantity = Number(item.quantity) || 1;
-                    return sum + price * quantity;
-                }, 0);
 
-                const orderId = "order_" + Date.now();
+                const total =
+                    cart.reduce(
+                        (sum, item) => {
 
-                /* دریافت اطلاعات مشتری از Firestore */
-                let customerName = "";
-                let phone = "";
-                let email = user.email || "";
+                            const price =
+                                Number(item.price) || 0;
 
-                try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        customerName =
-                            userData.fullName ||
-                            [userData.firstName, userData.lastName]
-                                .filter(Boolean)
-                                .join(" ") || "";
-                        phone = userData.phone || "";
-                        email = userData.email || user.email || "";
-                    }
-                } catch (error) {
-                    console.error("Customer information error:", error);
-                }
+                            const quantity =
+                                Number(item.quantity) || 1;
 
-                /* ساخت سفارش */
+                            return sum +
+                                price * quantity;
+
+                        },
+                        0
+                    );
+
+
+                const orderId =
+                    "order_" +
+                    Date.now();
+
+
                 const order = {
+
                     orderId: orderId,
-                    uid: user.uid,
-                    customerName: customerName,
-                    phone: phone,
-                    email: email,
-                    items: cart.map(item => ({
-                        id: item.id || "",
-                        name: item.name || item.title || "محصول",
-                        title: item.title || item.name || "محصول",
-                        price: Number(item.price) || 0,
-                        quantity: Number(item.quantity) || 1,
-                        image: item.image || ""
-                    })),
+
+                    items:
+                        cart.map(item => ({
+
+                            id: item.id || "",
+
+                            name:
+                                item.name ||
+                                item.title ||
+                                "محصول",
+
+                            title:
+                                item.title ||
+                                item.name ||
+                                "محصول",
+
+                            price:
+                                Number(item.price) || 0,
+
+                            quantity:
+                                Number(item.quantity) || 1,
+
+                            image:
+                                item.image || ""
+
+                        })),
+
                     total: total,
+
                     status: "active",
-                    statusText: "در انتظار بررسی",
-                    createdAt: new Date().toISOString()
+
+                    statusText:
+                        "در انتظار بررسی",
+
+                    createdAt:
+                        new Date().toISOString()
+
                 };
 
+
                 try {
-                    /* 1. ذخیره سفارش در Firebase */
+
+                    /* ذخیره سفارش در Firebase */
+
                     await setDoc(
-                        doc(db, "users", user.uid, "orders", orderId),
+                        doc(
+                            db,
+                            "users",
+                            user.uid,
+                            "orders",
+                            orderId
+                        ),
                         order
                     );
 
-                    /* 2. ارسال سفارش به Google Sheets */
-                    const GOOGLE_SHEET_URL =
-                        "https://script.google.com/macros/s/AKfycbyNyygdztCbXVnqnzAdk0cJeb-MCWexfUS3WNfWQ_DvwWxB6Kl72uaKDvOXY5fYP6O-_A/exec";
 
-                    try {
-                        await fetch(GOOGLE_SHEET_URL, {
-                            method: "POST",
-                            mode: "no-cors",
-                            headers: {
-                                "Content-Type": "text/plain;charset=utf-8"
-                            },
-                            body: JSON.stringify(order)
-                        });
-                    } catch (sheetError) {
-                        console.error("Google Sheet error:", sheetError);
-                    }
+                    /* خالی کردن سبد */
 
-                    /* 3. خالی کردن سبد */
-                    localStorage.removeItem(CART_KEY);
+                    localStorage.removeItem(
+                        CART_KEY
+                    );
+
+
                     renderCart();
 
-                    /* 4. به‌روزرسانی سفارشات فعال */
+
+                    /* دوباره سفارشات را بخوان */
+
                     await loadActiveOrders();
 
-                    /* 5. رفتن به سفارشات فعال */
-                    const activeMenu = document.querySelector('.menu-item[onclick*="switchDashboardTab(\'active\'"]');
-                    switchDashboardTab("active", activeMenu);
 
-                    /* 6. پیام موفقیت */
-                    alert("سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد.");
+                    /* رفتن به سفارشات فعال */
+
+                    const activeMenu =
+                        document.querySelector(
+                            ".menu-item"
+                        );
+
+
+                    switchDashboardTab(
+                        "active",
+                        activeMenu
+                    );
+
+
+                    alert(
+                        "سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد."
+                    );
+
 
                 } catch (error) {
-                    console.error("Order error:", error);
-                    alert("ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید.");
+
+                    console.error(
+                        "Order error:",
+                        error
+                    );
+
+
+                    alert(
+                        "ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید."
+                    );
+
                 }
+
             };
 
-        /* LOAD ACTIVE ORDERS */
+
+        let activeOrdersUnsubscribe = null;
+        let pastOrdersUnsubscribe = null;
+
+        /* LOAD ACTIVE ORDERS - REAL TIME */
 
         async function loadActiveOrders() {
 
-            const user =
-                auth.currentUser;
-
-
+            const user = auth.currentUser;
             if (!user) return;
 
-
-            const container =
-                document.getElementById(
-                    "active-orders"
-                );
-
-
+            const container = document.getElementById("active-orders");
             if (!container) return;
 
+            // اگر Listener قبلی فعال است، دوباره Listener نساز
+            if (activeOrdersUnsubscribe) return;
 
             try {
 
-                const ordersRef =
-                    collection(
-                        db,
-                        "users",
-                        user.uid,
-                        "orders"
-                    );
-
-
-                const q =
-                    query(
-                        ordersRef,
-                        orderBy(
-                            "createdAt",
-                            "desc"
-                        )
-                    );
-
-
-                const snapshot =
-                    await getDocs(q);
-
-
-                const activeOrders = [];
-
-
-                snapshot.forEach(
-                    docSnap => {
-
-                        const order =
-                            docSnap.data();
-
-
-                        if (
-                            order.status ===
-                            "active"
-                        ) {
-
-                            activeOrders.push({
-
-                                id:
-                                    docSnap.id,
-
-                                ...order
-
-                            });
-
-                        }
-
-                    }
+                const ordersRef = collection(
+                    db,
+                    "users",
+                    user.uid,
+                    "orders"
                 );
 
+                const q = query(
+                    ordersRef,
+                    orderBy("createdAt", "desc")
+                );
 
-                if (!activeOrders.length) {
+                activeOrdersUnsubscribe = onSnapshot(
+                    q,
+                    snapshot => {
 
-                    container.innerHTML = `
+                        const activeOrders = [];
 
-                        <div class="empty-state">
+                        snapshot.forEach(docSnap => {
 
-                            <i class="fa-solid fa-box-open"></i>
+                            const order = docSnap.data();
 
-                            <p>
-                                در حال حاضر سفارش فعالی ندارید.
-                            </p>
+                            if (order.status === "active") {
 
-                        </div>
+                                activeOrders.push({
+                                    id: docSnap.id,
+                                    ...order
+                                });
 
-                    `;
+                            }
 
-                    return;
+                        });
 
-                }
+                        if (!activeOrders.length) {
 
+                            container.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    <p>در حال حاضر سفارش فعالی ندارید.</p>
+                                </div>
+                            `;
 
-                container.innerHTML =
-                    activeOrders
-                        .map(order => {
+                            return;
+                        }
 
-                            const date =
-                                order.createdAt
-                                ?
-                                new Date(
-                                    order.createdAt
-                                ).toLocaleDateString(
-                                    "fa-IR"
-                                )
-                                :
-                                "نامشخص";
+                        container.innerHTML = activeOrders.map(order => {
 
+                            const date = order.createdAt
+                                ? new Date(order.createdAt).toLocaleDateString("fa-IR")
+                                : "نامشخص";
 
-                            const items =
-                                Array.isArray(
-                                    order.items
-                                )
-                                ?
-                                order.items
-                                :
-                                [];
+                            const items = Array.isArray(order.items)
+                                ? order.items
+                                : [];
 
+                            const itemsHtml = items.map(item => {
 
-                            const itemsHtml =
-                                items.map(item => {
+                                const price = Number(item.price) || 0;
+                                const quantity = Number(item.quantity) || 1;
 
-                                    const price =
-                                        Number(
-                                            item.price
-                                        ) || 0;
+                                return `
+                                    <div class="order-product">
 
-                                    const quantity =
-                                        Number(
-                                            item.quantity
-                                        ) || 1;
+                                        <div>
+                                            <strong>
+                                                ${escapeHtml(
+                                                    item.name ||
+                                                    item.title ||
+                                                    "محصول"
+                                                )}
+                                            </strong>
 
-
-                                    return `
-
-                                        <div class="order-product">
-
-                                            <div>
-
-                                                <strong>
-                                                    ${escapeHtml(
-                                                        item.name ||
-                                                        item.title ||
-                                                        "محصول"
-                                                    )}
-                                                </strong>
-
-                                                <div class="order-product-info">
-
-                                                    تعداد:
-                                                    ${quantity.toLocaleString("fa-IR")}
-
-                                                </div>
-
+                                            <div class="order-product-info">
+                                                تعداد:
+                                                ${quantity.toLocaleString("fa-IR")}
                                             </div>
-
-
-                                            <span>
-
-                                                ${
-                                                    (
-                                                        price *
-                                                        quantity
-                                                    ).toLocaleString(
-                                                        "fa-IR"
-                                                    )
-                                                }
-
-                                                تومان
-
-                                            </span>
-
                                         </div>
 
-                                    `;
+                                        <span>
+                                            ${(price * quantity).toLocaleString("fa-IR")}
+                                            تومان
+                                        </span>
 
-                                }).join("");
+                                    </div>
+                                `;
 
+                            }).join("");
 
                             return `
-
                                 <div class="active-order-card">
 
                                     <div class="order-header">
@@ -1813,67 +1801,63 @@
                                         <div>
 
                                             <strong>
-                                                سفارش ${escapeHtml(order.id)}
+                                                سفارش ${escapeHtml(order.orderId || order.id)}
                                             </strong>
 
                                             <small>
-                                                تاریخ ثبت:
-                                                ${date}
+                                                تاریخ ثبت: ${date}
                                             </small>
 
                                         </div>
 
-
                                         <span class="order-status">
-
-                                            ${
-                                                escapeHtml(
-                                                    order.statusText ||
-                                                    "در انتظار بررسی"
-                                                )
-                                            }
-
+                                            ${escapeHtml(
+                                                order.statusText ||
+                                                "در انتظار بررسی"
+                                            )}
                                         </span>
 
                                     </div>
 
-
                                     <div class="order-products">
-
                                         ${itemsHtml}
-
                                     </div>
-
 
                                     <div class="order-footer">
 
-                                        <span>
-                                            مبلغ کل
-                                        </span>
+                                        <span>مبلغ کل</span>
 
                                         <strong>
-
-                                            ${
-                                                Number(
-                                                    order.total || 0
-                                                ).toLocaleString(
-                                                    "fa-IR"
-                                                )
-                                            }
-
+                                            ${Number(order.total || 0).toLocaleString("fa-IR")}
                                             تومان
-
                                         </strong>
 
                                     </div>
 
                                 </div>
-
                             `;
 
-                        })
-                        .join("");
+                        }).join("");
 
+                    },
+                    error => {
+
+                        console.error(
+                            "Real-time active orders error:",
+                            error
+                        );
+
+                        activeOrdersUnsubscribe = null;
+
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <p>دریافت سفارشات با خطا مواجه شد.</p>
+                            </div>
+                        `;
+
+                    }
+                );
 
             } catch (error) {
 
@@ -1882,19 +1866,13 @@
                     error
                 );
 
+                activeOrdersUnsubscribe = null;
 
                 container.innerHTML = `
-
                     <div class="empty-state">
-
                         <i class="fa-solid fa-triangle-exclamation"></i>
-
-                        <p>
-                            دریافت سفارشات با خطا مواجه شد.
-                        </p>
-
+                        <p>دریافت سفارشات با خطا مواجه شد.</p>
                     </div>
-
                 `;
 
             }
@@ -1902,188 +1880,143 @@
         }
 
 
-        /* PAST ORDERS */
+        /* PAST ORDERS - REAL TIME */
 
         async function loadPastOrders() {
 
-            const user =
-                auth.currentUser;
-
-
+            const user = auth.currentUser;
             if (!user) return;
 
-
-            const container =
-                document.getElementById(
-                    "past-orders"
-                );
-
-
+            const container = document.getElementById("past-orders");
             if (!container) return;
 
+            // اگر Listener قبلی فعال است، دوباره Listener نساز
+            if (pastOrdersUnsubscribe) return;
 
             try {
 
-                const ordersRef =
-                    collection(
-                        db,
-                        "users",
-                        user.uid,
-                        "orders"
-                    );
+                const ordersRef = collection(
+                    db,
+                    "users",
+                    user.uid,
+                    "orders"
+                );
 
+                const q = query(
+                    ordersRef,
+                    orderBy("createdAt", "desc")
+                );
 
-                const q =
-                    query(
-                        ordersRef,
-                        orderBy(
-                            "createdAt",
-                            "desc"
-                        )
-                    );
+                pastOrdersUnsubscribe = onSnapshot(
+                    q,
+                    snapshot => {
 
+                        const pastOrders = [];
 
-                const snapshot =
-                    await getDocs(q);
+                        snapshot.forEach(docSnap => {
 
+                            const order = docSnap.data();
 
-                const pastOrders = [];
+                            if (
+                                order.status === "completed" ||
+                                order.status === "cancelled"
+                            ) {
 
+                                pastOrders.push({
+                                    id: docSnap.id,
+                                    ...order
+                                });
 
-                snapshot.forEach(
-                    docSnap => {
+                            }
 
-                        const order =
-                            docSnap.data();
+                        });
 
+                        if (!pastOrders.length) {
 
-                        if (
-                            order.status ===
-                            "completed"
-                            ||
-                            order.status ===
-                            "cancelled"
-                        ) {
+                            container.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                    <p>هنوز سفارش گذشته‌ای ندارید.</p>
+                                </div>
+                            `;
 
-                            pastOrders.push({
-
-                                id:
-                                    docSnap.id,
-
-                                ...order
-
-                            });
-
+                            return;
                         }
+
+                        container.innerHTML = pastOrders.map(order => {
+
+                            const date = order.createdAt
+                                ? new Date(order.createdAt).toLocaleDateString("fa-IR")
+                                : "نامشخص";
+
+                            return `
+                                <div class="active-order-card">
+
+                                    <div class="order-header">
+
+                                        <div>
+
+                                            <strong>
+                                                سفارش ${escapeHtml(order.orderId || order.id)}
+                                            </strong>
+
+                                            <small>${date}</small>
+
+                                        </div>
+
+                                        <span class="order-status">
+                                            ${escapeHtml(
+                                                order.statusText ||
+                                                "تکمیل شده"
+                                            )}
+                                        </span>
+
+                                    </div>
+
+                                    <div class="order-footer">
+
+                                        <span>مبلغ کل</span>
+
+                                        <strong>
+                                            ${Number(order.total || 0).toLocaleString("fa-IR")}
+                                            تومان
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+                            `;
+
+                        }).join("");
+
+                    },
+                    error => {
+
+                        console.error(
+                            "Real-time past orders error:",
+                            error
+                        );
+
+                        pastOrdersUnsubscribe = null;
+
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <p>دریافت سفارشات گذشته با خطا مواجه شد.</p>
+                            </div>
+                        `;
 
                     }
                 );
 
-
-                if (!pastOrders.length) {
-
-                    container.innerHTML = `
-
-                        <div class="empty-state">
-
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-
-                            <p>
-                                هنوز سفارش گذشته‌ای ندارید.
-                            </p>
-
-                        </div>
-
-                    `;
-
-                    return;
-
-                }
-
-
-                container.innerHTML =
-                    pastOrders.map(order => {
-
-                        const date =
-                            order.createdAt
-                            ?
-                            new Date(
-                                order.createdAt
-                            ).toLocaleDateString(
-                                "fa-IR"
-                            )
-                            :
-                            "نامشخص";
-
-
-                        return `
-
-                            <div class="active-order-card">
-
-                                <div class="order-header">
-
-                                    <div>
-
-                                        <strong>
-                                            سفارش ${escapeHtml(order.id)}
-                                        </strong>
-
-                                        <small>
-                                            ${date}
-                                        </small>
-
-                                    </div>
-
-
-                                    <span class="order-status">
-
-                                        ${
-                                            escapeHtml(
-                                                order.statusText ||
-                                                "تکمیل شده"
-                                            )
-                                        }
-
-                                    </span>
-
-                                </div>
-
-
-                                <div class="order-footer">
-
-                                    <span>
-                                        مبلغ کل
-                                    </span>
-
-                                    <strong>
-
-                                        ${
-                                            Number(
-                                                order.total || 0
-                                            ).toLocaleString(
-                                                "fa-IR"
-                                            )
-                                        }
-
-                                        تومان
-
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }).join("");
-
-
             } catch (error) {
 
                 console.error(
-                    "Past orders error:",
+                    "Load past orders error:",
                     error
                 );
+
+                pastOrdersUnsubscribe = null;
 
             }
 
@@ -2610,6 +2543,16 @@
 
 
                 } else {
+
+                    if (activeOrdersUnsubscribe) {
+                        activeOrdersUnsubscribe();
+                        activeOrdersUnsubscribe = null;
+                    }
+
+                    if (pastOrdersUnsubscribe) {
+                        pastOrdersUnsubscribe();
+                        pastOrdersUnsubscribe = null;
+                    }
 
                     authSection.style.display =
                         "block";
