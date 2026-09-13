@@ -1198,7 +1198,6 @@
             getDoc,
             collection,
             getDocs,
-            onSnapshot,
             query,
             orderBy
         }
@@ -1688,9 +1687,6 @@
             };
 
 
-        let activeOrdersUnsubscribe = null;
-        let pastOrdersUnsubscribe = null;
-
         /* LOAD ACTIVE ORDERS */
 
         async function loadActiveOrders() {
@@ -1700,8 +1696,6 @@
 
 
             if (!user) return;
-
-            if (activeOrdersUnsubscribe) return;
 
 
             const container =
@@ -1734,10 +1728,8 @@
                     );
 
 
-                activeOrdersUnsubscribe =
-                    onSnapshot(
-                        q,
-                        snapshot => {
+                const snapshot =
+                    await getDocs(q);
 
 
                 const activeOrders = [];
@@ -1947,13 +1939,6 @@
                         })
                         .join("");
 
-                        error => {
-                            console.error(
-                                "Active orders realtime listener error",
-                                error
-                            );
-                        }
-                    );
 
             } catch (error) {
 
@@ -1992,8 +1977,6 @@
 
             if (!user) return;
 
-            if (pastOrdersUnsubscribe) return;
-
 
             const container =
                 document.getElementById(
@@ -2025,10 +2008,8 @@
                     );
 
 
-                pastOrdersUnsubscribe =
-                    onSnapshot(
-                        q,
-                        snapshot => {
+                const snapshot =
+                    await getDocs(q);
 
 
                 const pastOrders = [];
@@ -2161,13 +2142,6 @@
 
                     }).join("");
 
-                        error => {
-                            console.error(
-                                "Past orders realtime listener error",
-                                error
-                            );
-                        }
-                    );
 
             } catch (error) {
 
@@ -2701,16 +2675,6 @@
 
 
                 } else {
-
-                    if (activeOrdersUnsubscribe) {
-                        activeOrdersUnsubscribe();
-                        activeOrdersUnsubscribe = null;
-                    }
-
-                    if (pastOrdersUnsubscribe) {
-                        pastOrdersUnsubscribe();
-                        pastOrdersUnsubscribe = null;
-                    }
 
                     authSection.style.display =
                         "block";
