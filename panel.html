@@ -1190,7 +1190,8 @@
             collection,
             getDocs,
             query,
-            orderBy
+            orderBy,
+            onSnapshot
         }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -1559,6 +1560,7 @@
                 /* ساخت سفارش */
                 const order = {
                     orderId: orderId,
+                    uid: user.uid,
                     customerName: customerName,
                     phone: phone,
                     email: email,
@@ -1608,7 +1610,7 @@
                     await loadActiveOrders();
 
                     /* 5. رفتن به سفارشات فعال */
-                    const activeMenu = document.querySelector(".menu-item");
+                    const activeMenu = document.querySelector('.menu-item[onclick*="switchDashboardTab(\'active\'"]');
                     switchDashboardTab("active", activeMenu);
 
                     /* 6. پیام موفقیت */
