@@ -1405,6 +1405,14 @@
 
             </div>
 
+            <div class="vpn-warning">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                هنگام ورود به پنل کاربری اتصال VPN الزامی است.
+
+            </div>
+
         </div>
 
 
@@ -5774,11 +5782,17 @@
        AUTH STATE
     ========================================================= */
 
+    // Wait for proxy authentication restoration before loading dashboard data.
+    // This prevents refresh from losing profile/orders state.
+    let authRestored = false;
+
     onAuthStateChanged(
 
         auth,
 
         async user => {
+
+            authRestored = true;
 
             const authSection =
                 document.getElementById(
@@ -5970,9 +5984,10 @@
 
     /* =========================================================
        INITIAL CART
+       Removed: cart must wait until authentication is restored.
+       Calling renderCart() here caused refresh sessions to load
+       before auth state was ready.
     ========================================================= */
-
-    renderCart();
 
 </script>
 
