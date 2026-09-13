@@ -1405,6 +1405,14 @@
 
             </div>
 
+            <div class="vpn-warning">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                هنگام ورود به پنل کاربری اتصال VPN الزامی است.
+
+            </div>
+
         </div>
 
 
@@ -4086,7 +4094,9 @@
 
     function startOrdersRealtime() {
 
-        const user = await getReadyUser();
+        const user =
+            auth.currentUser;
+
 
         if (!user) {
             return;
@@ -5011,43 +5021,15 @@
         };
 
 
-
-    async function getReadyUser() {
-        if (auth.currentUser) {
-            return auth.currentUser;
-        }
-
-        const session = currentSession();
-
-        if (session?.user) {
-            auth.currentUser = session.user;
-            return session.user;
-        }
-
-        // wait briefly for auth restore
-        for (let i = 0; i < 10; i++) {
-            await new Promise(resolve => setTimeout(resolve, 300));
-            if (auth.currentUser) {
-                return auth.currentUser;
-            }
-
-            const retrySession = currentSession();
-            if (retrySession?.user) {
-                auth.currentUser = retrySession.user;
-                return retrySession.user;
-            }
-        }
-
-        return null;
-    }
-
     /* =========================================================
        LOAD ACTIVE ORDERS
     ========================================================= */
 
     async function loadActiveOrders() {
 
-        const user = await getReadyUser();
+        const user =
+            auth.currentUser;
+
 
         if (!user) {
             return;
@@ -5177,7 +5159,9 @@
 
     async function loadPastOrders() {
 
-        const user = await getReadyUser();
+        const user =
+            auth.currentUser;
+
 
         if (!user) {
             return;
