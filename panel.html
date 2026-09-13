@@ -1514,17 +1514,81 @@
 
         document.getElementById("login-form-element").addEventListener("submit", async event => {
             event.preventDefault();
+
             const email = document.getElementById("login-email").value.trim();
             const password = document.getElementById("login-password").value;
 
+            if (!email || !password) {
+                alert("لطفاً ایمیل و رمز عبور را وارد کنید.");
+                return;
+            }
+
+            const button = event.target.querySelector("button[type='submit']");
+            const originalText = button.innerHTML;
+
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                button.disabled = true;
+                button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال ورود...';
+
+                const credential = await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+                console.log("LOGIN SUCCESS:", credential.user);
+
             } catch (error) {
-                console.error(error);
+                console.error("FIREBASE LOGIN ERROR:", error);
+
                 let message = "ورود انجام نشد.";
-                if (error.code === "auth/invalid-credential") message = "ایمیل یا رمز عبور اشتباه است.";
-                if (error.code === "auth/user-not-found") message = "حساب کاربری پیدا نشد.";
+
+                switch (error.code) {
+                    case "auth/invalid-credential":
+                        message = "ایمیل یا رمز عبور اشتباه است.";
+                        break;
+
+                    case "auth/wrong-password":
+                        message = "رمز عبور اشتباه است.";
+                        break;
+
+                    case "auth/user-not-found":
+                        message = "حسابی با این ایمیل پیدا نشد.";
+                        break;
+
+                    case "auth/invalid-email":
+                        message = "فرمت ایمیل صحیح نیست.";
+                        break;
+
+                    case "auth/user-disabled":
+                        message = "این حساب کاربری غیرفعال شده است.";
+                        break;
+
+                    case "auth/too-many-requests":
+                        message = "تعداد تلاش‌های ورود زیاد بوده. کمی بعد دوباره امتحان کنید.";
+                        break;
+
+                    case "auth/network-request-failed":
+                        message = "ارتباط با سرور Firebase برقرار نشد. اتصال اینترنت یا محدودیت شبکه را بررسی کنید.";
+                        break;
+
+                    case "auth/operation-not-allowed":
+                        message = "ورود با ایمیل و رمز عبور در Firebase فعال نیست.";
+                        break;
+
+                    case "auth/invalid-api-key":
+                        message = "کلید Firebase نادرست است.";
+                        break;
+
+                    default:
+                        message = `خطای ورود: ${error.code || "نامشخص"}\n${error.message || ""}`;
+                }
+
                 alert(message);
+
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
             }
         });
 
