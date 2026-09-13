@@ -1153,6 +1153,47 @@
             margin-top: 25px;
         }
 
+
+        /* ================= PREMIUM DASHBOARD V2 ================= */
+        .welcome-hero{position:relative;overflow:hidden;padding:24px;margin-bottom:18px;border-radius:22px;border:1px solid rgba(56,189,248,.20);background:radial-gradient(circle at 10% 10%,rgba(20,184,166,.20),transparent 35%),radial-gradient(circle at 90% 20%,rgba(2,132,199,.24),transparent 38%),linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));box-shadow:0 18px 45px rgba(0,0,0,.18)}
+        .welcome-content{display:flex;align-items:center;justify-content:space-between;gap:18px}
+        .welcome-kicker{display:inline-flex;align-items:center;gap:7px;color:#67e8f9;font-size:11px;font-weight:700;margin-bottom:7px}
+        .welcome-title{margin:0 0 7px;font-size:clamp(21px,3vw,30px);line-height:1.35}
+        .welcome-text{margin:0;color:#b6c4d6;font-size:12px;line-height:1.9}
+        .welcome-avatar{width:62px;height:62px;flex:0 0 62px;display:grid;place-items:center;border-radius:18px;color:#fff;font-size:24px;background:linear-gradient(135deg,#0284c7,#14b8a6);box-shadow:0 12px 28px rgba(2,132,199,.25)}
+        .quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+        .quick-action{appearance:none;border:1px solid var(--border-color);border-radius:15px;padding:13px 14px;color:#e2e8f0;background:rgba(255,255,255,.035);display:flex;align-items:center;gap:10px;cursor:pointer;transition:.22s ease;text-align:right}
+        .quick-action:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.08)}
+        .quick-action-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;color:#67e8f9;background:rgba(56,189,248,.10)}
+        .quick-action strong{display:block;font-size:12px;margin-bottom:2px}
+        .quick-action span{color:var(--text-muted);font-size:10px}
+        .overview-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin:0 0 18px}
+        .overview-card{min-width:0;padding:18px;border-radius:18px;border:1px solid var(--border-color);background:rgba(255,255,255,.035)}
+        .overview-card-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+        .overview-card-header h3{margin:0;font-size:14px}
+        .overview-card-header span{color:var(--text-muted);font-size:10px}
+        .mini-order{padding:13px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+        .mini-order-top,.mini-order-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
+        .mini-order-id{font-size:11px;font-weight:700}
+        .mini-order-date{color:var(--text-muted);font-size:9px;margin-top:4px}
+        .mini-order-status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:9px;font-weight:700;background:rgba(56,189,248,.10);color:#67e8f9;white-space:nowrap}
+        .mini-order-bottom{margin-top:14px;padding-top:11px;border-top:1px solid rgba(255,255,255,.06);color:var(--text-muted);font-size:10px}
+        .mini-order-bottom strong{color:#4ade80;font-size:12px}
+        .profile-progress{display:flex;align-items:center;gap:14px}
+        .progress-ring{--progress:0%;width:72px;height:72px;flex:0 0 72px;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#14b8a6 var(--progress),rgba(255,255,255,.08) 0);position:relative}
+        .progress-ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:#111c31}
+        .progress-ring strong{position:relative;z-index:1;font-size:14px}
+        .progress-copy{min-width:0}
+        .progress-copy strong{display:block;font-size:12px;margin-bottom:6px}
+        .progress-copy p{margin:0;color:var(--text-muted);font-size:10px;line-height:1.8}
+        .profile-progress-bar{height:6px;margin-top:12px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+        .profile-progress-bar>span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#0284c7,#14b8a6);transition:width .5s ease}
+        .dashboard-summary .summary-card{transition:transform .22s ease,border-color .22s ease,background .22s ease}
+        .dashboard-summary .summary-card:hover{transform:translateY(-3px);border-color:rgba(56,189,248,.28);background:rgba(56,189,248,.055)}
+        .profile-refresh-btn{margin-top:16px;width:100%;padding:10px 12px;border:1px solid var(--border-color);border-radius:11px;background:rgba(255,255,255,.04);color:#cbd5e1;cursor:pointer}
+        .profile-refresh-btn:hover{background:rgba(255,255,255,.08)}
+        @media(max-width:800px){.overview-grid{grid-template-columns:1fr}.quick-actions{grid-template-columns:1fr}.welcome-content{align-items:flex-start}}
+        @media(max-width:600px){.welcome-hero{padding:18px}.welcome-avatar{width:52px;height:52px;flex-basis:52px;font-size:20px}}
         /* ================= MOBILE ================= */
 
         @media (max-width: 800px) {
@@ -1409,7 +1450,7 @@
 
                 <i class="fa-solid fa-triangle-exclamation"></i>
 
-                هنگام ورود به پنل کاربری اتصال VPN الزامی است.
+                ورود و استفاده از پنل بدون VPN نیز امکان‌پذیر است.
 
             </div>
 
@@ -1571,7 +1612,7 @@
 
                 <i class="fa-solid fa-triangle-exclamation"></i>
 
-                اتصال VPN هنگام ورود به پنل کاربری الزامی است.
+                ورود و استفاده از پنل بدون VPN نیز امکان‌پذیر است.
 
             </div>
 
@@ -1736,6 +1777,32 @@
                     id="tab-active"
                     class="tab-content active">
 
+
+                    <div class="welcome-hero">
+                        <div class="welcome-content">
+                            <div>
+                                <div class="welcome-kicker"><i class="fa-solid fa-sparkles"></i> داشبورد اختصاصی شما</div>
+                                <h2 class="welcome-title">سلام، <span id="dashboard-user-name">کاربر عزیز</span> 👋</h2>
+                                <p class="welcome-text">وضعیت سفارش‌ها، اعلان‌ها و سبد خریدتان را یکجا ببینید.</p>
+                            </div>
+                            <div class="welcome-avatar"><i class="fa-solid fa-user-doctor"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button type="button" class="quick-action" onclick="openCart()">
+                            <div class="quick-action-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                            <div><strong>مشاهده سبد خرید</strong><span>بررسی و ثبت سفارش</span></div>
+                        </button>
+                        <button type="button" class="quick-action" onclick="openNotifications()">
+                            <div class="quick-action-icon"><i class="fa-solid fa-bell"></i></div>
+                            <div><strong>اعلان‌های من</strong><span>آخرین اطلاعیه‌ها</span></div>
+                        </button>
+                        <button type="button" class="quick-action" onclick="openProfile()">
+                            <div class="quick-action-icon"><i class="fa-solid fa-user-gear"></i></div>
+                            <div><strong>اطلاعات حساب</strong><span>مشاهده مشخصات</span></div>
+                        </button>
+                    </div>
                     <div class="panel-title">
 
                         <i class="fa-solid fa-box"></i>
@@ -1810,18 +1877,42 @@
 
                     </div>
 
-                    <div id="active-orders">
-
-                        <div class="empty-state">
-
-                            <i class="fa-solid fa-box-open"></i>
-
-                            <p>
-                                در حال دریافت سفارشات...
-                            </p>
-
+                    <div class="overview-grid">
+                        <div class="overview-card">
+                            <div class="overview-card-header">
+                                <h3><i class="fa-solid fa-clock-rotate-left"></i> آخرین سفارش</h3>
+                                <span>خلاصه</span>
+                            </div>
+                            <div id="dashboard-latest-order">
+                                <div class="empty-state" style="padding:18px 8px;">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    <p>هنوز سفارشی ثبت نشده است.</p>
+                                </div>
+                            </div>
                         </div>
+                        <div class="overview-card">
+                            <div class="overview-card-header">
+                                <h3><i class="fa-solid fa-user-check"></i> تکمیل پروفایل</h3>
+                                <span id="profile-progress-label">۰٪</span>
+                            </div>
+                            <div class="profile-progress">
+                                <div id="profile-progress-ring" class="progress-ring" style="--progress:0%;">
+                                    <strong id="profile-progress-number">۰٪</strong>
+                                </div>
+                                <div class="progress-copy">
+                                    <strong id="profile-progress-title">در حال بررسی اطلاعات</strong>
+                                    <p id="profile-progress-text">اطلاعات حساب شما بررسی می‌شود.</p>
+                                </div>
+                            </div>
+                            <div class="profile-progress-bar"><span id="profile-progress-bar"></span></div>
+                        </div>
+                    </div>
 
+                    <div id="active-orders">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-box-open"></i>
+                            <p>در حال دریافت سفارشات...</p>
+                        </div>
                     </div>
 
                 </div>
@@ -2006,6 +2097,10 @@
                         </span>
 
                     </div>
+
+                    <button type="button" class="profile-refresh-btn" onclick="loadProfile()">
+                        <i class="fa-solid fa-rotate"></i> بروزرسانی اطلاعات حساب
+                    </button>
 
                     <div class="profile-grid">
 
@@ -5058,6 +5153,8 @@
                 activeOrders.length
             );
 
+            updatePremiumLatestOrder(activeOrders);
+
         } catch (error) {
 
             console.error(
@@ -5709,6 +5806,106 @@
         };
 
 
+
+    /* =========================================================
+       PREMIUM DASHBOARD HELPERS
+    ========================================================= */
+
+    function updatePremiumProfile(data, user) {
+        const fullName = data?.fullName ||
+            [data?.firstName, data?.lastName].filter(Boolean).join(" ") ||
+            user?.email?.split("@")[0] || "کاربر عزیز";
+
+        const nameEl = document.getElementById("dashboard-user-name");
+        if (nameEl) nameEl.textContent = fullName;
+
+        const fields = [data?.fullName, data?.phone, data?.email || user?.email,
+                        data?.province, data?.city, data?.address];
+        const percent = Math.round(fields.filter(v => String(v || "").trim()).length / fields.length * 100);
+        const faPercent = percent.toLocaleString("fa-IR") + "٪";
+
+        const number = document.getElementById("profile-progress-number");
+        const label = document.getElementById("profile-progress-label");
+        const title = document.getElementById("profile-progress-title");
+        const text = document.getElementById("profile-progress-text");
+        const ring = document.getElementById("profile-progress-ring");
+        const bar = document.getElementById("profile-progress-bar");
+
+        if (number) number.textContent = faPercent;
+        if (label) label.textContent = faPercent;
+        if (ring) ring.style.setProperty("--progress", percent + "%");
+        if (bar) bar.style.width = percent + "%";
+
+        if (title) title.textContent =
+            percent >= 100 ? "پروفایل شما کامل است" :
+            percent >= 70 ? "پروفایل تقریباً کامل است" : "پروفایل را کامل کنید";
+
+        if (text) text.textContent =
+            percent >= 100 ? "همه اطلاعات اصلی حساب شما تکمیل شده است." :
+            "تکمیل اطلاعات حساب، پیگیری سفارش‌ها را ساده‌تر می‌کند.";
+    }
+
+    async function loadProfile() {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            const data = snap.exists() ? snap.data() : {};
+            const values = {
+                "profile-name": data.fullName || "-",
+                "profile-phone": data.phone || "-",
+                "profile-email": data.email || user.email || "-",
+                "profile-province": data.province || "-",
+                "profile-city": data.city || "-",
+                "profile-address": data.address || "-"
+            };
+            Object.entries(values).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            });
+            updatePremiumProfile(data, user);
+        } catch (error) {
+            console.error("Profile error:", error);
+            updatePremiumProfile({}, user);
+        }
+    }
+
+    function updatePremiumLatestOrder(orders) {
+        const el = document.getElementById("dashboard-latest-order");
+        if (!el) return;
+        const list = Array.isArray(orders) ? orders : [];
+        if (!list.length) {
+            el.innerHTML = `<div class="empty-state" style="padding:18px 8px;">
+                <i class="fa-solid fa-box-open"></i><p>هنوز سفارشی ثبت نشده است.</p></div>`;
+            return;
+        }
+        const order = [...list].sort((a,b) =>
+            new Date(b.createdAt || 0) - new Date(a.createdAt || 0))[0];
+        const count = Array.isArray(order.items)
+            ? order.items.reduce((s, i) => s + (Number(i.quantity) || 1), 0) : 0;
+        el.innerHTML = `<div class="mini-order">
+            <div class="mini-order-top">
+                <div>
+                    <div class="mini-order-id">سفارش ${escapeHtml(order.orderId || order.id || "-")}</div>
+                    <div class="mini-order-date">${escapeHtml(formatDate(order.createdAt))}</div>
+                </div>
+                <span class="mini-order-status">${escapeHtml(getStatusText(order))}</span>
+            </div>
+            <div class="mini-order-bottom">
+                <span>${count.toLocaleString("fa-IR")} کالا</span>
+                <strong>${Number(order.total || 0).toLocaleString("fa-IR")} تومان</strong>
+            </div>
+        </div>`;
+    }
+
+    window.openProfile = function() {
+        const menu = document.querySelector('.menu-item[onclick*="switchDashboardTab(\'profile\'"]');
+        switchDashboardTab("profile", menu);
+        loadProfile();
+        window.scrollTo({top:0, behavior:"smooth"});
+    };
+
     /* =========================================================
        AUTH STATE
     ========================================================= */
@@ -5745,88 +5942,7 @@
                    PROFILE
                 ========================================== */
 
-                try {
-
-                    const userDoc =
-                        await getDoc(
-
-                            doc(
-                                db,
-                                "users",
-                                user.uid
-                            )
-
-                        );
-
-
-                    if (
-                        userDoc.exists()
-                    ) {
-
-                        const data =
-                            userDoc.data();
-
-
-                        document.getElementById(
-                            "profile-name"
-                        ).textContent =
-                            data.fullName ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-phone"
-                        ).textContent =
-                            data.phone ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-email"
-                        ).textContent =
-                            data.email ||
-                            user.email ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-province"
-                        ).textContent =
-                            data.province ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-city"
-                        ).textContent =
-                            data.city ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-address"
-                        ).textContent =
-                            data.address ||
-                            "-";
-
-                    } else {
-
-                        document.getElementById(
-                            "profile-email"
-                        ).textContent =
-                            user.email ||
-                            "-";
-
-                    }
-
-                } catch (error) {
-
-                    console.error(
-                        "Profile error:",
-                        error
-                    );
-
-                }
+                await loadProfile();
 
 
                 /* ==========================================
