@@ -2461,18 +2461,18 @@
                     return;
                 }
             } catch (error) {
-                console.warn("Session restore failed:", error);
+                console.warn("Session restore failed, keeping local session:", error);
 
-                // Keep the saved session on temporary network/API failures.
-                // Only clear it when Firebase explicitly rejects the token.
-                const saved = currentSession();
-                if (saved?.user) {
-                    auth.currentUser = saved.user;
-                    callback(saved.user);
+                // Do not destroy the saved session on temporary network/API errors.
+                // The user can still continue with the stored token.
+                if (session?.user) {
+                    auth.currentUser = session.user;
+                    callback(session.user);
                     return;
                 }
             }
 
+            // Only clear authentication when there is no usable saved session.
             localStorage.removeItem(AUTH_STORAGE_KEY);
             auth.currentUser = null;
             callback(null);
@@ -4967,18 +4967,11 @@
 
     async function loadActiveOrders() {
 
-        let user = auth.currentUser;
+        const user =
+            auth.currentUser;
+
 
         if (!user) {
-            const saved = currentSession();
-            if (saved?.user) {
-                auth.currentUser = saved.user;
-                user = saved.user;
-            }
-        }
-
-        if (!user) {
-            console.warn("Orders skipped: user session not ready");
             return;
         }
 
