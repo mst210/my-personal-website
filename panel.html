@@ -535,6 +535,202 @@
             color: #4ade80;
         }
 
+
+        /* ORDER DETAILS / TRACKING */
+
+        .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 13px;
+        }
+
+        .order-details-btn {
+            border: 1px solid rgba(56, 189, 248, .25);
+            background: rgba(56, 189, 248, .08);
+            color: #38bdf8;
+            border-radius: 10px;
+            padding: 9px 13px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 11px;
+            transition: .2s;
+        }
+
+        .order-details-btn:hover {
+            background: rgba(56, 189, 248, .16);
+            transform: translateY(-1px);
+        }
+
+        .tracking-box {
+            margin-top: 14px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 13px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .tracking-title {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 13px;
+        }
+
+        .tracking-steps {
+            display: grid;
+            gap: 9px;
+        }
+
+        .tracking-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .tracking-dot {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.04);
+            font-size: 9px;
+        }
+
+        .tracking-step.done {
+            color: #4ade80;
+        }
+
+        .tracking-step.done .tracking-dot {
+            border-color: rgba(74,222,128,.35);
+            background: rgba(74,222,128,.10);
+        }
+
+        .tracking-step.current {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .tracking-step.current .tracking-dot {
+            border-color: rgba(56,189,248,.35);
+            background: rgba(56,189,248,.10);
+        }
+
+        .order-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(2, 6, 23, .72);
+            backdrop-filter: blur(7px);
+        }
+
+        .order-modal.show {
+            display: flex;
+        }
+
+        .order-modal-card {
+            width: min(650px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background: #111827;
+            box-shadow: 0 25px 70px rgba(0,0,0,.45);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 17px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .modal-close {
+            width: 34px;
+            height: 34px;
+            border: 0;
+            border-radius: 10px;
+            background: rgba(255,255,255,.06);
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .modal-order-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-meta-box {
+            padding: 11px;
+            border-radius: 11px;
+            background: rgba(255,255,255,.035);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-meta-box small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .modal-meta-box strong {
+            font-size: 12px;
+        }
+
+        .notification-toast {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 10000;
+            width: min(360px, calc(100% - 40px));
+            padding: 14px 15px;
+            border: 1px solid rgba(56,189,248,.25);
+            border-radius: 15px;
+            background: #0f172a;
+            box-shadow: 0 18px 45px rgba(0,0,0,.35);
+            transform: translateY(25px);
+            opacity: 0;
+            pointer-events: none;
+            transition: .25s;
+        }
+
+        .notification-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification-toast-title {
+            color: #38bdf8;
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .notification-toast-text {
+            color: #cbd5e1;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
         /* PROFILE */
 
         .profile-grid {
@@ -681,6 +877,17 @@
             </div>
 
             <div class="header-actions">
+
+                <button id="notification-button"
+                    onclick="showNotifications()"
+                    class="back-btn"
+                    style="cursor:pointer; position:relative;">
+
+                    <i class="fa-solid fa-bell"></i>
+                    اعلان‌ها
+                    <span id="notification-count" class="cart-count-badge" style="display:none;">۰</span>
+
+                </button>
 
                 <button id="header-cart-button"
                     onclick="openCart()"
@@ -1177,6 +1384,24 @@
 
 
     <!-- FIREBASE -->
+    <!-- ORDER DETAILS MODAL -->
+    <div id="order-modal" class="order-modal" onclick="closeOrderDetails(event)">
+        <div class="order-modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modal-order-title">جزئیات سفارش</h3>
+                <button class="modal-close" onclick="closeOrderDetails()" aria-label="بستن">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-order-content"></div>
+        </div>
+    </div>
+
+    <div id="notification-toast" class="notification-toast">
+        <div class="notification-toast-title">🔔 تغییر در سفارش</div>
+        <div id="notification-toast-text" class="notification-toast-text"></div>
+    </div>
+
     <script type="module">
 
         import { initializeApp }
@@ -1199,7 +1424,8 @@
             collection,
             getDocs,
             query,
-            orderBy
+            orderBy,
+            onSnapshot
         }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -1689,6 +1915,158 @@
 
         let activeOrdersUnsubscribe = null;
         let pastOrdersUnsubscribe = null;
+        const ordersCache = new Map();
+        const orderStateCache = new Map();
+        let notificationCount = 0;
+        let notificationsInitialized = false;
+        let toastTimer = null;
+
+
+        function formatPersianDate(value) {
+            if (!value) return "نامشخص";
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleDateString("fa-IR") + " - " + date.toLocaleTimeString("fa-IR", {hour:"2-digit", minute:"2-digit"});
+        }
+
+        function getTrackingStage(order) {
+            if (order.status === "cancelled") return 0;
+            if (order.status === "completed") return 4;
+            const text = String(order.statusText || "").toLowerCase();
+            if (text.includes("ارسال") || text.includes("پست") || text.includes("تحویل به پست")) return 3;
+            if (text.includes("آماده") || text.includes("بسته")) return 2;
+            if (text.includes("بررسی") || text.includes("تایید") || text.includes("تأیید")) return 1;
+            return 1;
+        }
+
+        function buildTrackingHtml(order) {
+            if (order.status === "cancelled") {
+                return `
+                    <div class="tracking-box">
+                        <div class="tracking-title">وضعیت سفارش</div>
+                        <div class="tracking-step current">
+                            <span class="tracking-dot"><i class="fa-solid fa-xmark"></i></span>
+                            <span>سفارش لغو شده است</span>
+                        </div>
+                    </div>`;
+            }
+            const stage = getTrackingStage(order);
+            const steps = ["ثبت سفارش", "بررسی سفارش", "آماده‌سازی سفارش", "ارسال سفارش", "تکمیل سفارش"];
+            return `
+                <div class="tracking-box">
+                    <div class="tracking-title">رهگیری سفارش</div>
+                    <div class="tracking-steps">
+                        ${steps.map((label, i) => `
+                            <div class="tracking-step ${i < stage ? "done" : i === stage ? "current" : ""}">
+                                <span class="tracking-dot">
+                                    ${i < stage ? '<i class="fa-solid fa-check"></i>' : (i === stage ? '<i class="fa-solid fa-location-dot"></i>' : (i+1))}
+                                </span>
+                                <span>${label}${i === stage && order.statusText ? ` — ${escapeHtml(order.statusText)}` : ""}</span>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>`;
+        }
+
+        function renderOrderItemsHtml(items) {
+            return (Array.isArray(items) ? items : []).map(item => {
+                const price = Number(item.price) || 0;
+                const quantity = Number(item.quantity) || 1;
+                return `
+                    <div class="order-product">
+                        <div>
+                            <strong>${escapeHtml(item.name || item.title || "محصول")}</strong>
+                            <div class="order-product-info">تعداد: ${quantity.toLocaleString("fa-IR")}</div>
+                        </div>
+                        <span>${(price * quantity).toLocaleString("fa-IR")} تومان</span>
+                    </div>`;
+            }).join("");
+        }
+
+        function openOrderDetails(orderId) {
+            const order = ordersCache.get(orderId);
+            if (!order) return;
+            const modal = document.getElementById("order-modal");
+            const content = document.getElementById("modal-order-content");
+            const title = document.getElementById("modal-order-title");
+            const id = order.orderId || order.id || orderId;
+            title.textContent = "جزئیات سفارش " + id;
+            content.innerHTML = `
+                <div class="modal-order-meta">
+                    <div class="modal-meta-box"><small>شماره سفارش</small><strong>${escapeHtml(id)}</strong></div>
+                    <div class="modal-meta-box"><small>تاریخ ثبت</small><strong>${escapeHtml(formatPersianDate(order.createdAt))}</strong></div>
+                    <div class="modal-meta-box"><small>وضعیت</small><strong>${escapeHtml(order.statusText || "در انتظار بررسی")}</strong></div>
+                    <div class="modal-meta-box"><small>مبلغ کل</small><strong>${Number(order.total || 0).toLocaleString("fa-IR")} تومان</strong></div>
+                </div>
+                <div class="tracking-box">
+                    <div class="tracking-title">محصولات سفارش</div>
+                    ${renderOrderItemsHtml(order.items)}
+                </div>
+                ${buildTrackingHtml(order)}
+            `;
+            modal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+
+        window.openOrderDetails = openOrderDetails;
+
+        function closeOrderDetails(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById("order-modal");
+            modal.classList.remove("show");
+            document.body.style.overflow = "";
+        }
+
+        window.closeOrderDetails = closeOrderDetails;
+
+        function showOrderNotification(order, previous) {
+            notificationCount++;
+            const count = document.getElementById("notification-count");
+            if (count) {
+                count.textContent = notificationCount.toLocaleString("fa-IR");
+                count.style.display = "inline-flex";
+            }
+            const id = order.orderId || order.id || "";
+            const status = order.statusText || (order.status === "completed" ? "تکمیل شده" : order.status === "cancelled" ? "لغو شده" : "به‌روزرسانی شده");
+            const text = `وضعیت سفارش ${id} تغییر کرد: ${status}`;
+            const toast = document.getElementById("notification-toast");
+            const toastText = document.getElementById("notification-toast-text");
+            if (toastText) toastText.textContent = text;
+            if (toast) {
+                toast.classList.add("show");
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove("show"), 5000);
+            }
+            if ("Notification" in window && Notification.permission === "granted") {
+                try { new Notification("تغییر وضعیت سفارش", { body: text }); } catch (_) {}
+            }
+        }
+
+        window.showNotifications = function() {
+            if (notificationCount === 0) {
+                const toast = document.getElementById("notification-toast");
+                const toastText = document.getElementById("notification-toast-text");
+                if (toastText) toastText.textContent = "در حال حاضر اعلان جدیدی ندارید.";
+                if (toast) {
+                    toast.classList.add("show");
+                    clearTimeout(toastTimer);
+                    toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+                }
+                return;
+            }
+            notificationCount = 0;
+            const count = document.getElementById("notification-count");
+            if (count) count.style.display = "none";
+            const toast = document.getElementById("notification-toast");
+            if (toast) toast.classList.remove("show");
+        };
+
+        async function requestNotificationPermission() {
+            if (!("Notification" in window)) return;
+            if (Notification.permission === "default") {
+                try { await Notification.requestPermission(); } catch (_) {}
+            }
+        }
 
         /* LOAD ACTIVE ORDERS - REAL TIME */
 
@@ -1726,6 +2104,13 @@
                         snapshot.forEach(docSnap => {
 
                             const order = docSnap.data();
+                            const fullOrder = { id: docSnap.id, ...order };
+                            const previous = orderStateCache.get(docSnap.id);
+                            ordersCache.set(docSnap.id, fullOrder);
+                            if (notificationsInitialized && previous && (previous.status !== order.status || previous.statusText !== order.statusText)) {
+                                showOrderNotification(fullOrder, previous);
+                            }
+                            orderStateCache.set(docSnap.id, { status: order.status, statusText: order.statusText });
 
                             if (order.status === "active") {
 
@@ -1834,6 +2219,13 @@
 
                                     </div>
 
+                                    <div class="order-actions">
+                                        <button class="order-details-btn" onclick="openOrderDetails('${escapeHtml(order.orderId || order.id)}')">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            جزئیات و رهگیری سفارش
+                                        </button>
+                                    </div>
+
                                 </div>
                             `;
 
@@ -1916,6 +2308,13 @@
                         snapshot.forEach(docSnap => {
 
                             const order = docSnap.data();
+                            const fullOrder = { id: docSnap.id, ...order };
+                            const previous = orderStateCache.get(docSnap.id);
+                            ordersCache.set(docSnap.id, fullOrder);
+                            if (notificationsInitialized && previous && (previous.status !== order.status || previous.statusText !== order.statusText)) {
+                                showOrderNotification(fullOrder, previous);
+                            }
+                            orderStateCache.set(docSnap.id, { status: order.status, statusText: order.statusText });
 
                             if (
                                 order.status === "completed" ||
@@ -1984,6 +2383,13 @@
 
                                     </div>
 
+                                    <div class="order-actions">
+                                        <button class="order-details-btn" onclick="openOrderDetails('${escapeHtml(order.orderId || order.id)}')">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            جزئیات و رهگیری سفارش
+                                        </button>
+                                    </div>
+
                                 </div>
                             `;
 
@@ -2021,6 +2427,11 @@
             }
 
         }
+
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") closeOrderDetails();
+        });
 
 
         /* DASHBOARD TABS */
@@ -2389,6 +2800,14 @@
             async function() {
 
                 try {
+                    notificationsInitialized = false;
+                    ordersCache.clear();
+                    orderStateCache.clear();
+                    notificationCount = 0;
+                    const notificationCountEl = document.getElementById("notification-count");
+                    if (notificationCountEl) notificationCountEl.style.display = "none";
+                    if (activeOrdersUnsubscribe) { activeOrdersUnsubscribe(); activeOrdersUnsubscribe = null; }
+                    if (pastOrdersUnsubscribe) { pastOrdersUnsubscribe(); pastOrdersUnsubscribe = null; }
 
                     await signOut(auth);
 
@@ -2516,6 +2935,8 @@
                     await loadActiveOrders();
 
                     await loadPastOrders();
+                    setTimeout(() => { notificationsInitialized = true; }, 800);
+                    requestNotificationPermission();
 
 
                     /* اگر از products.html آمده */
