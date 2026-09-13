@@ -9,8 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -60,8 +59,6 @@
             margin: 0 auto;
             padding: 25px 0 40px;
         }
-
-        /* HEADER */
 
         .top-header {
             display: flex;
@@ -128,8 +125,6 @@
             font-size: 11px;
             font-weight: 700;
         }
-
-        /* AUTH */
 
         .auth-section {
             max-width: 560px;
@@ -219,6 +214,12 @@
             filter: brightness(1.08);
         }
 
+        .submit-btn:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .auth-switch {
             margin-top: 20px;
             text-align: center;
@@ -242,8 +243,6 @@
             font-size: 12px;
             line-height: 1.8;
         }
-
-        /* DASHBOARD */
 
         .dashboard {
             display: none;
@@ -321,8 +320,6 @@
             color: #38bdf8;
         }
 
-        /* EMPTY */
-
         .empty-state {
             padding: 55px 20px;
             text-align: center;
@@ -340,8 +337,6 @@
         .empty-state p {
             margin: 0;
         }
-
-        /* CART */
 
         .cart-item {
             display: flex;
@@ -460,8 +455,6 @@
             cursor: pointer;
         }
 
-        /* ORDERS */
-
         .active-order-card {
             padding: 18px;
             margin-bottom: 15px;
@@ -535,8 +528,6 @@
             color: #4ade80;
         }
 
-        /* PROFILE */
-
         .profile-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -566,8 +557,6 @@
             font-size: 13px;
         }
 
-        /* SUPPORT */
-
         .support-card {
             padding: 20px;
             border: 1px solid var(--border-color);
@@ -584,8 +573,6 @@
             font-weight: 700;
         }
 
-        /* FOOTER */
-
         footer {
             text-align: center;
             color: var(--text-muted);
@@ -593,9 +580,8 @@
             margin-top: 25px;
         }
 
-        /* MOBILE */
-
         @media (max-width: 800px) {
+
             .dashboard-layout {
                 grid-template-columns: 1fr;
             }
@@ -633,6 +619,7 @@
         }
 
         @media (max-width: 600px) {
+
             .page-container {
                 width: 96%;
                 padding-top: 12px;
@@ -670,906 +657,293 @@
 
 <body>
 
-    <div class="page-container">
+<div class="page-container">
 
-        <!-- HEADER -->
-        <header class="top-header">
+    <header class="top-header">
 
-            <div class="header-title">
-                <h1>پنل اختصاصی کاربر</h1>
-                <p>دکتر محمدصادق تاج | دانشجوی پزشکی</p>
+        <div class="header-title">
+            <h1>پنل اختصاصی کاربر</h1>
+            <p>دکتر محمدصادق تاج | دانشجوی پزشکی</p>
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                id="header-cart-button"
+                onclick="openCart()"
+                class="back-btn cart-header-button">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+                سبد خرید
+
+                <span id="header-cart-count"
+                    class="cart-count-badge">۰</span>
+
+            </button>
+
+            <a href="index.html" class="back-btn">
+                <i class="fa-solid fa-arrow-right"></i>
+                بازگشت
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= AUTH ================= -->
+
+    <section id="auth-section" class="auth-section">
+
+        <!-- LOGIN -->
+
+        <div id="login-form" class="auth-card">
+
+            <div class="auth-icon">
+                <i class="fa-solid fa-user"></i>
             </div>
 
-            <div class="header-actions">
+            <h2>ورود به حساب</h2>
 
-                <button id="header-cart-button"
-                    onclick="openCart()"
-                    class="back-btn cart-header-button"
-                    style="cursor:pointer;">
+            <p>
+                برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
+            </p>
 
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    سبد خرید
+            <form id="login-form-element">
 
-                    <span id="header-cart-count" class="cart-count-badge">۰</span>
+                <div class="form-group">
+
+                    <label>ایمیل</label>
+
+                    <input
+                        id="login-email"
+                        type="email"
+                        class="form-control"
+                        required
+                        autocomplete="email"
+                        placeholder="example@gmail.com">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>رمز عبور</label>
+
+                    <input
+                        id="login-password"
+                        type="password"
+                        class="form-control"
+                        required
+                        autocomplete="current-password"
+                        placeholder="رمز عبور">
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-btn">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    ورود
 
                 </button>
 
-                <a href="index.html" class="back-btn">
-                    <i class="fa-solid fa-arrow-right"></i>
-                    بازگشت
-                </a>
-
-            </div>
-
-        </header>
+            </form>
 
 
-        <!-- AUTH SECTION -->
-        <section id="auth-section" class="auth-section">
+            <div class="auth-switch">
 
-            <!-- LOGIN -->
-            <div id="login-form" class="auth-card">
+                حساب کاربری ندارید؟
 
-                <div class="auth-icon">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-
-                <h2>ورود به حساب</h2>
-
-                <p>
-                    برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
-                </p>
-
-                <form id="login-form-element">
-
-                    <div class="form-group">
-                        <label>ایمیل</label>
-                        <input
-                            id="login-email"
-                            type="email"
-                            class="form-control"
-                            required
-                            autocomplete="email"
-                            placeholder="example@gmail.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label>رمز عبور</label>
-                        <input
-                            id="login-password"
-                            type="password"
-                            class="form-control"
-                            required
-                            autocomplete="current-password"
-                            placeholder="رمز عبور">
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                        ورود
-                    </button>
-
-                </form>
-
-                <div class="auth-switch">
-                    حساب کاربری ندارید؟
-                    <span onclick="showRegister()">ثبت نام کنید</span>
-                </div>
-
-                <div class="vpn-warning">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                   هنگام ورود به پنل کاربری اتصال VPN الزامی است.
-                </div>
+                <span onclick="showRegister()">
+                    ثبت نام کنید
+                </span>
 
             </div>
 
 
-            <!-- REGISTER -->
-            <div id="register-form" class="auth-card" style="display:none;">
+            <div class="vpn-warning">
 
-                <div class="auth-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+
+                ورود به پنل از طریق سرور امن سایت انجام می‌شود.
+
+            </div>
+
+        </div>
+
+
+        <!-- REGISTER -->
+
+        <div
+            id="register-form"
+            class="auth-card"
+            style="display:none;">
+
+            <div class="auth-icon">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+
+            <h2>ایجاد حساب کاربری</h2>
+
+            <p>
+                اطلاعات خود را برای ایجاد حساب وارد کنید.
+            </p>
+
+
+            <form id="register-form-element">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>نام</label>
+
+                        <input
+                            id="reg-firstname"
+                            type="text"
+                            class="form-control"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>نام خانوادگی</label>
+
+                        <input
+                            id="reg-lastname"
+                            type="text"
+                            class="form-control"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>شماره موبایل</label>
+
+                    <input
+                        id="reg-phone"
+                        type="tel"
+                        class="form-control"
+                        required
+                        placeholder="09xxxxxxxxx">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>ایمیل</label>
+
+                    <input
+                        id="reg-email"
+                        type="email"
+                        class="form-control"
+                        required>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>استان</label>
+
+                        <input
+                            id="reg-province"
+                            type="text"
+                            class="form-control"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>شهر</label>
+
+                        <input
+                            id="reg-city"
+                            type="text"
+                            class="form-control"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>آدرس پستی</label>
+
+                    <textarea
+                        id="reg-address"
+                        class="form-control"
+                        rows="3"
+                        required></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>رمز عبور</label>
+
+                    <input
+                        id="reg-password"
+                        type="password"
+                        class="form-control"
+                        minlength="6"
+                        required>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-btn">
+
                     <i class="fa-solid fa-user-plus"></i>
-                </div>
+                    ثبت نام
 
-                <h2>ایجاد حساب کاربری</h2>
+                </button>
 
-                <p>
-                    اطلاعات خود را برای ایجاد حساب وارد کنید.
-                </p>
+            </form>
 
-                <form id="register-form-element">
 
-                    <div class="form-grid">
+            <div class="auth-switch">
 
-                        <div class="form-group">
-                            <label>نام</label>
-                            <input id="reg-firstname"
-                                type="text"
-                                class="form-control"
-                                required>
-                        </div>
+                قبلاً ثبت نام کرده‌اید؟
 
-                        <div class="form-group">
-                            <label>نام خانوادگی</label>
-                            <input id="reg-lastname"
-                                type="text"
-                                class="form-control"
-                                required>
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label>شماره موبایل</label>
-                        <input id="reg-phone"
-                            type="tel"
-                            class="form-control"
-                            required
-                            placeholder="09xxxxxxxxx">
-                    </div>
-
-                    <div class="form-group">
-                        <label>ایمیل</label>
-                        <input id="reg-email"
-                            type="email"
-                            class="form-control"
-                            required>
-                    </div>
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-                            <label>استان</label>
-                            <input id="reg-province"
-                                type="text"
-                                class="form-control"
-                                required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>شهر</label>
-                            <input id="reg-city"
-                                type="text"
-                                class="form-control"
-                                required>
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label>آدرس پستی</label>
-                        <textarea
-                            id="reg-address"
-                            class="form-control"
-                            rows="3"
-                            required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>رمز عبور</label>
-                        <input id="reg-password"
-                            type="password"
-                            class="form-control"
-                            minlength="6"
-                            required>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <i class="fa-solid fa-user-plus"></i>
-                        ثبت نام
-                    </button>
-
-                </form>
-
-                <div class="auth-switch">
-                    قبلاً ثبت نام کرده‌اید؟
-                    <span onclick="showLogin()">وارد شوید</span>
-                </div>
-
-                <div class="vpn-warning">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                   اتصال vpn هنگام ورود به پنل کاربری الزامی است.
-                </div>
+                <span onclick="showLogin()">
+                    وارد شوید
+                </span>
 
             </div>
 
-        </section>
 
+            <div class="vpn-warning">
 
-        <!-- DASHBOARD -->
-        <section id="dashboard" class="dashboard">
+                <i class="fa-solid fa-shield-halved"></i>
 
-            <div class="dashboard-layout">
-
-                <!-- SIDEBAR -->
-                <aside class="sidebar">
-
-                    <div id="cart-menu-item"
-                        class="menu-item"
-                        onclick="switchDashboardTab('cart', this)">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span>سبد خرید</span>
-
-                        <span id="cart-count"
-                            style="
-                            background:#ef4444;
-                            color:#fff;
-                            font-size:11px;
-                            min-width:20px;
-                            height:20px;
-                            padding:0 5px;
-                            border-radius:50%;
-                            display:inline-flex;
-                            align-items:center;
-                            justify-content:center;
-                            margin-right:auto;
-                        ">۰</span>
-
-                    </div>
-
-
-                    <div class="menu-item active"
-                        onclick="switchDashboardTab('active', this)">
-
-                        <i class="fa-solid fa-box"></i>
-                        <span>سفارشات فعال</span>
-
-                    </div>
-
-
-                    <div class="menu-item"
-                        onclick="switchDashboardTab('profile', this)">
-
-                        <i class="fa-solid fa-user"></i>
-                        <span>اطلاعات حساب</span>
-
-                    </div>
-
-
-                    <div class="menu-item"
-                        onclick="switchDashboardTab('support', this)">
-
-                        <i class="fa-solid fa-headset"></i>
-                        <span>پشتیبانی</span>
-
-                    </div>
-
-
-                    <div class="menu-item logout"
-                        onclick="logoutUser()">
-
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>خروج</span>
-
-                    </div>
-
-                </aside>
-
-
-                <!-- MAIN PANEL -->
-                <main class="main-panel">
-
-
-                    <!-- ACTIVE ORDERS -->
-                    <div id="tab-active" class="tab-content active">
-
-                        <div class="panel-title">
-                            <i class="fa-solid fa-box"></i>
-                            <span>سفارشات فعال</span>
-                        </div>
-
-                        <div id="active-orders">
-
-                            <div class="empty-state">
-                                <i class="fa-solid fa-box-open"></i>
-                                <p>در حال دریافت سفارشات...</p>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PAST ORDERS -->
-                    <div id="tab-past" class="tab-content">
-
-                        <div class="panel-title">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                            <span>سفارشات گذشته</span>
-                        </div>
-
-                        <div id="past-orders">
-
-                            <div class="empty-state">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                <p>هنوز سفارش گذشته‌ای ندارید.</p>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- CART -->
-                    <div id="tab-cart" class="tab-content">
-
-                        <div class="panel-title">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span>سبد خرید من</span>
-                        </div>
-
-                        <div id="cart-items"></div>
-
-                        <div id="cart-empty" class="empty-state">
-
-                            <i class="fa-solid fa-cart-shopping"></i>
-
-                            <p>
-                                سبد خرید شما خالی است.
-                            </p>
-
-                        </div>
-
-
-                        <div id="cart-summary"
-                            class="cart-summary"
-                            style="display:none;">
-
-                            <div class="cart-total-row">
-
-                                <span class="cart-total-label">
-                                    مجموع سبد خرید:
-                                </span>
-
-                                <strong id="cart-total"
-                                    class="cart-total-value">
-                                    ۰ تومان
-                                </strong>
-
-                            </div>
-
-
-                            <button onclick="submitCart()"
-                                class="submit-btn">
-
-                                <i class="fa-solid fa-paper-plane"></i>
-                                تأیید و ثبت سفارش
-
-                            </button>
-
-
-                            <button onclick="clearCart()"
-                                class="clear-cart-btn">
-
-                                <i class="fa-solid fa-trash"></i>
-                                خالی کردن سبد
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PROFILE -->
-                    <div id="tab-profile" class="tab-content">
-
-                        <div class="panel-title">
-                            <i class="fa-solid fa-user"></i>
-                            <span>اطلاعات حساب</span>
-                        </div>
-
-
-                        <div class="profile-grid">
-
-                            <div class="profile-box">
-                                <span class="profile-label">نام و نام خانوادگی</span>
-                                <div id="profile-name"
-                                    class="profile-value">
-                                    -
-                                </div>
-                            </div>
-
-
-                            <div class="profile-box">
-                                <span class="profile-label">شماره موبایل</span>
-                                <div id="profile-phone"
-                                    class="profile-value">
-                                    -
-                                </div>
-                            </div>
-
-
-                            <div class="profile-box">
-                                <span class="profile-label">ایمیل</span>
-                                <div id="profile-email"
-                                    class="profile-value">
-                                    -
-                                </div>
-                            </div>
-
-
-                            <div class="profile-box">
-                                <span class="profile-label">استان</span>
-                                <div id="profile-province"
-                                    class="profile-value">
-                                    -
-                                </div>
-                            </div>
-
-
-                            <div class="profile-box">
-                                <span class="profile-label">شهر</span>
-                                <div id="profile-city"
-                                    class="profile-value">
-                                    -
-                                </div>
-                            </div>
-
-
-                            <div class="profile-box full">
-                                <span class="profile-label">آدرس پستی</span>
-                                <div id="profile-address"
-                                    class="profile-value">
-                                    -
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- SUPPORT -->
-                    <div id="tab-support" class="tab-content">
-
-                        <div class="panel-title">
-                            <i class="fa-solid fa-headset"></i>
-                            <span>پشتیبانی</span>
-                        </div>
-
-
-                        <div class="support-card">
-
-                            <h3>
-                                <i class="fa-solid fa-phone"></i>
-                                ارتباط با پشتیبانی
-                            </h3>
-
-                            <p style="color:#94a3b8; line-height:2;">
-                                برای پیگیری سفارش یا دریافت راهنمایی،
-                                می‌توانید با شماره زیر تماس بگیرید.
-                            </p>
-
-                            <a href="tel:09103909971"
-                                class="support-phone">
-
-                                09103909971
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </main>
+                ثبت‌نام و ورود از طریق سرور امن سایت انجام می‌شود.
 
             </div>
 
-        </section>
+        </div>
+
+    </section>
 
 
-        <footer>
-            © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
-        </footer>
 
-    </div>
-
-
-    <!-- FIREBASE AUTH + CLOUDFLARE WORKER -->
-    <script type="module">
-        const WORKER_URL = "https://taj-medical-api.mst-taj1383.workers.dev";
-        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyNyygdztCbXVnqnzAdk0cJeb-MCWexfUS3WNfWQ_DvwWxB6Kl72uaKDvOXY5fYP6O-_A/exec";
-        const CART_KEY = "taj_medical_cart";
-        const AUTH_KEY = "taj_medical_auth";
-
-        function getAuthSession() {
-            try { return JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); } catch (_) { return null; }
-        }
-        function saveAuthSession(session) { localStorage.setItem(AUTH_KEY, JSON.stringify(session)); }
-        function clearAuthSession() { localStorage.removeItem(AUTH_KEY); }
-
-        async function refreshAuthSession() {
-            const session = getAuthSession();
-            if (!session?.refreshToken) return null;
-            try {
-                const r = await fetch(`${WORKER_URL}/api/auth/refresh`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({refreshToken:session.refreshToken}) });
-                const d = await r.json().catch(()=>({}));
-                if (!r.ok || !d.success) { clearAuthSession(); return null; }
-                const next={...session,...d,idToken:d.idToken,refreshToken:d.refreshToken||session.refreshToken,user:d.user||session.user};
-                saveAuthSession(next); return next;
-            } catch (_) { return null; }
-        }
-
-        async function workerRequest(path, options = {}, retry = true) {
-            const session=getAuthSession();
-            if (!session?.idToken) throw new Error("AUTH_REQUIRED");
-            const response=await fetch(`${WORKER_URL}${path}`, {...options, headers:{...(options.headers||{}),Authorization:`Bearer ${session.idToken}`,"Content-Type":"application/json"}});
-            const text=await response.text();
-            let data={}; try { data=text?JSON.parse(text):{}; } catch (_) { data={success:false,error:text||"پاسخ نامعتبر از سرور"}; }
-            if (response.status===401 && retry) { const refreshed=await refreshAuthSession(); if (refreshed?.idToken) return workerRequest(path,options,false); throw new Error("AUTH_REQUIRED"); }
-            if (!response.ok || data?.success===false) throw new Error(data?.error||`HTTP ${response.status}`);
-            return data;
-        }
-
-        function getCart() {
-            try {
-                const cart = JSON.parse(localStorage.getItem(CART_KEY));
-                return Array.isArray(cart) ? cart : [];
-            } catch (error) {
-                console.error(error);
-                return [];
-            }
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem(CART_KEY, JSON.stringify(cart));
-            renderCart();
-        }
-
-        function formatPrice(price) {
-            return Number(price || 0).toLocaleString("fa-IR");
-        }
-
-        function escapeHtml(value) {
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function renderCart() {
-            const cart = getCart();
-            const container = document.getElementById("cart-items");
-            const empty = document.getElementById("cart-empty");
-            const summary = document.getElementById("cart-summary");
-            const totalElement = document.getElementById("cart-total");
-            const cartCount = document.getElementById("cart-count");
-            const headerCount = document.getElementById("header-cart-count");
-            if (!container) return;
-
-            let totalQuantity = 0;
-            let totalPrice = 0;
-            cart.forEach(item => {
-                const quantity = Number(item.quantity) || 1;
-                const price = Number(item.price) || 0;
-                totalQuantity += quantity;
-                totalPrice += price * quantity;
-            });
-
-            if (cartCount) cartCount.textContent = totalQuantity.toLocaleString("fa-IR");
-            if (headerCount) headerCount.textContent = totalQuantity.toLocaleString("fa-IR");
-
-            if (!cart.length) {
-                container.innerHTML = "";
-                if (empty) empty.style.display = "block";
-                if (summary) summary.style.display = "none";
-                return;
-            }
-
-            if (empty) empty.style.display = "none";
-            if (summary) summary.style.display = "block";
-
-            container.innerHTML = cart.map((item, index) => {
-                const title = item.name || item.title || "محصول";
-                const price = Number(item.price) || 0;
-                const quantity = Number(item.quantity) || 1;
-                const image = item.image || "";
-
-                return `
-                    <div class="cart-item">
-                        <div class="cart-item-image">
-                            ${image
-                                ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-box\\'></i>'">`
-                                : `<i class="fa-solid fa-box"></i>`}
-                        </div>
-                        <div class="cart-item-info">
-                            <div class="cart-item-title">${escapeHtml(title)}</div>
-                            <div class="cart-item-price">${formatPrice(price)} تومان</div>
-                        </div>
-                        <div class="quantity-control">
-                            <button class="quantity-btn" onclick="changeQuantity(${index}, 1)">+</button>
-                            <span class="quantity-number">${quantity.toLocaleString("fa-IR")}</span>
-                            <button class="quantity-btn" onclick="changeQuantity(${index}, -1)">−</button>
-                        </div>
-                        <button class="remove-cart-btn" onclick="removeFromCart(${index})" title="حذف">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>`;
-            }).join("");
-
-            if (totalElement) totalElement.textContent = formatPrice(totalPrice) + " تومان";
-        }
-
-        window.changeQuantity = function(index, change) {
-            const cart = getCart();
-            if (!cart[index]) return;
-            cart[index].quantity = (Number(cart[index].quantity) || 1) + change;
-            if (cart[index].quantity <= 0) cart.splice(index, 1);
-            saveCart(cart);
-        };
-
-        window.removeFromCart = function(index) {
-            const cart = getCart();
-            if (!cart[index]) return;
-            cart.splice(index, 1);
-            saveCart(cart);
-        };
-
-        window.clearCart = function() {
-            if (!getCart().length) return;
-            if (!confirm("آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟")) return;
-            localStorage.removeItem(CART_KEY);
-            renderCart();
-        };
-
-        function renderOrders(orders, mode) {
-            const container = document.getElementById(mode === "active" ? "active-orders" : "past-orders");
-            if (!container) return;
-
-            const filtered = orders.filter(order => mode === "active"
-                ? order.status === "active"
-                : order.status === "completed" || order.status === "cancelled");
-
-            if (!filtered.length) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid ${mode === "active" ? "fa-box-open" : "fa-clock-rotate-left"}"></i>
-                        <p>${mode === "active" ? "در حال حاضر سفارش فعالی ندارید." : "هنوز سفارش گذشته‌ای ندارید."}</p>
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = filtered.map(order => {
-                const date = order.createdAt
-                    ? new Date(order.createdAt).toLocaleDateString("fa-IR")
-                    : "نامشخص";
-                const items = Array.isArray(order.items) ? order.items : [];
-                const itemsHtml = mode === "active"
-                    ? items.map(item => {
-                        const price = Number(item.price) || 0;
-                        const quantity = Number(item.quantity) || 1;
-                        return `
-                            <div class="order-product">
-                                <div>
-                                    <strong>${escapeHtml(item.name || item.title || "محصول")}</strong>
-                                    <div class="order-product-info">تعداد: ${quantity.toLocaleString("fa-IR")}</div>
-                                </div>
-                                <span>${formatPrice(price * quantity)} تومان</span>
-                            </div>`;
-                    }).join("")
-                    : "";
-
-                return `
-                    <div class="active-order-card">
-                        <div class="order-header">
-                            <div>
-                                <strong>سفارش ${escapeHtml(order.id || order.orderId || "")}</strong>
-                                <small>تاریخ ثبت: ${date}</small>
-                            </div>
-                            <span class="order-status">${escapeHtml(order.statusText || (mode === "active" ? "در انتظار بررسی" : "تکمیل شده"))}</span>
-                        </div>
-                        ${mode === "active" ? `<div class="order-products">${itemsHtml}</div>` : ""}
-                        <div class="order-footer">
-                            <span>مبلغ کل</span>
-                            <strong>${formatPrice(order.total || 0)} تومان</strong>
-                        </div>
-                    </div>`;
-            }).join("");
-        }
-
-        async function loadOrders() {
-            const active = document.getElementById("active-orders");
-            const past = document.getElementById("past-orders");
-            try {
-                const result = await workerRequest("/api/orders");
-                const orders = Array.isArray(result.orders) ? result.orders : [];
-                renderOrders(orders, "active");
-                renderOrders(orders, "past");
-                return orders;
-            } catch (error) {
-                console.error("Load orders error:", error);
-                const html = `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>دریافت سفارشات با خطا مواجه شد.</p></div>`;
-                if (active) active.innerHTML = html;
-                if (past) past.innerHTML = html;
-                return [];
-            }
-        }
-
-        async function loadActiveOrders() {
-            const orders = await loadOrders();
-            renderOrders(orders, "active");
-        }
-
-        async function loadPastOrders() {
-            const orders = await loadOrders();
-            renderOrders(orders, "past");
-        }
-
-        window.submitCart = async function() {
-            const cart = getCart();
-            if (!cart.length) {
-                alert("سبد خرید شما خالی است.");
-                return;
-            }
-
-            const user = getAuthSession()?.user;
-            if (!user) {
-                alert("لطفاً ابتدا وارد حساب کاربری خود شوید.");
-                return;
-            }
-
-            const total = cart.reduce((sum, item) => {
-                return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
-            }, 0);
-
-            const order = {
-                orderId: "order_" + Date.now(),
-                items: cart.map(item => ({
-                    id: item.id || "",
-                    name: item.name || item.title || "محصول",
-                    title: item.title || item.name || "محصول",
-                    price: Number(item.price) || 0,
-                    quantity: Number(item.quantity) || 1,
-                    image: item.image || ""
-                })),
-                total
-            };
-
-            try {
-                const result = await workerRequest("/api/orders", {
-                    method: "POST",
-                    body: JSON.stringify(order)
-                });
-
-                const savedOrder = result.order || order;
-
-                try {
-                    await fetch(GOOGLE_SHEET_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(savedOrder)
-                    });
-                } catch (sheetError) {
-                    console.error("Google Sheet error:", sheetError);
-                }
-
-                localStorage.removeItem(CART_KEY);
-                renderCart();
-                await loadOrders();
-
-                const activeMenu = document.querySelector('.menu-item[onclick*="switchDashboardTab(\'active\'"]');
-                switchDashboardTab("active", activeMenu);
-                alert("سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد.");
-            } catch (error) {
-                console.error("Order error:", error);
-                alert(error.message === "AUTH_REQUIRED"
-                    ? "جلسه ورود شما منقضی شده است. لطفاً دوباره وارد شوید."
-                    : "ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید.");
-            }
-        };
-
-        window.switchDashboardTab = function(tab, element) {
-            document.querySelectorAll(".tab-content").forEach(item => item.classList.remove("active"));
-            document.querySelectorAll(".menu-item").forEach(item => item.classList.remove("active"));
-
-            const target = document.getElementById("tab-" + tab);
-            if (target) target.classList.add("active");
-            if (element) element.classList.add("active");
-
-            if (tab === "active") loadActiveOrders();
-            if (tab === "past") loadPastOrders();
-            if (tab === "cart") renderCart();
-        };
-
-        window.openCart = function() {
-            const cartMenu = document.getElementById("cart-menu-item");
-            switchDashboardTab("cart", cartMenu);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        };
-
-        window.showRegister = function() {
-            document.getElementById("login-form").style.display = "none";
-            document.getElementById("register-form").style.display = "block";
-        };
-
-        window.showLogin = function() {
-            document.getElementById("register-form").style.display = "none";
-            document.getElementById("login-form").style.display = "block";
-        };
-
-        document.getElementById("login-form-element").addEventListener("submit", async event => {
-            event.preventDefault();
-            const email=document.getElementById("login-email").value.trim();
-            const password=document.getElementById("login-password").value;
-            if(!email||!password){alert("لطفاً ایمیل و رمز عبور را وارد کنید.");return;}
-            const button=event.target.querySelector("button[type='submit']"); const original=button.innerHTML;
-            try {
-                button.disabled=true; button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> در حال ورود...';
-                const r=await fetch(`${WORKER_URL}/api/auth/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
-                const d=await r.json().catch(()=>({}));
-                if(!r.ok||!d.success){const e=new Error(d.error||"ورود انجام نشد.");e.code=d.code||"auth/unknown";throw e;}
-                saveAuthSession(d); await showDashboard(d.user);
-            } catch(error){
-                console.error("LOGIN ERROR:",error);
-                const m={"auth/invalid-credential":"ایمیل یا رمز عبور اشتباه است.","auth/user-not-found":"حسابی با این ایمیل پیدا نشد.","auth/invalid-email":"فرمت ایمیل صحیح نیست.","auth/user-disabled":"این حساب کاربری غیرفعال شده است.","auth/too-many-requests":"تعداد تلاش‌های ورود زیاد بوده. کمی بعد دوباره امتحان کنید.","auth/operation-not-allowed":"ورود با ایمیل و رمز عبور فعال نیست."};
-                alert(m[error.code]||error.message||"ورود انجام نشد.");
-            } finally { button.disabled=false; button.innerHTML=original; }
-        });
-
-        document.getElementById("register-form-element").addEventListener("submit", async event => {
-            event.preventDefault();
-            const fname=document.getElementById("reg-firstname").value.trim();
-            const lname=document.getElementById("reg-lastname").value.trim();
-            const phone=document.getElementById("reg-phone").value.trim();
-            const email=document.getElementById("reg-email").value.trim();
-            const province=document.getElementById("reg-province").value.trim();
-            const city=document.getElementById("reg-city").value.trim();
-            const address=document.getElementById("reg-address").value.trim();
-            const password=document.getElementById("reg-password").value;
-            try {
-                const r=await fetch(`${WORKER_URL}/api/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
-                const d=await r.json().catch(()=>({}));
-                if(!r.ok||!d.success){const e=new Error(d.error||"ثبت نام انجام نشد.");e.code=d.code||"auth/unknown";throw e;}
-                saveAuthSession(d);
-                await workerRequest("/api/me",{method:"POST",body:JSON.stringify({firstName:fname,lastName:lname,fullName:`${fname} ${lname}`.trim(),phone,email,province,city,address,createdAt:new Date().toISOString()})});
-                alert("حساب کاربری شما با موفقیت ایجاد شد.");
-                await showDashboard(d.user);
-            } catch(error){
-                console.error("REGISTER ERROR:",error);
-                const m={"auth/email-already-in-use":"این ایمیل قبلاً ثبت شده است.","auth/weak-password":"رمز عبور باید حداقل ۶ کاراکتر باشد.","auth/invalid-email":"فرمت ایمیل صحیح نیست."};
-                alert(m[error.code]||error.message||"ثبت نام انجام نشد.");
-            }
-        });
-
-        window.logoutUser = async function() { clearAuthSession(); location.reload(); };
-
-        async function loadProfile(user) {
-            try {
-                const result = await workerRequest("/api/me");
-                const data = result.data || {};
-                document.getElementById("profile-name").textContent = data.fullName || "-";
-                document.getElementById("profile-phone").textContent = data.phone || "-";
-                document.getElementById("profile-email").textContent = data.email || user.email || "-";
-                document.getElementById("profile-province").textContent = data.province || "-";
-                document.getElementById("profile-city").textContent = data.city || "-";
-                document.getElementById("profile-address").textContent = data.address || "-";
-            } catch (error) {
-                console.error("Profile error:", error);
-                document.getElementById("profile-email").textContent = user.email || "-";
-            }
-        }
-
-        async function showDashboard(user) {
-            document.getElementById("auth-section").style.display="none";
-            document.getElementById("dashboard").style.display="block";
-            await loadProfile(user); renderCart(); await loadOrders();
-            const params=new URLSearchParams(window.location.search);
-            if(params.get("cart")==="1") setTimeout(()=>openCart(),300);
-        }
-
-        async function restoreSession() {
-            const session=getAuthSession();
-            if(!session?.idToken||!session?.user) return;
-            try { await showDashboard(session.user); } catch(e) { console.error(e); clearAuthSession(); }
-        }
-
-        renderCart();
-        restoreSession();
-    </script>
-</body>
-</html>
+   
