@@ -1405,6 +1405,14 @@
 
             </div>
 
+            <div class="vpn-warning">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                هنگام ورود به پنل کاربری اتصال VPN الزامی است.
+
+            </div>
+
         </div>
 
 
@@ -5098,7 +5106,15 @@
 
 
         if (!user) {
-            return;
+            const session = currentSession();
+            if (session?.user) {
+                auth.currentUser = session.user;
+            }
+
+            if (!auth.currentUser) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                if (!auth.currentUser) return;
+            }
         }
 
 
@@ -5735,6 +5751,13 @@
 
 
             if (user) {
+
+                // Ensure the restored session is available everywhere
+                auth.currentUser = user;
+
+                // Small delay after restore so Firestore calls do not run
+                // before the auth state is fully ready.
+                await new Promise(resolve => setTimeout(resolve, 300));
 
                 authSection.style.display =
                     "none";
