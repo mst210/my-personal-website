@@ -2488,7 +2488,16 @@
         authListeners.push(callback);
 
         Promise.resolve().then(async () => {
-            const session = currentSession();
+            let session = currentSession();
+
+            // Wait briefly for stored session restoration instead of
+            // immediately declaring the user logged out after refresh.
+            if (!session?.user || !session?.idToken) {
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    session = currentSession();
+                } catch (e) {}
+            }
 
             if (!session?.idToken || !session?.user) {
                 callback(null);
@@ -2517,8 +2526,7 @@
                 console.warn("Session restore failed:", error);
             }
 
-            // Do not destroy a valid local session because of a temporary
-            // /auth/session network or token verification failure.
+            // Keep local session when server verification has a temporary issue.
             const fallbackSession = currentSession();
 
             if (fallbackSession?.user) {
