@@ -2490,13 +2490,10 @@
         Promise.resolve().then(async () => {
             let session = currentSession();
 
-            // Wait briefly for stored session restoration instead of
-            // immediately declaring the user logged out after refresh.
-            if (!session?.user || !session?.idToken) {
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                    session = currentSession();
-                } catch (e) {}
+            // Wait briefly for session restoration after page refresh.
+            if (!session?.idToken || !session?.user) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                session = currentSession();
             }
 
             if (!session?.idToken || !session?.user) {
@@ -2526,7 +2523,8 @@
                 console.warn("Session restore failed:", error);
             }
 
-            // Keep local session when server verification has a temporary issue.
+            // Do not destroy a valid local session because of a temporary
+            // /auth/session network or token verification failure.
             const fallbackSession = currentSession();
 
             if (fallbackSession?.user) {
