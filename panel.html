@@ -2461,7 +2461,13 @@
                     return;
                 }
             } catch (error) {
-                console.warn("Session restore failed:", error);
+                console.warn("Session restore failed, keeping cached session:", error);
+
+                // Do not destroy the session on a temporary network/API failure.
+                // apiFetch already tries refreshToken when needed.
+                auth.currentUser = session.user;
+                callback(session.user);
+                return;
             }
 
             localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -4963,6 +4969,11 @@
 
 
         if (!user) {
+            // Auth restore can finish a moment after page initialization.
+            // Retry once instead of silently skipping orders.
+            setTimeout(() => {
+                if (auth.currentUser) loadActiveOrders();
+            }, 500);
             return;
         }
 
