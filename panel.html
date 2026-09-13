@@ -2461,13 +2461,16 @@
                     return;
                 }
             } catch (error) {
-                console.warn("Session restore failed, keeping cached session:", error);
+                console.warn("Session restore failed:", error);
 
-                // Do not destroy the session on a temporary network/API failure.
-                // apiFetch already tries refreshToken when needed.
-                auth.currentUser = session.user;
-                callback(session.user);
-                return;
+                // Keep the saved session on temporary network/API failures.
+                // Only clear it when Firebase explicitly rejects the token.
+                const saved = currentSession();
+                if (saved?.user) {
+                    auth.currentUser = saved.user;
+                    callback(saved.user);
+                    return;
+                }
             }
 
             localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -4964,16 +4967,18 @@
 
     async function loadActiveOrders() {
 
-        const user =
-            auth.currentUser;
-
+        let user = auth.currentUser;
 
         if (!user) {
-            // Auth restore can finish a moment after page initialization.
-            // Retry once instead of silently skipping orders.
-            setTimeout(() => {
-                if (auth.currentUser) loadActiveOrders();
-            }, 500);
+            const saved = currentSession();
+            if (saved?.user) {
+                auth.currentUser = saved.user;
+                user = saved.user;
+            }
+        }
+
+        if (!user) {
+            console.warn("Orders skipped: user session not ready");
             return;
         }
 
@@ -5106,15 +5111,7 @@
 
 
         if (!user) {
-            const session = currentSession();
-            if (session?.user) {
-                auth.currentUser = session.user;
-            }
-
-            if (!auth.currentUser) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-                if (!auth.currentUser) return;
-            }
+            return;
         }
 
 
@@ -5751,13 +5748,6 @@
 
 
             if (user) {
-
-                // Ensure the restored session is available everywhere
-                auth.currentUser = user;
-
-                // Small delay after restore so Firestore calls do not run
-                // before the auth state is fully ready.
-                await new Promise(resolve => setTimeout(resolve, 300));
 
                 authSection.style.display =
                     "none";
