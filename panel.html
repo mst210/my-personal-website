@@ -1405,6 +1405,14 @@
 
             </div>
 
+            <div class="vpn-warning">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                هنگام ورود به پنل کاربری اتصال VPN الزامی است.
+
+            </div>
+
         </div>
 
 
@@ -2240,8 +2248,61 @@
         return readAuth();
     }
 
+    function tokenNeedsRefresh(session) {
+        try {
+            if (!session?.idToken) return false;
+            const payload = JSON.parse(atob(session.idToken.split(".")[1]));
+            if (!payload.exp) return false;
+            return (payload.exp * 1000) - Date.now() < 5 * 60 * 1000;
+        } catch {
+            return false;
+        }
+    }
+
+    async function refreshSessionToken(session) {
+        if (!session?.refreshToken) return session;
+        const refreshResponse = await fetch(
+            `${API_BASE}/auth/refresh`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    refreshToken: session.refreshToken
+                })
+            }
+        );
+
+        if (!refreshResponse.ok) return session;
+
+        const refreshed = await refreshResponse.json();
+        const nextSession = {
+            ...session,
+            idToken: refreshed.idToken,
+            refreshToken: refreshed.refreshToken || session.refreshToken,
+            expiresIn: refreshed.expiresIn
+        };
+
+        localStorage.setItem(
+            AUTH_STORAGE_KEY,
+            JSON.stringify(nextSession)
+        );
+
+        return nextSession;
+    }
+
     async function apiFetch(path, options = {}, retry = true) {
-        const session = currentSession();
+        let session = currentSession();
+
+        if (tokenNeedsRefresh(session)) {
+            try {
+                session = await refreshSessionToken(session);
+            } catch (e) {
+                console.warn("Pre request token refresh failed", e);
+            }
+        }
+
         const headers = new Headers(options.headers || {});
 
         headers.set("Content-Type", "application/json");
@@ -2453,21 +2514,19 @@
                     return;
                 }
             } catch (error) {
-                console.warn("Session restore failed, keeping local session:", error);
-
-                // Do not destroy the saved session on temporary network/API errors.
-                // The user can still continue with the stored token.
-                if (session?.user) {
-                    auth.currentUser = session.user;
-                    callback(session.user);
-                    return;
-                }
+                console.warn("Session restore failed:", error);
             }
 
-            // Only clear authentication when there is no usable saved session.
-            localStorage.removeItem(AUTH_STORAGE_KEY);
-            auth.currentUser = null;
-            callback(null);
+            // Do not destroy a valid local session because of a temporary
+            // /auth/session network or token verification failure.
+            const fallbackSession = currentSession();
+
+            if (fallbackSession?.user) {
+                auth.currentUser = fallbackSession.user;
+                callback(fallbackSession.user);
+            } else {
+                callback(null);
+            }
         });
 
         return () => {
@@ -2930,11 +2989,20 @@
 
     function startNotificationsRealtime() {
 
-        const user =
-            auth.currentUser;
+        let user = auth.currentUser;
 
+        // Restore user after page refresh if Firebase proxy state
+        // has not been initialized yet.
+        if (!user) {
+            const session = currentSession();
+            if (session?.user) {
+                user = session.user;
+                auth.currentUser = user;
+            }
+        }
 
         if (!user) {
+            console.warn("No authenticated user for orders");
             return;
         }
 
