@@ -11,11 +11,11 @@ async function api(path){
 
 async function init(){
  const s=session();
- if(!s?.idToken){location.href="../panel.html";return}
- try{
-  const [stats,users,orders]=await Promise.all([
-   api("/admin/stats"),api("/admin/users"),api("/admin/orders")
-  ]);
+ if(!s?.idToken){
+    document.getElementById("loading").textContent =
+    "توکن ورود پیدا نشد. ابتدا از پنل کاربر وارد شوید.";
+    return;
+}
   usersCount.textContent=stats.users||0;
   ordersCount.textContent=stats.orders||0;
   statusCount.textContent=JSON.stringify(stats.status||{});
