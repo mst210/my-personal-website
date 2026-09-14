@@ -12,7 +12,7 @@ function session(){
 async function api(path){
     const s=session();
 
-    if(!s?.idToken){
+    if(!s || !s.idToken){
         throw new Error("NO_TOKEN");
     }
 
@@ -37,15 +37,6 @@ async function init(){
 
     try{
 
-        const s=session();
-
-        if(!s?.idToken){
-            loading.textContent=
-            "ابتدا وارد حساب کاربری شوید.";
-            return;
-        }
-
-
         const [stats,users,orders]=await Promise.all([
             api("/admin/stats"),
             api("/admin/users"),
@@ -54,32 +45,27 @@ async function init(){
 
 
         document.getElementById("usersCount").textContent =
-            stats.users || 0;
+        stats.users || 0;
 
         document.getElementById("ordersCount").textContent =
-            stats.orders || 0;
-
-        document.getElementById("statusCount").textContent =
-            JSON.stringify(stats.status || {});
+        stats.orders || 0;
 
 
         document.getElementById("usersTable").innerHTML =
-            (users.users || []).map(u=>`
-                <tr>
-                    <td>${u.id}</td>
-                    <td>${u.email || ""}</td>
-                </tr>
-            `).join("");
+        (users.users || []).map(u=>`
+        <tr>
+        <td>${u.id}</td>
+        <td>${u.email || ""}</td>
+        </tr>`).join("");
 
 
         document.getElementById("ordersTable").innerHTML =
-            (orders.orders || []).map(o=>`
-                <tr>
-                    <td>${o.userId}</td>
-                    <td>${o.id}</td>
-                    <td>${o.status || "در انتظار"}</td>
-                </tr>
-            `).join("");
+        (orders.orders || []).map(o=>`
+        <tr>
+        <td>${o.userId}</td>
+        <td>${o.id}</td>
+        <td>${o.status || ""}</td>
+        </tr>`).join("");
 
 
         loading.hidden=true;
@@ -89,20 +75,15 @@ async function init(){
     }catch(e){
 
         console.error(e);
-
-        loading.textContent=
-        "دسترسی ادمین ندارید";
+        loading.textContent="خطا در دسترسی ادمین";
 
     }
 }
 
 
 document.getElementById("logout").onclick=()=>{
-
     localStorage.removeItem(AUTH_KEY);
-
     location.reload();
-
 };
 
 
