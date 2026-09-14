@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>پنل مدیریت</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+<header>
+<h1>پنل مدیریت</h1>
+<button id="logout">خروج</button>
+</header>
+<section id="loading">در حال بررسی دسترسی...</section>
+<section id="app" hidden>
+<div class="cards">
+<div>کاربران <b id="usersCount">0</b></div>
+<div>سفارش‌ها <b id="ordersCount">0</b></div>
+<div>وضعیت‌ها <b id="statusCount">-</b></div>
+</div>
+<h2>کاربران</h2>
+<table id="usersTable"></table>
+<h2>سفارش‌ها</h2>
+<table id="ordersTable"></table>
+</section>
+</div>
+<script src="admin.js"></script>
+</body>
+</html>
