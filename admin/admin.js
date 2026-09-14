@@ -1,5 +1,5 @@
 const API="/api";
-const ADMIN_UID_KEY="firebase_auth_session";
+const ADMIN_UID_KEY="taj_medical_proxy_auth_v1";
 function session(){try{return JSON.parse(localStorage.getItem(ADMIN_UID_KEY)||"null")}catch(e){return null}}
 
 async function api(path){
