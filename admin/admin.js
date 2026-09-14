@@ -1,28 +1,109 @@
 const API="/api";
-const ADMIN_UID_KEY="taj_medical_proxy_auth_v1";
-function session(){try{return JSON.parse(localStorage.getItem(ADMIN_UID_KEY)||"null")}catch(e){return null}}
+const AUTH_KEY="taj_medical_proxy_auth_v1";
+
+function session(){
+    try{
+        return JSON.parse(localStorage.getItem(AUTH_KEY)||"null");
+    }catch(e){
+        return null;
+    }
+}
 
 async function api(path){
- const s=session();
- const r=await fetch(API+path,{headers:{Authorization:"Bearer "+s.idToken}});
- if(!r.ok) throw new Error("ACCESS_ERROR");
- return r.json();
+    const s=session();
+
+    if(!s?.idToken){
+        throw new Error("NO_TOKEN");
+    }
+
+    const r=await fetch(API+path,{
+        headers:{
+            Authorization:"Bearer "+s.idToken
+        }
+    });
+
+    if(!r.ok){
+        throw new Error("API_ERROR");
+    }
+
+    return r.json();
 }
 
+
 async function init(){
- const s=session();
- if(!s?.idToken){
-    document.getElementById("loading").textContent =
-    "توکن ورود پیدا نشد. ابتدا از پنل کاربر وارد شوید.";
-    return;
+
+    const loading=document.getElementById("loading");
+    const app=document.getElementById("app");
+
+    try{
+
+        const s=session();
+
+        if(!s?.idToken){
+            loading.textContent=
+            "ابتدا وارد حساب کاربری شوید.";
+            return;
+        }
+
+
+        const [stats,users,orders]=await Promise.all([
+            api("/admin/stats"),
+            api("/admin/users"),
+            api("/admin/orders")
+        ]);
+
+
+        document.getElementById("usersCount").textContent =
+            stats.users || 0;
+
+        document.getElementById("ordersCount").textContent =
+            stats.orders || 0;
+
+        document.getElementById("statusCount").textContent =
+            JSON.stringify(stats.status || {});
+
+
+        document.getElementById("usersTable").innerHTML =
+            (users.users || []).map(u=>`
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.email || ""}</td>
+                </tr>
+            `).join("");
+
+
+        document.getElementById("ordersTable").innerHTML =
+            (orders.orders || []).map(o=>`
+                <tr>
+                    <td>${o.userId}</td>
+                    <td>${o.id}</td>
+                    <td>${o.status || "در انتظار"}</td>
+                </tr>
+            `).join("");
+
+
+        loading.hidden=true;
+        app.hidden=false;
+
+
+    }catch(e){
+
+        console.error(e);
+
+        loading.textContent=
+        "دسترسی ادمین ندارید";
+
+    }
 }
-  usersCount.textContent=stats.users||0;
-  ordersCount.textContent=stats.orders||0;
-  statusCount.textContent=JSON.stringify(stats.status||{});
-  usersTable.innerHTML=(users.users||[]).map(x=>`<tr><td>${x.id}</td><td>${x.email||""}</td></tr>`).join("");
-  ordersTable.innerHTML=(orders.orders||[]).map(x=>`<tr><td>${x.userId}</td><td>${x.id}</td><td>${x.status||"در انتظار"}</td></tr>`).join("");
-  loading.hidden=true; app.hidden=false;
- }catch(e){loading.textContent="دسترسی ادمین ندارید"}
-}
-logout.onclick=()=>{localStorage.removeItem(ADMIN_UID_KEY);location.reload()};
+
+
+document.getElementById("logout").onclick=()=>{
+
+    localStorage.removeItem(AUTH_KEY);
+
+    location.reload();
+
+};
+
+
 init();
