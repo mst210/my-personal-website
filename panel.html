@@ -1,1254 +1,1255 @@
 <!DOCTYPE html>
+
 <html lang="fa" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>پنل اختصاصی کاربر | دکتر محمدصادق تاج</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <style>
-
-        :root {
-            --primary-blue: #0284c7;
-            --accent-teal: #14b8a6;
-            --dark-bg: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger: #ef4444;
-            --success: #22c55e;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: "Vazirmatn", sans-serif;
-            color: var(--text-main);
-
-            background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(2, 132, 199, .22),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at bottom left,
-                    rgba(20, 184, 166, .14),
-                    transparent 35%
-                ),
-                var(--dark-bg);
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font-family: inherit;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .page-container {
-            width: min(1200px, 94%);
-            margin: 0 auto;
-            padding: 25px 0 40px;
-        }
-
-        /* ================= HEADER ================= */
-
-        .top-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-
-            margin-bottom: 25px;
-            padding: 18px 22px;
-
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-
-            backdrop-filter: blur(15px);
-        }
-
-        .header-title h1 {
-            margin: 0 0 5px;
-            font-size: 22px;
-        }
-
-        .header-title p {
-            margin: 0;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+<title>پنل اختصاصی کاربر | دکتر محمدصادق تاج</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+    :root {
+        --primary-blue: #0284c7;
+        --accent-teal: #14b8a6;
+        --dark-bg: #0f172a;
+        --card-bg: rgba(255, 255, 255, 0.05);
+        --border-color: rgba(255, 255, 255, 0.1);
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --danger: #ef4444;
+        --success: #22c55e;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Vazirmatn", sans-serif;
+        color: var(--text-main);
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(2, 132, 199, .22),
+                transparent 35%
+            ),
+            radial-gradient(
+                circle at bottom left,
+                rgba(20, 184, 166, .14),
+                transparent 35%
+            ),
+            var(--dark-bg);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+        font-family: inherit;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .page-container {
+        width: min(1200px, 94%);
+        margin: 0 auto;
+        padding: 25px 0 40px;
+    }
+
+    /* ================= HEADER ================= */
+
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-bottom: 25px;
+        padding: 18px 22px;
+
+        background: rgba(255, 255, 255, .05);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+
+        backdrop-filter: blur(15px);
+    }
+
+    .header-title h1 {
+        margin: 0 0 5px;
+        font-size: 22px;
+    }
+
+    .header-title p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 13px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
 
-            border: 1px solid var(--border-color);
-            background: rgba(255, 255, 255, .06);
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, .06);
 
-            color: white;
+        color: white;
 
-            padding: 10px 15px;
-            border-radius: 12px;
+        padding: 10px 15px;
+        border-radius: 12px;
 
-            cursor: pointer;
-            transition: .2s;
-        }
+        cursor: pointer;
+        transition: .2s;
+    }
 
-        .back-btn:hover {
-            background: rgba(255, 255, 255, .11);
-            transform: translateY(-1px);
-        }
+    .back-btn:hover {
+        background: rgba(255, 255, 255, .11);
+        transform: translateY(-1px);
+    }
 
-        .cart-header-button {
-            position: relative;
-        }
+    .cart-header-button {
+        position: relative;
+    }
 
-        .cart-count-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+    .cart-count-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-            min-width: 20px;
-            height: 20px;
+        min-width: 20px;
+        height: 20px;
 
-            padding: 0 5px;
+        padding: 0 5px;
 
-            border-radius: 50%;
+        border-radius: 50%;
 
-            background: var(--danger);
-            color: white;
+        background: var(--danger);
+        color: white;
 
-            font-size: 11px;
-            font-weight: 700;
-        }
+        font-size: 11px;
+        font-weight: 700;
+    }
 
-        /* ================= AUTH ================= */
+    /* ================= AUTH ================= */
 
-        .auth-section {
-            max-width: 560px;
-            margin: 35px auto;
-        }
+    .auth-section {
+        max-width: 560px;
+        margin: 35px auto;
+    }
 
-        .auth-card {
-            background: var(--card-bg);
+    .auth-card {
+        background: var(--card-bg);
 
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
 
-            padding: 30px;
+        padding: 30px;
 
-            backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
 
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, .25);
-        }
+        box-shadow:
+            0 20px 60px rgba(0, 0, 0, .25);
+    }
 
-        .auth-icon {
-            width: 70px;
-            height: 70px;
+    .auth-icon {
+        width: 70px;
+        height: 70px;
 
-            margin: 0 auto 18px;
+        margin: 0 auto 18px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-            border-radius: 20px;
+        border-radius: 20px;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--primary-blue),
-                    var(--accent-teal)
-                );
+        background:
+            linear-gradient(
+                135deg,
+                var(--primary-blue),
+                var(--accent-teal)
+            );
 
-            font-size: 28px;
-        }
+        font-size: 28px;
+    }
 
-        .auth-card h2 {
-            text-align: center;
-            margin: 0 0 8px;
-        }
+    .auth-card h2 {
+        text-align: center;
+        margin: 0 0 8px;
+    }
 
-        .auth-card > p {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 25px;
-        }
+    .auth-card > p {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .form-group {
+        margin-bottom: 15px;
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
 
-            font-size: 13px;
-            color: #cbd5e1;
-        }
+        font-size: 13px;
+        color: #cbd5e1;
+    }
 
-        .form-control {
-            width: 100%;
+    .form-control {
+        width: 100%;
 
-            padding: 13px 14px;
+        padding: 13px 14px;
 
-            color: white;
+        color: white;
 
-            background: rgba(15, 23, 42, .75);
+        background: rgba(15, 23, 42, .75);
 
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
 
-            outline: none;
+        outline: none;
 
-            transition: .2s;
-        }
+        transition: .2s;
+    }
 
-        .form-control:focus {
-            border-color: var(--primary-blue);
+    .form-control:focus {
+        border-color: var(--primary-blue);
 
-            box-shadow:
-                0 0 0 3px rgba(2, 132, 199, .12);
-        }
+        box-shadow:
+            0 0 0 3px rgba(2, 132, 199, .12);
+    }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
 
-        .submit-btn {
-            width: 100%;
+    .submit-btn {
+        width: 100%;
 
-            border: 0;
+        border: 0;
 
-            padding: 13px;
+        padding: 13px;
 
-            border-radius: 12px;
+        border-radius: 12px;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--primary-blue),
-                    var(--accent-teal)
-                );
+        background:
+            linear-gradient(
+                135deg,
+                var(--primary-blue),
+                var(--accent-teal)
+            );
 
-            color: white;
+        color: white;
 
-            font-weight: 700;
+        font-weight: 700;
 
-            cursor: pointer;
+        cursor: pointer;
 
-            transition: .2s;
-        }
+        transition: .2s;
+    }
 
-        .submit-btn:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.08);
-        }
+    .submit-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.08);
+    }
 
-        .auth-switch {
-            margin-top: 20px;
+    .auth-switch {
+        margin-top: 20px;
 
-            text-align: center;
+        text-align: center;
 
-            color: var(--text-muted);
+        color: var(--text-muted);
 
-            font-size: 13px;
-        }
+        font-size: 13px;
+    }
 
-        .auth-switch span {
-            color: #38bdf8;
-            cursor: pointer;
-            font-weight: 700;
-        }
+    .auth-switch span {
+        color: #38bdf8;
+        cursor: pointer;
+        font-weight: 700;
+    }
 
-        .vpn-warning {
-            margin-top: 18px;
+    .vpn-warning {
+        margin-top: 18px;
 
-            padding: 12px;
+        padding: 12px;
 
-            border-radius: 12px;
+        border-radius: 12px;
 
-            background: rgba(245, 158, 11, .08);
+        background: rgba(245, 158, 11, .08);
 
-            border: 1px solid rgba(245, 158, 11, .2);
+        border: 1px solid rgba(245, 158, 11, .2);
 
-            color: #fbbf24;
+        color: #fbbf24;
 
-            font-size: 12px;
+        font-size: 12px;
 
-            line-height: 1.8;
-        }
+        line-height: 1.8;
+    }
 
-        /* ================= DASHBOARD ================= */
+    /* ================= DASHBOARD ================= */
 
-        .dashboard {
-            display: none;
-        }
+    .dashboard {
+        display: none;
+    }
+
+    .dashboard-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 20px;
+    }
+
+    .sidebar,
+    .main-panel {
+        background: var(--card-bg);
+
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+
+        backdrop-filter: blur(15px);
+    }
+
+    .sidebar {
+        padding: 14px;
+        height: fit-content;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        padding: 13px;
+
+        border-radius: 12px;
+
+        color: #cbd5e1;
+
+        cursor: pointer;
+
+        margin-bottom: 5px;
+
+        transition: .2s;
+
+        font-size: 13px;
+    }
+
+    .menu-item:hover {
+        background: rgba(255, 255, 255, .06);
+        color: white;
+    }
+
+    .menu-item.active {
+        background: rgba(2, 132, 199, .16);
+        color: #38bdf8;
+    }
+
+    .menu-item.logout {
+        color: #f87171;
+    }
+
+    .menu-badge {
+        background: #ef4444;
+        color: #fff;
+
+        font-size: 10px;
+
+        min-width: 20px;
+        height: 20px;
+
+        padding: 0 6px;
+
+        border-radius: 50%;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-right: auto;
+
+        font-weight: 700;
+    }
+
+    .main-panel {
+        padding: 25px;
+        min-height: 500px;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .panel-title {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 22px;
+
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .panel-title i {
+        color: #38bdf8;
+    }
+
+    /* ================= DASHBOARD SUMMARY ================= */
+
+    .dashboard-summary {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 12px;
+
+        margin-bottom: 22px;
+    }
+
+    .summary-card {
+        padding: 16px;
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 15px;
+
+        background:
+            rgba(255, 255, 255, .035);
+
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+    }
+
+    .summary-icon {
+        width: 43px;
+        height: 43px;
+
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background:
+            rgba(2, 132, 199, .13);
+
+        color: #38bdf8;
+    }
+
+    .summary-card strong {
+        display: block;
+
+        font-size: 18px;
+
+        margin-bottom: 3px;
+    }
+
+    .summary-card span {
+        color: var(--text-muted);
+
+        font-size: 11px;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-state {
+        padding: 55px 20px;
+
+        text-align: center;
+
+        color: var(--text-muted);
+
+        border: 1px dashed var(--border-color);
+
+        border-radius: 16px;
+    }
+
+    .empty-state i {
+        font-size: 42px;
+
+        margin-bottom: 15px;
+
+        opacity: .55;
+    }
+
+    .empty-state p {
+        margin: 0;
+    }
+
+    /* ================= CART ================= */
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+
+        gap: 15px;
+
+        padding: 15px;
+        margin-bottom: 12px;
+
+        background: rgba(255, 255, 255, .035);
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 15px;
+    }
+
+    .cart-item-image {
+        width: 70px;
+        height: 70px;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        overflow: hidden;
+
+        background: rgba(255, 255, 255, .05);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-item-image i {
+        color: var(--text-muted);
+        font-size: 25px;
+    }
+
+    .cart-item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .cart-item-title {
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .cart-item-price {
+        color: #38bdf8;
+        font-size: 13px;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .quantity-btn {
+        width: 30px;
+        height: 30px;
+
+        border: 1px solid var(--border-color);
+
+        background: rgba(255, 255, 255, .06);
+
+        color: white;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+    }
+
+    .quantity-number {
+        min-width: 28px;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .remove-cart-btn {
+        width: 35px;
+        height: 35px;
+
+        border: 0;
+
+        border-radius: 9px;
+
+        background: rgba(239, 68, 68, .1);
+
+        color: #f87171;
+
+        cursor: pointer;
+    }
+
+    .cart-summary {
+        margin-top: 20px;
+
+        padding: 18px;
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 16px;
+
+        background: rgba(255, 255, 255, .035);
+    }
+
+    .cart-total-row {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 15px;
+
+        margin-bottom: 17px;
+    }
+
+    .cart-total-label {
+        color: var(--text-muted);
+    }
+
+    .cart-total-value {
+        color: #4ade80;
+        font-size: 19px;
+    }
+
+    .clear-cart-btn {
+        width: 100%;
+
+        margin-top: 10px;
+
+        padding: 11px;
+
+        border: 1px solid rgba(239, 68, 68, .25);
+
+        border-radius: 11px;
+
+        background: rgba(239, 68, 68, .08);
+
+        color: #f87171;
+
+        cursor: pointer;
+    }
+
+    /* ================= ORDERS ================= */
+
+    .active-order-card {
+        padding: 18px;
+
+        margin-bottom: 15px;
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 17px;
+
+        background: rgba(255, 255, 255, .035);
+    }
+
+    .order-header {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 15px;
+
+        margin-bottom: 15px;
+
+        padding-bottom: 13px;
+
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .order-header > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .order-header small {
+        color: var(--text-muted);
+        font-size: 11px;
+    }
+
+    .order-status {
+        padding: 7px 11px;
+
+        border-radius: 9px;
+
+        background: rgba(245, 158, 11, .1);
+
+        color: #fbbf24;
+
+        font-size: 11px;
+
+        white-space: nowrap;
+    }
+
+    .order-status.status-success {
+        background: rgba(34, 197, 94, .1);
+        color: #4ade80;
+    }
+
+    .order-status.status-danger {
+        background: rgba(239, 68, 68, .1);
+        color: #f87171;
+    }
+
+    .order-product {
+        display: flex;
+
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 10px 0;
+    }
+
+    .order-product-info {
+        margin-top: 4px;
+
+        color: var(--text-muted);
+
+        font-size: 11px;
+    }
+
+    .order-product > span {
+        color: #38bdf8;
+
+        white-space: nowrap;
+
+        font-size: 12px;
+    }
+
+    .order-footer {
+        display: flex;
+
+        justify-content: space-between;
+
+        padding-top: 13px;
+
+        margin-top: 8px;
+
+        border-top: 1px solid var(--border-color);
+    }
+
+    .order-footer span {
+        color: var(--text-muted);
+    }
+
+    .order-footer strong {
+        color: #4ade80;
+    }
+
+    /* ================= ORDER TIMELINE ================= */
+
+    .order-timeline {
+        display: flex;
+
+        align-items: flex-start;
+
+        margin: 20px 0 8px;
+
+        padding: 15px 5px 5px;
+
+        overflow-x: auto;
+    }
+
+    .timeline-step {
+        flex: 1;
+
+        min-width: 90px;
+
+        position: relative;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+    .timeline-step:not(:last-child)::after {
+        content: "";
+
+        position: absolute;
+
+        top: 13px;
+
+        right: 50%;
+
+        width: 100%;
+
+        height: 2px;
+
+        background: rgba(255,255,255,.10);
+
+        z-index: 0;
+    }
+
+    .timeline-dot {
+        width: 27px;
+        height: 27px;
+
+        margin: 0 auto 8px;
+
+        position: relative;
+
+        z-index: 2;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #1e293b;
+
+        border: 2px solid #334155;
+
+        font-size: 10px;
+    }
+
+    .timeline-step.active,
+    .timeline-step.done {
+        color: #38bdf8;
+    }
+
+    .timeline-step.done .timeline-dot,
+    .timeline-step.active .timeline-dot {
+        background: rgba(2,132,199,.22);
+
+        border-color: #38bdf8;
+
+        color: #38bdf8;
+    }
+
+    .timeline-step.done::after {
+        background: rgba(56,189,248,.45);
+    }
+
+    .timeline-step.current .timeline-dot {
+        box-shadow:
+            0 0 0 5px rgba(56,189,248,.08);
+    }
+
+    .timeline-label {
+        font-size: 9px;
+
+        line-height: 1.6;
+
+        white-space: nowrap;
+    }
+
+    .status-updated-badge {
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 6px;
+
+        margin-top: 8px;
+
+        padding: 5px 9px;
+
+        border-radius: 8px;
+
+        background: rgba(20,184,166,.10);
+
+        color: #5eead4;
+
+        font-size: 11px;
+    }
+
+    /* ================= NOTIFICATIONS ================= */
+
+    .notification-toolbar {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 17px;
+    }
+
+    .notification-toolbar-text {
+        color: var(--text-muted);
+
+        font-size: 12px;
+    }
+
+    .notification-action-btn {
+        border: 1px solid var(--border-color);
+
+        background: rgba(255,255,255,.05);
+
+        color: #cbd5e1;
+
+        padding: 8px 11px;
+
+        border-radius: 9px;
+
+        cursor: pointer;
+
+        font-size: 11px;
+    }
+
+    .notification-action-btn:hover {
+        background: rgba(255,255,255,.09);
+    }
+
+    .notification-card {
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 13px;
+
+        padding: 15px;
+
+        margin-bottom: 11px;
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 15px;
+
+        background: rgba(255,255,255,.035);
+
+        transition: .2s;
+    }
+
+    .notification-card.unread {
+        background:
+            rgba(2,132,199,.08);
+
+        border-color:
+            rgba(56,189,248,.25);
+    }
+
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            rgba(2,132,199,.14);
+
+        color: #38bdf8;
+    }
+
+    .notification-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .notification-title {
+        font-weight: 700;
+
+        font-size: 13px;
+
+        margin-bottom: 5px;
+    }
+
+    .notification-text {
+        color: #cbd5e1;
+
+        font-size: 12px;
+
+        line-height: 1.9;
+    }
+
+    .notification-date {
+        color: var(--text-muted);
+
+        font-size: 10px;
+
+        margin-top: 6px;
+    }
+
+    .notification-unread-dot {
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #38bdf8;
+
+        flex-shrink: 0;
+
+        margin-top: 6px;
+    }
+
+    /* ================= TOAST ================= */
+
+    .notification-toast {
+        position: fixed;
+
+        left: 20px;
+        bottom: 20px;
+
+        width: min(360px, calc(100vw - 40px));
+
+        padding: 15px 17px;
+
+        border: 1px solid rgba(56, 189, 248, .28);
+
+        border-radius: 15px;
+
+        background: rgba(15, 23, 42, .96);
+
+        box-shadow:
+            0 14px 35px rgba(0,0,0,.35);
+
+        backdrop-filter: blur(12px);
+
+        z-index: 9999;
+
+        opacity: 0;
+
+        transform: translateY(15px);
+
+        pointer-events: none;
+
+        transition: .25s ease;
+    }
+
+    .notification-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .notification-toast-title {
+        color: #38bdf8;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .notification-toast-text {
+        color: #e2e8f0;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    /* ================= PROFILE ================= */
+
+    .profile-grid {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 13px;
+    }
+
+    .profile-box {
+        padding: 14px;
+
+        background: rgba(255, 255, 255, .035);
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 13px;
+    }
+
+    .profile-box.full {
+        grid-column: 1 / -1;
+    }
+
+    .profile-label {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: var(--text-muted);
+
+        font-size: 11px;
+    }
+
+    .profile-value {
+        line-height: 1.8;
+        font-size: 13px;
+    }
+
+    /* ================= SUPPORT ================= */
+
+    .support-card {
+        padding: 20px;
+
+        border: 1px solid var(--border-color);
+
+        border-radius: 16px;
+
+        background: rgba(255, 255, 255, .035);
+    }
+
+    .support-phone {
+        direction: ltr;
+
+        display: inline-block;
+
+        margin-top: 12px;
+
+        color: #38bdf8;
+
+        font-size: 20px;
+
+        font-weight: 700;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+        text-align: center;
+
+        color: var(--text-muted);
+
+        font-size: 11px;
+
+        margin-top: 25px;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 800px) {
 
         .dashboard-layout {
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            gap: 20px;
-        }
-
-        .sidebar,
-        .main-panel {
-            background: var(--card-bg);
-
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-
-            backdrop-filter: blur(15px);
+            grid-template-columns: 1fr;
         }
 
         .sidebar {
-            padding: 14px;
-            height: fit-content;
+            display: flex;
+
+            overflow-x: auto;
+
+            gap: 5px;
+
+            padding: 8px;
         }
 
         .menu-item {
-            display: flex;
-            align-items: center;
+            flex: 0 0 auto;
 
-            gap: 11px;
-
-            padding: 13px;
-
-            border-radius: 12px;
-
-            color: #cbd5e1;
-
-            cursor: pointer;
-
-            margin-bottom: 5px;
-
-            transition: .2s;
-
-            font-size: 13px;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, .06);
-            color: white;
-        }
-
-        .menu-item.active {
-            background: rgba(2, 132, 199, .16);
-            color: #38bdf8;
-        }
-
-        .menu-item.logout {
-            color: #f87171;
-        }
-
-        .menu-badge {
-            background: #ef4444;
-            color: #fff;
-
-            font-size: 10px;
-
-            min-width: 20px;
-            height: 20px;
-
-            padding: 0 6px;
-
-            border-radius: 50%;
-
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-right: auto;
-
-            font-weight: 700;
-        }
-
-        .main-panel {
-            padding: 25px;
-            min-height: 500px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .panel-title {
-            display: flex;
-            align-items: center;
-
-            gap: 10px;
-
-            margin-bottom: 22px;
-
-            font-size: 19px;
-            font-weight: 700;
-        }
-
-        .panel-title i {
-            color: #38bdf8;
-        }
-
-        /* ================= DASHBOARD SUMMARY ================= */
-
-        .dashboard-summary {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 12px;
-
-            margin-bottom: 22px;
-        }
-
-        .summary-card {
-            padding: 16px;
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 15px;
-
-            background:
-                rgba(255, 255, 255, .035);
-
-            display: flex;
-            align-items: center;
-
-            gap: 13px;
-        }
-
-        .summary-icon {
-            width: 43px;
-            height: 43px;
-
-            flex-shrink: 0;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 12px;
-
-            background:
-                rgba(2, 132, 199, .13);
-
-            color: #38bdf8;
-        }
-
-        .summary-card strong {
-            display: block;
-
-            font-size: 18px;
-
-            margin-bottom: 3px;
-        }
-
-        .summary-card span {
-            color: var(--text-muted);
-
-            font-size: 11px;
-        }
-
-        /* ================= EMPTY ================= */
-
-        .empty-state {
-            padding: 55px 20px;
-
-            text-align: center;
-
-            color: var(--text-muted);
-
-            border: 1px dashed var(--border-color);
-
-            border-radius: 16px;
-        }
-
-        .empty-state i {
-            font-size: 42px;
-
-            margin-bottom: 15px;
-
-            opacity: .55;
-        }
-
-        .empty-state p {
             margin: 0;
-        }
-
-        /* ================= CART ================= */
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-
-            gap: 15px;
-
-            padding: 15px;
-            margin-bottom: 12px;
-
-            background: rgba(255, 255, 255, .035);
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 15px;
-        }
-
-        .cart-item-image {
-            width: 70px;
-            height: 70px;
-
-            flex-shrink: 0;
-
-            border-radius: 12px;
-
-            overflow: hidden;
-
-            background: rgba(255, 255, 255, .05);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cart-item-image i {
-            color: var(--text-muted);
-            font-size: 25px;
-        }
-
-        .cart-item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .cart-item-title {
-            font-weight: 700;
-            margin-bottom: 7px;
-        }
-
-        .cart-item-price {
-            color: #38bdf8;
-            font-size: 13px;
-        }
-
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-
-            border: 1px solid var(--border-color);
-
-            background: rgba(255, 255, 255, .06);
-
-            color: white;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-        }
-
-        .quantity-number {
-            min-width: 28px;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .remove-cart-btn {
-            width: 35px;
-            height: 35px;
-
-            border: 0;
-
-            border-radius: 9px;
-
-            background: rgba(239, 68, 68, .1);
-
-            color: #f87171;
-
-            cursor: pointer;
-        }
-
-        .cart-summary {
-            margin-top: 20px;
-
-            padding: 18px;
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 16px;
-
-            background: rgba(255, 255, 255, .035);
-        }
-
-        .cart-total-row {
-            display: flex;
-
-            justify-content: space-between;
-            align-items: center;
-
-            gap: 15px;
-
-            margin-bottom: 17px;
-        }
-
-        .cart-total-label {
-            color: var(--text-muted);
-        }
-
-        .cart-total-value {
-            color: #4ade80;
-            font-size: 19px;
-        }
-
-        .clear-cart-btn {
-            width: 100%;
-
-            margin-top: 10px;
-
-            padding: 11px;
-
-            border: 1px solid rgba(239, 68, 68, .25);
-
-            border-radius: 11px;
-
-            background: rgba(239, 68, 68, .08);
-
-            color: #f87171;
-
-            cursor: pointer;
-        }
-
-        /* ================= ORDERS ================= */
-
-        .active-order-card {
-            padding: 18px;
-
-            margin-bottom: 15px;
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 17px;
-
-            background: rgba(255, 255, 255, .035);
-        }
-
-        .order-header {
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            margin-bottom: 15px;
-
-            padding-bottom: 13px;
-
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .order-header > div {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .order-header small {
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        .order-status {
-            padding: 7px 11px;
-
-            border-radius: 9px;
-
-            background: rgba(245, 158, 11, .1);
-
-            color: #fbbf24;
-
-            font-size: 11px;
 
             white-space: nowrap;
         }
 
-        .order-status.status-success {
-            background: rgba(34, 197, 94, .1);
-            color: #4ade80;
-        }
-
-        .order-status.status-danger {
-            background: rgba(239, 68, 68, .1);
-            color: #f87171;
-        }
-
-        .order-product {
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding: 10px 0;
-        }
-
-        .order-product-info {
-            margin-top: 4px;
-
-            color: var(--text-muted);
-
-            font-size: 11px;
-        }
-
-        .order-product > span {
-            color: #38bdf8;
-
-            white-space: nowrap;
-
-            font-size: 12px;
-        }
-
-        .order-footer {
-            display: flex;
-
-            justify-content: space-between;
-
-            padding-top: 13px;
-
-            margin-top: 8px;
-
-            border-top: 1px solid var(--border-color);
-        }
-
-        .order-footer span {
-            color: var(--text-muted);
-        }
-
-        .order-footer strong {
-            color: #4ade80;
-        }
-
-        /* ================= ORDER TIMELINE ================= */
-
-        .order-timeline {
-            display: flex;
-
-            align-items: flex-start;
-
-            margin: 20px 0 8px;
-
-            padding: 15px 5px 5px;
-
-            overflow-x: auto;
-        }
-
-        .timeline-step {
-            flex: 1;
-
-            min-width: 90px;
-
-            position: relative;
-
-            text-align: center;
-
-            color: #64748b;
-        }
-
-        .timeline-step:not(:last-child)::after {
-            content: "";
-
-            position: absolute;
-
-            top: 13px;
-
-            right: 50%;
-
-            width: 100%;
-
-            height: 2px;
-
-            background: rgba(255,255,255,.10);
-
-            z-index: 0;
-        }
-
-        .timeline-dot {
-            width: 27px;
-            height: 27px;
-
-            margin: 0 auto 8px;
-
-            position: relative;
-
-            z-index: 2;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: #1e293b;
-
-            border: 2px solid #334155;
-
-            font-size: 10px;
-        }
-
-        .timeline-step.active,
-        .timeline-step.done {
-            color: #38bdf8;
-        }
-
-        .timeline-step.done .timeline-dot,
-        .timeline-step.active .timeline-dot {
-            background: rgba(2,132,199,.22);
-
-            border-color: #38bdf8;
-
-            color: #38bdf8;
-        }
-
-        .timeline-step.done::after {
-            background: rgba(56,189,248,.45);
-        }
-
-        .timeline-step.current .timeline-dot {
-            box-shadow:
-                0 0 0 5px rgba(56,189,248,.08);
-        }
-
-        .timeline-label {
-            font-size: 9px;
-
-            line-height: 1.6;
-
-            white-space: nowrap;
-        }
-
-        .status-updated-badge {
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 6px;
-
-            margin-top: 8px;
-
-            padding: 5px 9px;
-
-            border-radius: 8px;
-
-            background: rgba(20,184,166,.10);
-
-            color: #5eead4;
-
-            font-size: 11px;
-        }
-
-        /* ================= NOTIFICATIONS ================= */
-
-        .notification-toolbar {
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 10px;
-
-            margin-bottom: 17px;
-        }
-
-        .notification-toolbar-text {
-            color: var(--text-muted);
-
-            font-size: 12px;
-        }
-
-        .notification-action-btn {
-            border: 1px solid var(--border-color);
-
-            background: rgba(255,255,255,.05);
-
-            color: #cbd5e1;
-
-            padding: 8px 11px;
-
-            border-radius: 9px;
-
-            cursor: pointer;
-
-            font-size: 11px;
-        }
-
-        .notification-action-btn:hover {
-            background: rgba(255,255,255,.09);
-        }
-
-        .notification-card {
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 13px;
-
-            padding: 15px;
-
-            margin-bottom: 11px;
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 15px;
-
-            background: rgba(255,255,255,.035);
-
-            transition: .2s;
-        }
-
-        .notification-card.unread {
-            background:
-                rgba(2,132,199,.08);
-
-            border-color:
-                rgba(56,189,248,.25);
-        }
-
-        .notification-icon {
-            width: 40px;
-            height: 40px;
-
-            flex-shrink: 0;
-
-            border-radius: 11px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                rgba(2,132,199,.14);
-
-            color: #38bdf8;
-        }
-
-        .notification-body {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .notification-title {
-            font-weight: 700;
-
-            font-size: 13px;
-
-            margin-bottom: 5px;
-        }
-
-        .notification-text {
-            color: #cbd5e1;
-
-            font-size: 12px;
-
-            line-height: 1.9;
-        }
-
-        .notification-date {
-            color: var(--text-muted);
-
-            font-size: 10px;
-
-            margin-top: 6px;
-        }
-
-        .notification-unread-dot {
-            width: 8px;
-            height: 8px;
-
-            border-radius: 50%;
-
-            background: #38bdf8;
-
-            flex-shrink: 0;
-
-            margin-top: 6px;
-        }
-
-        /* ================= TOAST ================= */
-
-        .notification-toast {
-            position: fixed;
-
-            left: 20px;
-            bottom: 20px;
-
-            width: min(360px, calc(100vw - 40px));
-
-            padding: 15px 17px;
-
-            border: 1px solid rgba(56, 189, 248, .28);
-
-            border-radius: 15px;
-
-            background: rgba(15, 23, 42, .96);
-
-            box-shadow:
-                0 14px 35px rgba(0,0,0,.35);
-
-            backdrop-filter: blur(12px);
-
-            z-index: 9999;
-
-            opacity: 0;
-
-            transform: translateY(15px);
-
-            pointer-events: none;
-
-            transition: .25s ease;
-        }
-
-        .notification-toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .notification-toast-title {
-            color: #38bdf8;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .notification-toast-text {
-            color: #e2e8f0;
-            font-size: 13px;
-            line-height: 1.8;
-        }
-
-        /* ================= PROFILE ================= */
-
+        .form-grid,
         .profile-grid {
-            display: grid;
-
-            grid-template-columns: 1fr 1fr;
-
-            gap: 13px;
-        }
-
-        .profile-box {
-            padding: 14px;
-
-            background: rgba(255, 255, 255, .035);
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 13px;
+            grid-template-columns: 1fr;
         }
 
         .profile-box.full {
-            grid-column: 1 / -1;
+            grid-column: auto;
         }
 
-        .profile-label {
-            display: block;
+        .top-header {
+            flex-direction: column;
 
-            margin-bottom: 5px;
-
-            color: var(--text-muted);
-
-            font-size: 11px;
+            align-items: stretch;
         }
 
-        .profile-value {
-            line-height: 1.8;
-            font-size: 13px;
+        .header-actions {
+            justify-content: space-between;
         }
 
-        /* ================= SUPPORT ================= */
-
-        .support-card {
-            padding: 20px;
-
-            border: 1px solid var(--border-color);
-
-            border-radius: 16px;
-
-            background: rgba(255, 255, 255, .035);
+        .dashboard-summary {
+            grid-template-columns: 1fr;
         }
 
-        .support-phone {
-            direction: ltr;
+    }
 
-            display: inline-block;
+    @media (max-width: 600px) {
 
-            margin-top: 12px;
-
-            color: #38bdf8;
-
-            font-size: 20px;
-
-            font-weight: 700;
+        .page-container {
+            width: 96%;
+            padding-top: 12px;
         }
 
-        /* ================= FOOTER ================= */
-
-        footer {
-            text-align: center;
-
-            color: var(--text-muted);
-
-            font-size: 11px;
-
-            margin-top: 25px;
+        .auth-card,
+        .main-panel {
+            padding: 17px;
         }
 
-        /* ================= MOBILE ================= */
-
-        @media (max-width: 800px) {
-
-            .dashboard-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                display: flex;
-
-                overflow-x: auto;
-
-                gap: 5px;
-
-                padding: 8px;
-            }
-
-            .menu-item {
-                flex: 0 0 auto;
-
-                margin: 0;
-
-                white-space: nowrap;
-            }
-
-            .form-grid,
-            .profile-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-box.full {
-                grid-column: auto;
-            }
-
-            .top-header {
-                flex-direction: column;
-
-                align-items: stretch;
-            }
-
-            .header-actions {
-                justify-content: space-between;
-            }
-
-            .dashboard-summary {
-                grid-template-columns: 1fr;
-            }
-
+        .cart-item {
+            align-items: flex-start;
+            flex-wrap: wrap;
         }
 
-        @media (max-width: 600px) {
-
-            .page-container {
-                width: 96%;
-                padding-top: 12px;
-            }
-
-            .auth-card,
-            .main-panel {
-                padding: 17px;
-            }
-
-            .cart-item {
-                align-items: flex-start;
-                flex-wrap: wrap;
-            }
-
-            .cart-item-info {
-                min-width: calc(100% - 90px);
-            }
-
-            .quantity-control {
-                margin-right: 85px;
-            }
-
-            .remove-cart-btn {
-                margin-right: auto;
-            }
-
-            .order-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .timeline-step {
-                min-width: 82px;
-            }
-
-            .timeline-label {
-                font-size: 8px;
-            }
-
+        .cart-item-info {
+            min-width: calc(100% - 90px);
         }
 
-    </style>
+        .quantity-control {
+            margin-right: 85px;
+        }
+
+        .remove-cart-btn {
+            margin-right: auto;
+        }
+
+        .order-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .timeline-step {
+            min-width: 82px;
+        }
+
+        .timeline-label {
+            font-size: 8px;
+        }
+
+    }
+
+</style>
 
 </head>
 
@@ -1256,371 +1257,479 @@
 
 <div class="page-container">
 
-    <!-- ================= HEADER ================= -->
+<!-- ================= HEADER ================= -->
 
-    <header class="top-header">
+<header class="top-header">
 
-        <div class="header-title">
+    <div class="header-title">
 
-            <h1>
-                پنل اختصاصی کاربر
-            </h1>
+        <h1>
+            پنل اختصاصی کاربر
+        </h1>
 
-            <p>
-                دکتر محمدصادق تاج | دانشجوی پزشکی
-            </p>
+        <p>
+            دکتر محمدصادق تاج | دانشجوی پزشکی
+        </p>
+
+    </div>
+
+    <div class="header-actions">
+
+        <button
+            id="header-notification-button"
+            onclick="openNotifications()"
+            class="back-btn"
+            title="اعلانات">
+
+            <i class="fa-solid fa-bell"></i>
+
+            <span
+                id="header-notification-count"
+                class="cart-count-badge"
+                style="background:#0284c7;">
+
+                ۰
+
+            </span>
+
+        </button>
+
+        <button
+            id="header-cart-button"
+            onclick="openCart()"
+            class="back-btn cart-header-button">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            سبد خرید
+
+            <span
+                id="header-cart-count"
+                class="cart-count-badge">
+
+                ۰
+
+            </span>
+
+        </button>
+
+        <a
+            href="index.html"
+            class="back-btn">
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+            بازگشت
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ================= AUTH ================= -->
+
+<section
+    id="auth-section"
+    class="auth-section">
+
+    <div
+        id="login-form"
+        class="auth-card">
+
+        <div class="auth-icon">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <h2>
+            ورود به حساب
+        </h2>
+
+        <p>
+            برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
+        </p>
+
+        <form id="login-form-element">
+
+            <div class="form-group">
+
+                <label>
+                    ایمیل
+                </label>
+
+                <input
+                    id="login-email"
+                    type="email"
+                    class="form-control"
+                    required
+                    autocomplete="email"
+                    placeholder="example@gmail.com">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    رمز عبور
+                </label>
+
+                <input
+                    id="login-password"
+                    type="password"
+                    class="form-control"
+                    required
+                    autocomplete="current-password"
+                    placeholder="رمز عبور">
+
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                ورود
+
+            </button>
+
+        </form>
+
+        <div class="auth-switch">
+
+            حساب کاربری ندارید؟
+
+            <span onclick="showRegister()">
+                ثبت نام کنید
+            </span>
 
         </div>
 
-        <div class="header-actions">
+    </div>
+
+
+    <!-- REGISTER -->
+
+    <div
+        id="register-form"
+        class="auth-card"
+        style="display:none;">
+
+        <div class="auth-icon">
+
+            <i class="fa-solid fa-user-plus"></i>
+
+        </div>
+
+        <h2>
+            ایجاد حساب کاربری
+        </h2>
+
+        <p>
+            اطلاعات خود را برای ایجاد حساب وارد کنید.
+        </p>
+
+        <form id="register-form-element">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>نام</label>
+
+                    <input
+                        id="reg-firstname"
+                        type="text"
+                        class="form-control"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>نام خانوادگی</label>
+
+                    <input
+                        id="reg-lastname"
+                        type="text"
+                        class="form-control"
+                        required>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>شماره موبایل</label>
+
+                <input
+                    id="reg-phone"
+                    type="tel"
+                    class="form-control"
+                    required
+                    placeholder="09xxxxxxxxx">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>ایمیل</label>
+
+                <input
+                    id="reg-email"
+                    type="email"
+                    class="form-control"
+                    required>
+
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>استان</label>
+
+                    <input
+                        id="reg-province"
+                        type="text"
+                        class="form-control"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>شهر</label>
+
+                    <input
+                        id="reg-city"
+                        type="text"
+                        class="form-control"
+                        required>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>آدرس پستی</label>
+
+                <textarea
+                    id="reg-address"
+                    class="form-control"
+                    rows="3"
+                    required></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>رمز عبور</label>
+
+                <input
+                    id="reg-password"
+                    type="password"
+                    class="form-control"
+                    minlength="6"
+                    required>
+
+            </div>
 
             <button
-                id="header-notification-button"
-                onclick="openNotifications()"
-                class="back-btn"
-                title="اعلانات">
+                type="submit"
+                class="submit-btn">
 
-                <i class="fa-solid fa-bell"></i>
+                <i class="fa-solid fa-user-plus"></i>
+
+                ثبت نام
+
+            </button>
+
+        </form>
+
+        <div class="auth-switch">
+
+            قبلاً ثبت نام کرده‌اید؟
+
+            <span onclick="showLogin()">
+                وارد شوید
+            </span>
+
+        </div>
+
+        <div class="vpn-warning">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            اتصال VPN هنگام ورود به پنل کاربری الزامی است.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<section
+    id="dashboard"
+    class="dashboard">
+
+    <div class="dashboard-layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <!-- CART -->
+
+            <div
+                id="cart-menu-item"
+                class="menu-item"
+                onclick="switchDashboardTab('cart', this)">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span>
+                    سبد خرید
+                </span>
 
                 <span
-                    id="header-notification-count"
-                    class="cart-count-badge"
+                    id="cart-count"
+                    class="menu-badge">
+
+                    ۰
+
+                </span>
+
+            </div>
+
+
+            <!-- ACTIVE -->
+
+            <div
+                class="menu-item active"
+                onclick="switchDashboardTab('active', this)">
+
+                <i class="fa-solid fa-box"></i>
+
+                <span>
+                    سفارشات فعال
+                </span>
+
+                <span
+                    id="active-order-count"
+                    class="menu-badge"
                     style="background:#0284c7;">
 
                     ۰
 
                 </span>
 
-            </button>
+            </div>
 
-            <button
-                id="header-cart-button"
-                onclick="openCart()"
-                class="back-btn cart-header-button">
 
-                <i class="fa-solid fa-cart-shopping"></i>
+            <!-- NOTIFICATIONS -->
 
-                سبد خرید
+            <div
+                id="notifications-menu-item"
+                class="menu-item"
+                onclick="switchDashboardTab('notifications', this)">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>
+                    اعلانات
+                </span>
 
                 <span
-                    id="header-cart-count"
-                    class="cart-count-badge">
+                    id="notification-count"
+                    class="menu-badge">
 
                     ۰
 
                 </span>
 
-            </button>
-
-            <a
-                href="index.html"
-                class="back-btn">
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-                بازگشت
-
-            </a>
-
-        </div>
-
-    </header>
+            </div>
 
 
-    <!-- ================= AUTH ================= -->
+            <!-- PAST -->
 
-    <section
-        id="auth-section"
-        class="auth-section">
+            <div
+                class="menu-item"
+                onclick="switchDashboardTab('past', this)">
 
-        <div
-            id="login-form"
-            class="auth-card">
+                <i class="fa-solid fa-clock-rotate-left"></i>
 
-            <div class="auth-icon">
+                <span>
+                    سفارشات گذشته
+                </span>
+
+            </div>
+
+
+            <!-- PROFILE -->
+
+            <div
+                class="menu-item"
+                onclick="switchDashboardTab('profile', this)">
+
                 <i class="fa-solid fa-user"></i>
-            </div>
 
-            <h2>
-                ورود به حساب
-            </h2>
-
-            <p>
-                برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
-            </p>
-
-            <form id="login-form-element">
-
-                <div class="form-group">
-
-                    <label>
-                        ایمیل
-                    </label>
-
-                    <input
-                        id="login-email"
-                        type="email"
-                        class="form-control"
-                        required
-                        autocomplete="email"
-                        placeholder="example@gmail.com">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        رمز عبور
-                    </label>
-
-                    <input
-                        id="login-password"
-                        type="password"
-                        class="form-control"
-                        required
-                        autocomplete="current-password"
-                        placeholder="رمز عبور">
-
-                </div>
-
-                <button
-                    type="submit"
-                    class="submit-btn">
-
-                    <i class="fa-solid fa-right-to-bracket"></i>
-
-                    ورود
-
-                </button>
-
-            </form>
-
-            <div class="auth-switch">
-
-                حساب کاربری ندارید؟
-
-                <span onclick="showRegister()">
-                    ثبت نام کنید
+                <span>
+                    اطلاعات حساب
                 </span>
 
             </div>
 
-            <div class="vpn-warning">
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <!-- SUPPORT -->
 
-                هنگام ورود به پنل کاربری اتصال VPN الزامی است.
+            <div
+                class="menu-item"
+                onclick="switchDashboardTab('support', this)">
 
-            </div>
+                <i class="fa-solid fa-headset"></i>
 
-        </div>
-
-
-        <!-- REGISTER -->
-
-        <div
-            id="register-form"
-            class="auth-card"
-            style="display:none;">
-
-            <div class="auth-icon">
-
-                <i class="fa-solid fa-user-plus"></i>
-
-            </div>
-
-            <h2>
-                ایجاد حساب کاربری
-            </h2>
-
-            <p>
-                اطلاعات خود را برای ایجاد حساب وارد کنید.
-            </p>
-
-            <form id="register-form-element">
-
-                <div class="form-grid">
-
-                    <div class="form-group">
-
-                        <label>نام</label>
-
-                        <input
-                            id="reg-firstname"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>نام خانوادگی</label>
-
-                        <input
-                            id="reg-lastname"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>شماره موبایل</label>
-
-                    <input
-                        id="reg-phone"
-                        type="tel"
-                        class="form-control"
-                        required
-                        placeholder="09xxxxxxxxx">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>ایمیل</label>
-
-                    <input
-                        id="reg-email"
-                        type="email"
-                        class="form-control"
-                        required>
-
-                </div>
-
-                <div class="form-grid">
-
-                    <div class="form-group">
-
-                        <label>استان</label>
-
-                        <input
-                            id="reg-province"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>شهر</label>
-
-                        <input
-                            id="reg-city"
-                            type="text"
-                            class="form-control"
-                            required>
-
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>آدرس پستی</label>
-
-                    <textarea
-                        id="reg-address"
-                        class="form-control"
-                        rows="3"
-                        required></textarea>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>رمز عبور</label>
-
-                    <input
-                        id="reg-password"
-                        type="password"
-                        class="form-control"
-                        minlength="6"
-                        required>
-
-                </div>
-
-                <button
-                    type="submit"
-                    class="submit-btn">
-
-                    <i class="fa-solid fa-user-plus"></i>
-
-                    ثبت نام
-
-                </button>
-
-            </form>
-
-            <div class="auth-switch">
-
-                قبلاً ثبت نام کرده‌اید؟
-
-                <span onclick="showLogin()">
-                    وارد شوید
+                <span>
+                    پشتیبانی
                 </span>
 
             </div>
 
-            <div class="vpn-warning">
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <!-- LOGOUT -->
 
-                اتصال VPN هنگام ورود به پنل کاربری الزامی است.
+            <div
+                class="menu-item logout"
+                onclick="logoutUser()">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    خروج
+                </span>
 
             </div>
 
-        </div>
-
-    </section>
+        </aside>
 
 
-    <!-- ================= DASHBOARD ================= -->
+        <!-- MAIN -->
 
-    <section
-        id="dashboard"
-        class="dashboard">
+        <main class="main-panel">
 
-        <div class="dashboard-layout">
+            <!-- ================= ACTIVE ================= -->
 
-            <!-- SIDEBAR -->
+            <div
+                id="tab-active"
+                class="tab-content active">
 
-            <aside class="sidebar">
-
-                <!-- CART -->
-
-                <div
-                    id="cart-menu-item"
-                    class="menu-item"
-                    onclick="switchDashboardTab('cart', this)">
-
-                    <i class="fa-solid fa-cart-shopping"></i>
-
-                    <span>
-                        سبد خرید
-                    </span>
-
-                    <span
-                        id="cart-count"
-                        class="menu-badge">
-
-                        ۰
-
-                    </span>
-
-                </div>
-
-
-                <!-- ACTIVE -->
-
-                <div
-                    class="menu-item active"
-                    onclick="switchDashboardTab('active', this)">
+                <div class="panel-title">
 
                     <i class="fa-solid fa-box"></i>
 
@@ -1628,47 +1737,151 @@
                         سفارشات فعال
                     </span>
 
-                    <span
-                        id="active-order-count"
-                        class="menu-badge"
-                        style="background:#0284c7;">
+                </div>
 
-                        ۰
+                <div class="dashboard-summary">
 
-                    </span>
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+
+                        <div>
+
+                            <strong id="summary-active">
+                                ۰
+                            </strong>
+
+                            <span>
+                                سفارش فعال
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+
+                        <div>
+
+                            <strong id="summary-notifications">
+                                ۰
+                            </strong>
+
+                            <span>
+                                اعلان خوانده‌نشده
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-card">
+
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+
+                        <div>
+
+                            <strong id="summary-cart">
+                                ۰
+                            </strong>
+
+                            <span>
+                                کالا در سبد خرید
+                            </span>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
+                <div id="active-orders">
 
-                <!-- NOTIFICATIONS -->
+                    <div class="empty-state">
 
-                <div
-                    id="notifications-menu-item"
-                    class="menu-item"
-                    onclick="switchDashboardTab('notifications', this)">
+                        <i class="fa-solid fa-box-open"></i>
+
+                        <p>
+                            در حال دریافت سفارشات...
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= NOTIFICATIONS ================= -->
+
+            <div
+                id="tab-notifications"
+                class="tab-content">
+
+                <div class="panel-title">
 
                     <i class="fa-solid fa-bell"></i>
 
                     <span>
-                        اعلانات
-                    </span>
-
-                    <span
-                        id="notification-count"
-                        class="menu-badge">
-
-                        ۰
-
+                        اعلانات و اطلاعیه‌ها
                     </span>
 
                 </div>
 
+                <div class="notification-toolbar">
 
-                <!-- PAST -->
+                    <span
+                        id="notification-toolbar-text"
+                        class="notification-toolbar-text">
 
-                <div
-                    class="menu-item"
-                    onclick="switchDashboardTab('past', this)">
+                        اعلان‌های شما
+
+                    </span>
+
+                    <button
+                        onclick="markAllNotificationsRead()"
+                        class="notification-action-btn">
+
+                        <i class="fa-solid fa-check-double"></i>
+
+                        همه خوانده شد
+
+                    </button>
+
+                </div>
+
+                <div id="notifications-list">
+
+                    <div class="empty-state">
+
+                        <i class="fa-solid fa-bell-slash"></i>
+
+                        <p>
+                            هنوز اعلانی ندارید.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= PAST ================= -->
+
+            <div
+                id="tab-past"
+                class="tab-content">
+
+                <div class="panel-title">
 
                     <i class="fa-solid fa-clock-rotate-left"></i>
 
@@ -1678,12 +1891,106 @@
 
                 </div>
 
+                <div id="past-orders">
 
-                <!-- PROFILE -->
+                    <div class="empty-state">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                        <p>
+                            هنوز سفارش گذشته‌ای ندارید.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= CART ================= -->
+
+            <div
+                id="tab-cart"
+                class="tab-content">
+
+                <div class="panel-title">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <span>
+                        سبد خرید من
+                    </span>
+
+                </div>
+
+                <div id="cart-items"></div>
 
                 <div
-                    class="menu-item"
-                    onclick="switchDashboardTab('profile', this)">
+                    id="cart-empty"
+                    class="empty-state">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <p>
+                        سبد خرید شما خالی است.
+                    </p>
+
+                </div>
+
+                <div
+                    id="cart-summary"
+                    class="cart-summary"
+                    style="display:none;">
+
+                    <div class="cart-total-row">
+
+                        <span class="cart-total-label">
+                            مجموع سبد خرید:
+                        </span>
+
+                        <strong
+                            id="cart-total"
+                            class="cart-total-value">
+
+                            ۰ تومان
+
+                        </strong>
+
+                    </div>
+
+                    <button
+                        onclick="submitCart()"
+                        class="submit-btn">
+
+                        <i class="fa-solid fa-paper-plane"></i>
+
+                        تأیید و ثبت سفارش
+
+                    </button>
+
+                    <button
+                        onclick="clearCart()"
+                        class="clear-cart-btn">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        خالی کردن سبد
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= PROFILE ================= -->
+
+            <div
+                id="tab-profile"
+                class="tab-content">
+
+                <div class="panel-title">
 
                     <i class="fa-solid fa-user"></i>
 
@@ -1693,12 +2000,116 @@
 
                 </div>
 
+                <div class="profile-grid">
 
-                <!-- SUPPORT -->
+                    <div class="profile-box">
 
-                <div
-                    class="menu-item"
-                    onclick="switchDashboardTab('support', this)">
+                        <span class="profile-label">
+                            نام و نام خانوادگی
+                        </span>
+
+                        <div
+                            id="profile-name"
+                            class="profile-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-box">
+
+                        <span class="profile-label">
+                            شماره موبایل
+                        </span>
+
+                        <div
+                            id="profile-phone"
+                            class="profile-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-box">
+
+                        <span class="profile-label">
+                            ایمیل
+                        </span>
+
+                        <div
+                            id="profile-email"
+                            class="profile-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-box">
+
+                        <span class="profile-label">
+                            استان
+                        </span>
+
+                        <div
+                            id="profile-province"
+                            class="profile-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-box">
+
+                        <span class="profile-label">
+                            شهر
+                        </span>
+
+                        <div
+                            id="profile-city"
+                            class="profile-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-box full">
+
+                        <span class="profile-label">
+                            آدرس پستی
+                        </span>
+
+                        <div
+                            id="profile-address"
+                            class="profile-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= SUPPORT ================= -->
+
+            <div
+                id="tab-support"
+                class="tab-content">
+
+                <div class="panel-title">
 
                     <i class="fa-solid fa-headset"></i>
 
@@ -1708,472 +2119,53 @@
 
                 </div>
 
+                <div class="support-card">
 
-                <!-- LOGOUT -->
+                    <h3>
 
-                <div
-                    class="menu-item logout"
-                    onclick="logoutUser()">
+                        <i class="fa-solid fa-phone"></i>
 
-                    <i class="fa-solid fa-right-from-bracket"></i>
+                        ارتباط با پشتیبانی
 
-                    <span>
-                        خروج
-                    </span>
+                    </h3>
 
-                </div>
+                    <p
+                        style="
+                        color:#94a3b8;
+                        line-height:2;
+                        ">
 
-            </aside>
+                        برای پیگیری سفارش یا دریافت راهنمایی،
+                        می‌توانید با شماره زیر تماس بگیرید.
 
+                    </p>
 
-            <!-- MAIN -->
+                    <a
+                        href="tel:09103909971"
+                        class="support-phone">
 
-            <main class="main-panel">
+                        09103909971
 
-                <!-- ================= ACTIVE ================= -->
-
-                <div
-                    id="tab-active"
-                    class="tab-content active">
-
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-box"></i>
-
-                        <span>
-                            سفارشات فعال
-                        </span>
-
-                    </div>
-
-                    <div class="dashboard-summary">
-
-                        <div class="summary-card">
-
-                            <div class="summary-icon">
-                                <i class="fa-solid fa-box"></i>
-                            </div>
-
-                            <div>
-
-                                <strong id="summary-active">
-                                    ۰
-                                </strong>
-
-                                <span>
-                                    سفارش فعال
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="summary-card">
-
-                            <div class="summary-icon">
-                                <i class="fa-solid fa-bell"></i>
-                            </div>
-
-                            <div>
-
-                                <strong id="summary-notifications">
-                                    ۰
-                                </strong>
-
-                                <span>
-                                    اعلان خوانده‌نشده
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="summary-card">
-
-                            <div class="summary-icon">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </div>
-
-                            <div>
-
-                                <strong id="summary-cart">
-                                    ۰
-                                </strong>
-
-                                <span>
-                                    کالا در سبد خرید
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div id="active-orders">
-
-                        <div class="empty-state">
-
-                            <i class="fa-solid fa-box-open"></i>
-
-                            <p>
-                                در حال دریافت سفارشات...
-                            </p>
-
-                        </div>
-
-                    </div>
+                    </a>
 
                 </div>
 
+            </div>
 
-                <!-- ================= NOTIFICATIONS ================= -->
+        </main>
 
-                <div
-                    id="tab-notifications"
-                    class="tab-content">
+    </div>
 
-                    <div class="panel-title">
+</section>
 
-                        <i class="fa-solid fa-bell"></i>
 
-                        <span>
-                            اعلانات و اطلاعیه‌ها
-                        </span>
+<footer>
 
-                    </div>
+    © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
 
-                    <div class="notification-toolbar">
-
-                        <span
-                            id="notification-toolbar-text"
-                            class="notification-toolbar-text">
-
-                            اعلان‌های شما
-
-                        </span>
-
-                        <button
-                            onclick="markAllNotificationsRead()"
-                            class="notification-action-btn">
-
-                            <i class="fa-solid fa-check-double"></i>
-
-                            همه خوانده شد
-
-                        </button>
-
-                    </div>
-
-                    <div id="notifications-list">
-
-                        <div class="empty-state">
-
-                            <i class="fa-solid fa-bell-slash"></i>
-
-                            <p>
-                                هنوز اعلانی ندارید.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================= PAST ================= -->
-
-                <div
-                    id="tab-past"
-                    class="tab-content">
-
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-
-                        <span>
-                            سفارشات گذشته
-                        </span>
-
-                    </div>
-
-                    <div id="past-orders">
-
-                        <div class="empty-state">
-
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-
-                            <p>
-                                هنوز سفارش گذشته‌ای ندارید.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================= CART ================= -->
-
-                <div
-                    id="tab-cart"
-                    class="tab-content">
-
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                        <span>
-                            سبد خرید من
-                        </span>
-
-                    </div>
-
-                    <div id="cart-items"></div>
-
-                    <div
-                        id="cart-empty"
-                        class="empty-state">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                        <p>
-                            سبد خرید شما خالی است.
-                        </p>
-
-                    </div>
-
-                    <div
-                        id="cart-summary"
-                        class="cart-summary"
-                        style="display:none;">
-
-                        <div class="cart-total-row">
-
-                            <span class="cart-total-label">
-                                مجموع سبد خرید:
-                            </span>
-
-                            <strong
-                                id="cart-total"
-                                class="cart-total-value">
-
-                                ۰ تومان
-
-                            </strong>
-
-                        </div>
-
-                        <button
-                            onclick="submitCart()"
-                            class="submit-btn">
-
-                            <i class="fa-solid fa-paper-plane"></i>
-
-                            تأیید و ثبت سفارش
-
-                        </button>
-
-                        <button
-                            onclick="clearCart()"
-                            class="clear-cart-btn">
-
-                            <i class="fa-solid fa-trash"></i>
-
-                            خالی کردن سبد
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================= PROFILE ================= -->
-
-                <div
-                    id="tab-profile"
-                    class="tab-content">
-
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-user"></i>
-
-                        <span>
-                            اطلاعات حساب
-                        </span>
-
-                    </div>
-
-                    <div class="profile-grid">
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                نام و نام خانوادگی
-                            </span>
-
-                            <div
-                                id="profile-name"
-                                class="profile-value">
-
-                                -
-
-                            </div>
-
-                        </div>
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                شماره موبایل
-                            </span>
-
-                            <div
-                                id="profile-phone"
-                                class="profile-value">
-
-                                -
-
-                            </div>
-
-                        </div>
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                ایمیل
-                            </span>
-
-                            <div
-                                id="profile-email"
-                                class="profile-value">
-
-                                -
-
-                            </div>
-
-                        </div>
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                استان
-                            </span>
-
-                            <div
-                                id="profile-province"
-                                class="profile-value">
-
-                                -
-
-                            </div>
-
-                        </div>
-
-                        <div class="profile-box">
-
-                            <span class="profile-label">
-                                شهر
-                            </span>
-
-                            <div
-                                id="profile-city"
-                                class="profile-value">
-
-                                -
-
-                            </div>
-
-                        </div>
-
-                        <div class="profile-box full">
-
-                            <span class="profile-label">
-                                آدرس پستی
-                            </span>
-
-                            <div
-                                id="profile-address"
-                                class="profile-value">
-
-                                -
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================= SUPPORT ================= -->
-
-                <div
-                    id="tab-support"
-                    class="tab-content">
-
-                    <div class="panel-title">
-
-                        <i class="fa-solid fa-headset"></i>
-
-                        <span>
-                            پشتیبانی
-                        </span>
-
-                    </div>
-
-                    <div class="support-card">
-
-                        <h3>
-
-                            <i class="fa-solid fa-phone"></i>
-
-                            ارتباط با پشتیبانی
-
-                        </h3>
-
-                        <p
-                            style="
-                            color:#94a3b8;
-                            line-height:2;
-                            ">
-
-                            برای پیگیری سفارش یا دریافت راهنمایی،
-                            می‌توانید با شماره زیر تماس بگیرید.
-
-                        </p>
-
-                        <a
-                            href="tel:09103909971"
-                            class="support-phone">
-
-                            09103909971
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </main>
-
-        </div>
-
-    </section>
-
-
-    <footer>
-
-        © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
-
-    </footer>
+</footer>
 
 </div>
-
 
 <!-- ================= TOAST ================= -->
 
@@ -2183,17 +2175,16 @@
     role="status"
     aria-live="polite">
 
-    <div class="notification-toast-title">
-        🔔 اعلان جدید
-    </div>
-
-    <div
-        id="notification-toast-text"
-        class="notification-toast-text">
-    </div>
-
+<div class="notification-toast-title">
+    🔔 اعلان جدید
 </div>
 
+<div
+    id="notification-toast-text"
+    class="notification-toast-text">
+</div>
+
+</div>
 
 <!-- ================= FIREBASE ================= -->
 
