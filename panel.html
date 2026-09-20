@@ -1663,29 +1663,6 @@
                 </div>
 
 
-                <!-- TICKETS -->
-
-                <div
-                    id="tickets-menu-item"
-                    class="menu-item"
-                    onclick="switchDashboardTab('tickets', this)">
-
-                    <i class="fa-solid fa-ticket"></i>
-
-                    <span>
-                        تیکت‌های پشتیبانی
-                    </span>
-
-                    <span
-                        id="tickets-count"
-                        class="menu-badge"
-                        style="background:#0284c7; display:none;">
-                        ۰
-                    </span>
-
-                </div>
-
-
                 <!-- NOTIFICATIONS -->
 
                 <div
@@ -1720,6 +1697,29 @@
 
                     <span>
                         سفارشات گذشته
+                    </span>
+
+                </div>
+
+
+                <!-- TICKETS (Moved here: Below past orders, above profile) -->
+
+                <div
+                    id="tickets-menu-item"
+                    class="menu-item"
+                    onclick="switchDashboardTab('tickets', this)">
+
+                    <i class="fa-solid fa-ticket"></i>
+
+                    <span>
+                        تیکت‌های پشتیبانی
+                    </span>
+
+                    <span
+                        id="tickets-count"
+                        class="menu-badge"
+                        style="background:#0284c7; display:none;">
+                        ۰
                     </span>
 
                 </div>
@@ -2889,7 +2889,7 @@
             ticketId,
             uid: user.uid,
             subject,
-            status: "open", // open, answered, closed
+            status: "open",
             createdAt: nowIso,
             updatedAt: nowIso,
             messages: [
@@ -2931,7 +2931,6 @@
 
             tickets.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
 
-            // Update badge
             const openCount = tickets.filter(t => t.status === "open" || t.status === "answered").length;
             const badge = document.getElementById("tickets-count");
             if (badge) {
@@ -3061,7 +3060,7 @@
 
             await setDoc(ticketRefDoc, {
                 ...data,
-                status: "open", // هنگامی که کاربر پیام می‌دهد، تیکت دوباره باز می‌شود
+                status: "open",
                 updatedAt: nowIso,
                 messages: messages
             });
@@ -3075,7 +3074,7 @@
     });
 
     /* =========================================================
-       CACHED NOTIFICATIONS & ORDERS (Existing logic retained)
+       CACHED NOTIFICATIONS & ORDERS
     ========================================================= */
 
     function getCachedNotifications() {
