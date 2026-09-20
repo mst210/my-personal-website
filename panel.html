@@ -897,6 +897,37 @@
             font-size: 11px;
         }
 
+        /* ================= TICKETS & CHAT ================= */
+
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 14px;
+            max-width: 80%;
+            line-height: 1.8;
+            font-size: 13px;
+        }
+
+        .chat-bubble.user {
+            background: rgba(2, 132, 199, .2);
+            border: 1px solid rgba(56, 189, 248, .3);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.admin {
+            background: rgba(20, 184, 166, .15);
+            border: 1px solid rgba(20, 184, 166, .3);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble-footer {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-align: left;
+        }
+
         /* ================= NOTIFICATIONS ================= */
 
         .notification-toolbar {
@@ -1632,6 +1663,29 @@
                 </div>
 
 
+                <!-- TICKETS -->
+
+                <div
+                    id="tickets-menu-item"
+                    class="menu-item"
+                    onclick="switchDashboardTab('tickets', this)">
+
+                    <i class="fa-solid fa-ticket"></i>
+
+                    <span>
+                        تیکت‌های پشتیبانی
+                    </span>
+
+                    <span
+                        id="tickets-count"
+                        class="menu-badge"
+                        style="background:#0284c7; display:none;">
+                        ۰
+                    </span>
+
+                </div>
+
+
                 <!-- NOTIFICATIONS -->
 
                 <div
@@ -1695,7 +1749,7 @@
                     <i class="fa-solid fa-headset"></i>
 
                     <span>
-                        پشتیبانی
+                        پشتیبانی تلفنی
                     </span>
 
                 </div>
@@ -1814,6 +1868,118 @@
 
                         </div>
 
+                    </div>
+
+                </div>
+
+
+                <!-- ================= TICKETS ================= -->
+
+                <div
+                    id="tab-tickets"
+                    class="tab-content">
+
+                    <div class="panel-title">
+
+                        <i class="fa-solid fa-ticket"></i>
+
+                        <span>
+                            تیکت‌های پشتیبانی و گفتگو
+                        </span>
+
+                    </div>
+
+                    <!-- New Ticket Button & Form -->
+                    <div id="tickets-main-view">
+                        <div style="margin-bottom: 20px;">
+                            <button
+                                onclick="toggleNewTicketForm()"
+                                class="submit-btn"
+                                style="width: auto; padding: 10px 20px;">
+                                <i class="fa-solid fa-plus"></i> ثبت تیکت جدید
+                            </button>
+                        </div>
+
+                        <div
+                            id="new-ticket-box"
+                            class="support-card"
+                            style="display: none; margin-bottom: 20px;">
+                            <h3 style="margin-top:0; font-size:16px; margin-bottom:15px;">ارسال تیکت جدید به پشتیبانی</h3>
+                            <form id="new-ticket-form">
+                                <div class="form-group">
+                                    <label>موضوع تیکت</label>
+                                    <input
+                                        type="text"
+                                        id="ticket-subject"
+                                        class="form-control"
+                                        required
+                                        placeholder="مثلاً: پیگیری سفارش کالا یا سوال پزشکی">
+                                </div>
+                                <div class="form-group">
+                                    <label>متن پیام</label>
+                                    <textarea
+                                        id="ticket-message"
+                                        class="form-control"
+                                        rows="4"
+                                        required
+                                        placeholder="شرح درخواست یا سوال خود را بنویسید..."></textarea>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="submit" class="submit-btn" style="flex:1;">ارسال تیکت</button>
+                                    <button type="button" onclick="toggleNewTicketForm()" class="notification-action-btn" style="flex:1;">انصراف</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="tickets-list-container">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-ticket-simple"></i>
+                                <p>در حال دریافت تیکت‌ها...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Chat Thread View (Hidden initially) -->
+                    <div
+                        id="ticket-chat-view"
+                        style="display: none;">
+                        <button
+                            onclick="backToTicketsList()"
+                            class="back-btn"
+                            style="margin-bottom: 15px;">
+                            <i class="fa-solid fa-arrow-right"></i> بازگشت به لیست تیکت‌ها
+                        </button>
+                        
+                        <div class="support-card" style="margin-bottom: 15px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <strong id="chat-ticket-subject" style="font-size:16px;">موضوع تیکت</strong>
+                                <span id="chat-ticket-status" class="order-status">باز</span>
+                            </div>
+                            <small id="chat-ticket-date" style="color:var(--text-muted);"></small>
+                        </div>
+
+                        <!-- Messages Thread Box -->
+                        <div
+                            id="chat-messages-list"
+                            style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px; max-height:400px; overflow-y:auto; padding:5px;">
+                        </div>
+
+                        <!-- Reply Form -->
+                        <form id="ticket-reply-form" style="display:flex; gap:10px;">
+                            <input
+                                type="text"
+                                id="ticket-reply-text"
+                                class="form-control"
+                                required
+                                placeholder="پاسخ خود را بنویسید..."
+                                style="flex:1;">
+                            <button
+                                type="submit"
+                                class="submit-btn"
+                                style="width: auto; padding: 0 25px;">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
                     </div>
 
                 </div>
@@ -2113,7 +2279,7 @@
                         <i class="fa-solid fa-headset"></i>
 
                         <span>
-                            پشتیبانی
+                            پشتیبانی تلفنی
                         </span>
 
                     </div>
@@ -2124,7 +2290,7 @@
 
                             <i class="fa-solid fa-phone"></i>
 
-                            ارتباط با پشتیبانی
+                            ارتباط تلفنی با پشتیبانی
 
                         </h3>
 
@@ -2190,12 +2356,6 @@
 <!-- ================= FIREBASE ================= -->
 
 <script type="module">
-    /*
-     * Firebase access is now proxied through the same-origin Cloudflare Worker.
-     * The UI below keeps the original Firestore/Auth-shaped API so the rest of
-     * the page remains unchanged.
-     */
-
     const API_BASE = "/api";
     const AUTH_STORAGE_KEY = "taj_medical_proxy_auth_v1";
 
@@ -2476,11 +2636,6 @@
         };
     }
 
-    /*
-     * Minimal Firestore-compatible facade.
-     * It talks only to /api/firestore, which is handled by Cloudflare Worker.
-     */
-
     function pathJoin(parts) {
         return parts
             .filter(Boolean)
@@ -2583,11 +2738,6 @@
 
                 const items = result.documents || [];
 
-                /*
-                 * We poll Firestore every 10 seconds instead of using the
-                 * Firebase browser SDK's WebSocket connection. This keeps all
-                 * Firebase traffic behind Cloudflare.
-                 */
                 const fingerprint = JSON.stringify(
                     items.map(item => ({
                         id: item.id,
@@ -2626,61 +2776,27 @@
         };
     }
 
-    /* =========================================================
-       GOOGLE SHEETS
-    ========================================================= */
-
     const GOOGLE_SHEET_URL =
         "https://script.google.com/macros/s/AKfycbwth07BOHgpF1rm1KJ2hmBrpwGfpoymmiGQhtzA6lYHmkuQidlBfYmyQ82jGHLI-mekyw/exec";
 
-    /* =========================================================
-       GLOBAL STATE
-    ========================================================= */
-
     let ordersUnsubscribe = null;
     let notificationsUnsubscribe = null;
+    let ticketsUnsubscribe = null;
+    let activeTicketId = null;
 
     let firstOrdersSnapshot = true;
     let previousOrders = new Map();
-
     let notificationTimer = null;
 
-    /* =========================================================
-       CONSTANTS
-    ========================================================= */
-
-    const CART_KEY =
-        "taj_medical_cart";
-
-    const NOTIFICATION_CACHE_KEY =
-        "taj_medical_notifications";
+    const CART_KEY = "taj_medical_cart";
+    const NOTIFICATION_CACHE_KEY = "taj_medical_notifications";
 
     const STATUS_STEPS = [
-        {
-            key: "در انتظار بررسی",
-            label: "ثبت سفارش",
-            icon: "fa-file-circle-check"
-        },
-        {
-            key: "در حال پردازش",
-            label: "در حال پردازش",
-            icon: "fa-gears"
-        },
-        {
-            key: "آماده ارسال",
-            label: "آماده ارسال",
-            icon: "fa-box"
-        },
-        {
-            key: "ارسال شد",
-            label: "ارسال شد",
-            icon: "fa-truck"
-        },
-        {
-            key: "تکمیل شد",
-            label: "تحویل",
-            icon: "fa-circle-check"
-        }
+        { key: "در انتظار بررسی", label: "ثبت سفارش", icon: "fa-file-circle-check" },
+        { key: "در حال پردازش", label: "در حال پردازش", icon: "fa-gears" },
+        { key: "آماده ارسال", label: "آماده ارسال", icon: "fa-box" },
+        { key: "ارسال شد", label: "ارسال شد", icon: "fa-truck" },
+        { key: "تکمیل شد", label: "تحویل", icon: "fa-circle-check" }
     ];
 
     const STATUS_INDEX = {
@@ -2691,3229 +2807,996 @@
         "تکمیل شد": 4
     };
 
-    /* =========================================================
-       HELPERS
-    ========================================================= */
-
     function escapeHtml(value) {
-
-        return String(
-            value ?? ""
-        )
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
-
 
     function formatPrice(price) {
-
-        return Number(
-            price || 0
-        )
-        .toLocaleString("fa-IR");
-
+        return Number(price || 0).toLocaleString("fa-IR");
     }
-
 
     function formatDate(value) {
-
-        if (!value) {
-            return "نامشخص";
-        }
-
+        if (!value) return "نامشخص";
         try {
-
-            return new Date(value)
-                .toLocaleDateString(
-                    "fa-IR"
-                );
-
+            return new Date(value).toLocaleDateString("fa-IR");
         } catch {
-
             return "نامشخص";
-
         }
-
     }
-
 
     function formatDateTime(value) {
-
-        if (!value) {
-            return "نامشخص";
-        }
-
+        if (!value) return "نامشخص";
         try {
-
-            return new Date(value)
-                .toLocaleString(
-                    "fa-IR",
-                    {
-                        dateStyle: "short",
-                        timeStyle: "short"
-                    }
-                );
-
+            return new Date(value).toLocaleString("fa-IR", {
+                dateStyle: "short",
+                timeStyle: "short"
+            });
         } catch {
-
             return "نامشخص";
-
         }
-
     }
-
 
     function getStatusText(order) {
-
-        return (
-            order.statusText ||
-            "در انتظار بررسی"
-        );
-
+        return order.statusText || "در انتظار بررسی";
     }
-
 
     function orderIsPast(order) {
-
-        return (
-            order.status === "completed" ||
-            order.status === "cancelled"
-        );
-
+        return order.status === "completed" || order.status === "cancelled";
     }
-
 
     function getStatusClass(status) {
-
-        if (
-            status === "تکمیل شد"
-        ) {
-
-            return "status-success";
-
-        }
-
-        if (
-            status === "لغو شد"
-        ) {
-
-            return "status-danger";
-
-        }
-
+        if (status === "تکمیل شد") return "status-success";
+        if (status === "لغو شد") return "status-danger";
         return "";
-
     }
 
+    /* =========================================================
+       TICKETS LOGIC
+    ========================================================= */
+
+    window.toggleNewTicketForm = function() {
+        const box = document.getElementById("new-ticket-box");
+        if (box) {
+            box.style.display = box.style.display === "none" ? "block" : "none";
+        }
+    };
+
+    window.backToTicketsList = function() {
+        activeTicketId = null;
+        document.getElementById("ticket-chat-view").style.display = "none";
+        document.getElementById("tickets-main-view").style.display = "block";
+        loadUserTickets();
+    };
+
+    document.getElementById("new-ticket-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const subject = document.getElementById("ticket-subject").value.trim();
+        const messageText = document.getElementById("ticket-message").value.trim();
+        if (!subject || !messageText) return;
+
+        const ticketId = "ticket_" + Date.now();
+        const nowIso = new Date().toISOString();
+
+        const ticketData = {
+            ticketId,
+            uid: user.uid,
+            subject,
+            status: "open", // open, answered, closed
+            createdAt: nowIso,
+            updatedAt: nowIso,
+            messages: [
+                {
+                    sender: "user",
+                    text: messageText,
+                    timestamp: nowIso
+                }
+            ]
+        };
+
+        try {
+            await setDoc(doc(db, "users", user.uid, "tickets", ticketId), ticketData);
+            document.getElementById("new-ticket-form").reset();
+            document.getElementById("new-ticket-box").style.display = "none";
+            alert("تیکت شما با موفقیت ثبت شد.");
+            loadUserTickets();
+        } catch (err) {
+            console.error("Error creating ticket:", err);
+            alert("خطا در ثبت تیکت. لطفاً دوباره تلاش کنید.");
+        }
+    });
+
+    async function loadUserTickets() {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const container = document.getElementById("tickets-list-container");
+        if (!container) return;
+
+        try {
+            const ticketsRef = collection(db, "users", user.uid, "tickets");
+            const snapshot = await getDocs(query(ticketsRef, orderBy("createdAt", "desc")));
+            
+            const tickets = [];
+            snapshot.forEach(docSnap => {
+                tickets.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            tickets.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+
+            // Update badge
+            const openCount = tickets.filter(t => t.status === "open" || t.status === "answered").length;
+            const badge = document.getElementById("tickets-count");
+            if (badge) {
+                badge.textContent = openCount.toLocaleString("fa-IR");
+                badge.style.display = openCount > 0 ? "inline-flex" : "none";
+            }
+
+            if (!tickets.length) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-ticket-simple"></i>
+                        <p>هنوز تیکت پشتیبانی ثبت نکرده‌اید.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tickets.map(ticket => {
+                const statusLabel = ticket.status === "answered" ? "پاسخ داده شده" : (ticket.status === "closed" ? "بسته شده" : "در انتظار پاسخ");
+                const statusClass = ticket.status === "answered" ? "status-success" : "";
+
+                return `
+                    <div class="active-order-card" style="cursor: pointer;" onclick="openTicketChat('${ticket.id}')">
+                        <div class="order-header">
+                            <div>
+                                <strong>${escapeHtml(ticket.subject)}</strong>
+                                <small>تاریخ: ${formatDateTime(ticket.createdAt)}</small>
+                            </div>
+                            <span class="order-status ${statusClass}">${escapeHtml(statusLabel)}</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted);">
+                            آخرین بروزرسانی: ${formatDateTime(ticket.updatedAt || ticket.createdAt)}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+        } catch (error) {
+            console.error("Load tickets error:", error);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>خطا در دریافت تیکت‌ها.</p>
+                </div>
+            `;
+        }
+    }
+
+    window.openTicketChat = async function(ticketId) {
+        activeTicketId = ticketId;
+        document.getElementById("tickets-main-view").style.display = "none";
+        document.getElementById("ticket-chat-view").style.display = "block";
+
+        await fetchAndRenderTicketChat();
+    };
+
+    async function fetchAndRenderTicketChat() {
+        if (!activeTicketId) return;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+            const ticketDoc = await getDoc(doc(db, "users", user.uid, "tickets", activeTicketId));
+            if (!ticketDoc.exists()) {
+                alert("تیکت یافت نشد.");
+                backToTicketsList();
+                return;
+            }
+
+            const data = ticketDoc.data();
+            document.getElementById("chat-ticket-subject").textContent = data.subject || "تیکت پشتیبانی";
+            
+            const statusMap = { open: "در انتظار پاسخ", answered: "پاسخ داده شده", closed: "بسته شده" };
+            document.getElementById("chat-ticket-status").textContent = statusMap[data.status] || data.status;
+            document.getElementById("chat-ticket-date").textContent = "ثبت شده در: " + formatDateTime(data.createdAt);
+
+            const messagesContainer = document.getElementById("chat-messages-list");
+            const messages = Array.isArray(data.messages) ? data.messages : [];
+
+            messagesContainer.innerHTML = messages.map(msg => {
+                const isAdmin = msg.sender === "admin";
+                const bubbleClass = isAdmin ? "admin" : "user";
+                const senderLabel = isAdmin ? "پشتیبانی (دکتر تاج)" : "شما";
+
+                return `
+                    <div class="chat-bubble ${bubbleClass}">
+                        <div style="font-weight:700; font-size:11px; margin-bottom:4px; color:${isAdmin ? '#5eead4' : '#38bdf8'};">
+                            ${senderLabel}
+                        </div>
+                        <div>${escapeHtml(msg.text)}</div>
+                        <div class="chat-bubble-footer">${formatDateTime(msg.timestamp)}</div>
+                    </div>
+                `;
+            }).join("");
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        } catch (err) {
+            console.error("Fetch ticket chat error:", err);
+        }
+    }
+
+    document.getElementById("ticket-reply-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!activeTicketId) return;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const input = document.getElementById("ticket-reply-text");
+        const text = input.value.trim();
+        if (!text) return;
+
+        try {
+            const ticketRefDoc = doc(db, "users", user.uid, "tickets", activeTicketId);
+            const ticketSnap = await getDoc(ticketRefDoc);
+            if (!ticketSnap.exists()) return;
+
+            const data = ticketSnap.data();
+            const messages = Array.isArray(data.messages) ? data.messages : [];
+            const nowIso = new Date().toISOString();
+
+            messages.push({
+                sender: "user",
+                text: text,
+                timestamp: nowIso
+            });
+
+            await setDoc(ticketRefDoc, {
+                ...data,
+                status: "open", // هنگامی که کاربر پیام می‌دهد، تیکت دوباره باز می‌شود
+                updatedAt: nowIso,
+                messages: messages
+            });
+
+            input.value = "";
+            await fetchAndRenderTicketChat();
+        } catch (err) {
+            console.error("Send reply error:", err);
+            alert("ارسال پاسخ با خطا مواجه شد.");
+        }
+    });
 
     /* =========================================================
-       NOTIFICATION CACHE
+       CACHED NOTIFICATIONS & ORDERS (Existing logic retained)
     ========================================================= */
 
     function getCachedNotifications() {
-
-        const user =
-            auth.currentUser;
-
-        if (!user) {
-            return [];
-        }
-
+        const user = auth.currentUser;
+        if (!user) return [];
         try {
-
-            const raw =
-                localStorage.getItem(
-                    NOTIFICATION_CACHE_KEY +
-                    "_" +
-                    user.uid
-                );
-
-            const data =
-                JSON.parse(
-                    raw
-                );
-
-            return Array.isArray(data)
-                ? data
-                : [];
-
+            const raw = localStorage.getItem(NOTIFICATION_CACHE_KEY + "_" + user.uid);
+            const data = JSON.parse(raw);
+            return Array.isArray(data) ? data : [];
         } catch {
-
             return [];
-
         }
-
     }
 
-
-    function saveCachedNotifications(
-        notifications
-    ) {
-
-        const user =
-            auth.currentUser;
-
-        if (!user) {
-            return;
-        }
-
+    function saveCachedNotifications(notifications) {
+        const user = auth.currentUser;
+        if (!user) return;
         try {
-
-            localStorage.setItem(
-
-                NOTIFICATION_CACHE_KEY +
-                "_" +
-                user.uid,
-
-                JSON.stringify(
-                    notifications.slice(0, 100)
-                )
-
-            );
-
+            localStorage.setItem(NOTIFICATION_CACHE_KEY + "_" + user.uid, JSON.stringify(notifications.slice(0, 100)));
         } catch (error) {
-
-            console.error(
-                "Notification cache error:",
-                error
-            );
-
+            console.error("Notification cache error:", error);
         }
-
     }
 
-
-    function addLocalNotification(
-        notification
-    ) {
-
-        const current =
-            getCachedNotifications();
-
-
-        const exists =
-            current.some(
-                item =>
-                    item.id === notification.id
-            );
-
-
-        if (exists) {
-            return;
-        }
-
-
-        current.unshift(
-            notification
-        );
-
-
-        saveCachedNotifications(
-            current
-        );
-
-
+    function addLocalNotification(notification) {
+        const current = getCachedNotifications();
+        if (current.some(item => item.id === notification.id)) return;
+        current.unshift(notification);
+        saveCachedNotifications(current);
         renderNotifications();
-
     }
-
-
-    /* =========================================================
-       FIRESTORE NOTIFICATIONS
-    ========================================================= */
 
     function startNotificationsRealtime() {
+        const user = auth.currentUser;
+        if (!user) return;
+        if (notificationsUnsubscribe) return;
 
-        const user =
-            auth.currentUser;
+        const notificationsRef = collection(db, "users", user.uid, "notifications");
+        const q = query(notificationsRef, orderBy("createdAt", "desc"));
 
+        notificationsUnsubscribe = onSnapshot(q, snapshot => {
+            const firestoreNotifications = [];
+            snapshot.forEach(docSnap => {
+                firestoreNotifications.push({ id: docSnap.id, ...docSnap.data(), source: "firestore" });
+            });
 
-        if (!user) {
-            return;
-        }
+            const local = getCachedNotifications();
+            const merged = [...firestoreNotifications, ...local];
+            const unique = [];
+            const ids = new Set();
 
+            merged.forEach(item => {
+                if (!item.id || ids.has(item.id)) return;
+                ids.add(item.id);
+                unique.push(item);
+            });
 
-        if (notificationsUnsubscribe) {
-            return;
-        }
-
-
-        const notificationsRef =
-            collection(
-                db,
-                "users",
-                user.uid,
-                "notifications"
-            );
-
-
-        const q =
-            query(
-                notificationsRef,
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
-            );
-
-
-        notificationsUnsubscribe =
-            onSnapshot(
-
-                q,
-
-                snapshot => {
-
-                    const firestoreNotifications =
-                        [];
-
-
-                    snapshot.forEach(
-                        docSnap => {
-
-                            firestoreNotifications.push({
-
-                                id:
-                                    docSnap.id,
-
-                                ...docSnap.data(),
-
-                                source:
-                                    "firestore"
-
-                            });
-
-                        }
-                    );
-
-
-                    const local =
-                        getCachedNotifications();
-
-
-                    const merged = [
-                        ...firestoreNotifications,
-                        ...local
-                    ];
-
-
-                    const unique =
-                        [];
-
-
-                    const ids =
-                        new Set();
-
-
-                    merged.forEach(
-                        item => {
-
-                            if (
-                                !item.id ||
-                                ids.has(item.id)
-                            ) {
-                                return;
-                            }
-
-
-                            ids.add(
-                                item.id
-                            );
-
-
-                            unique.push(
-                                item
-                            );
-
-                        }
-                    );
-
-
-                    unique.sort(
-                        (a, b) =>
-                            String(
-                                b.createdAt || ""
-                            )
-                            .localeCompare(
-                                String(
-                                    a.createdAt || ""
-                                )
-                            )
-                    );
-
-
-                    saveCachedNotifications(
-                        unique
-                    );
-
-
-                    renderNotifications();
-
-                },
-
-                error => {
-
-                    console.error(
-                        "Notifications realtime error:",
-                        error
-                    );
-
-
-                    renderNotifications();
-
-                }
-
-            );
-
+            unique.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+            saveCachedNotifications(unique);
+            renderNotifications();
+        }, error => {
+            console.error("Notifications error:", error);
+            renderNotifications();
+        });
     }
-
 
     function stopNotificationsRealtime() {
-
-        if (
-            notificationsUnsubscribe
-        ) {
-
-            notificationsUnsubscribe();
-
-        }
-
-
-        notificationsUnsubscribe =
-            null;
-
+        if (notificationsUnsubscribe) notificationsUnsubscribe();
+        notificationsUnsubscribe = null;
     }
-
-
-    /* =========================================================
-       NOTIFICATION RENDER
-    ========================================================= */
 
     function renderNotifications() {
+        const container = document.getElementById("notifications-list");
+        if (!container) return;
 
-        const container =
-            document.getElementById(
-                "notifications-list"
-            );
-
-
-        if (!container) {
-            return;
-        }
-
-
-        const notifications =
-            getCachedNotifications();
-
-
-        const unread =
-            notifications.filter(
-                item =>
-                    !item.read
-            ).length;
-
-
-        updateNotificationCounters(
-            unread
-        );
-
+        const notifications = getCachedNotifications();
+        const unread = notifications.filter(item => !item.read).length;
+        updateNotificationCounters(unread);
 
         if (!notifications.length) {
-
-            container.innerHTML =
-                `
+            container.innerHTML = `
                 <div class="empty-state">
-
                     <i class="fa-solid fa-bell-slash"></i>
-
-                    <p>
-                        هنوز اعلانی ندارید.
-                    </p>
-
+                    <p>هنوز اعلانی ندارید.</p>
                 </div>
-                `;
-
+            `;
             return;
-
         }
 
-
-        container.innerHTML =
-            notifications
-            .map(
-                notification => {
-
-                    return `
-
-                        <div
-                            class="notification-card ${
-                                notification.read
-                                ? ""
-                                : "unread"
-                            }"
-                            onclick="markNotificationRead('${escapeHtml(notification.id)}')">
-
-                            <div class="notification-icon">
-
-                                <i class="fa-solid ${
-                                    notification.icon ||
-                                    "fa-bell"
-                                }"></i>
-
-                            </div>
-
-                            <div class="notification-body">
-
-                                <div class="notification-title">
-
-                                    ${escapeHtml(
-                                        notification.title ||
-                                        "اعلان"
-                                    )}
-
-                                </div>
-
-                                <div class="notification-text">
-
-                                    ${escapeHtml(
-                                        notification.text ||
-                                        ""
-                                    )}
-
-                                </div>
-
-                                <div class="notification-date">
-
-                                    <i class="fa-regular fa-clock"></i>
-
-                                    ${formatDateTime(
-                                        notification.createdAt
-                                    )}
-
-                                </div>
-
-                            </div>
-
-                            ${
-                                !notification.read
-                                ?
-                                `
-                                <span
-                                    class="notification-unread-dot">
-                                </span>
-                                `
-                                :
-                                ""
-                            }
-
+        container.innerHTML = notifications.map(notification => {
+            return `
+                <div class="notification-card ${notification.read ? "" : "unread"}" onclick="markNotificationRead('${escapeHtml(notification.id)}')">
+                    <div class="notification-icon">
+                        <i class="fa-solid ${notification.icon || "fa-bell"}"></i>
+                    </div>
+                    <div class="notification-body">
+                        <div class="notification-title">${escapeHtml(notification.title || "اعلان")}</div>
+                        <div class="notification-text">${escapeHtml(notification.text || "")}</div>
+                        <div class="notification-date">
+                            <i class="fa-regular fa-clock"></i> ${formatDateTime(notification.createdAt)}
                         </div>
-
-                    `;
-
-                }
-            )
-            .join("");
-
+                    </div>
+                    ${!notification.read ? '<span class="notification-unread-dot"></span>' : ''}
+                </div>
+            `;
+        }).join("");
     }
 
-
-    function updateNotificationCounters(
-        unread
-    ) {
-
-        const value =
-            Number(unread || 0);
-
-
+    function updateNotificationCounters(unread) {
+        const value = Number(unread || 0);
         const elements = [
-
-            document.getElementById(
-                "notification-count"
-            ),
-
-            document.getElementById(
-                "header-notification-count"
-            ),
-
-            document.getElementById(
-                "summary-notifications"
-            )
-
+            document.getElementById("notification-count"),
+            document.getElementById("header-notification-count"),
+            document.getElementById("summary-notifications")
         ];
 
-
-        elements.forEach(
-            element => {
-
-                if (!element) {
-                    return;
-                }
-
-
-                element.textContent =
-                    value.toLocaleString(
-                        "fa-IR"
-                    );
-
-
-                if (
-                    value === 0
-                ) {
-
-                    element.style.display =
-                        "none";
-
-                } else {
-
-                    element.style.display =
-                        "inline-flex";
-
-                }
-
-            }
-        );
-
-
-        const toolbar =
-            document.getElementById(
-                "notification-toolbar-text"
-            );
-
-
-        if (toolbar) {
-
-            toolbar.textContent =
-                value > 0
-                ?
-                `${value.toLocaleString("fa-IR")} اعلان خوانده‌نشده دارید.`
-                :
-                "همه اعلان‌ها خوانده شده‌اند.";
-
-        }
-
+        elements.forEach(element => {
+            if (!element) return;
+            element.textContent = value.toLocaleString("fa-IR");
+            element.style.display = value === 0 ? "none" : "inline-flex";
+        });
     }
 
+    window.markNotificationRead = function(id) {
+        const notifications = getCachedNotifications();
+        const item = notifications.find(n => n.id === id);
+        if (!item) return;
+        item.read = true;
+        saveCachedNotifications(notifications);
+        renderNotifications();
+    };
 
-    window.markNotificationRead =
-        function(id) {
+    window.markAllNotificationsRead = function() {
+        const notifications = getCachedNotifications();
+        notifications.forEach(n => { n.read = true; });
+        saveCachedNotifications(notifications);
+        renderNotifications();
+    };
 
-            const notifications =
-                getCachedNotifications();
-
-
-            const item =
-                notifications.find(
-                    notification =>
-                        notification.id === id
-                );
-
-
-            if (!item) {
-                return;
-            }
-
-
-            item.read = true;
-
-
-            saveCachedNotifications(
-                notifications
-            );
-
-
-            renderNotifications();
-
-        };
-
-
-    window.markAllNotificationsRead =
-        function() {
-
-            const notifications =
-                getCachedNotifications();
-
-
-            notifications.forEach(
-                notification => {
-
-                    notification.read =
-                        true;
-
-                }
-            );
-
-
-            saveCachedNotifications(
-                notifications
-            );
-
-
-            renderNotifications();
-
-        };
-
-
-    /* =========================================================
-       ORDER STATUS NOTIFICATION
-    ========================================================= */
-
-    function createOrderNotification(
-        order,
-        title,
-        text,
-        icon
-    ) {
-
-        const orderNumber =
-            order.orderId ||
-            order.id ||
-            "سفارش";
-
-
+    function createOrderNotification(order, title, text, icon) {
+        const orderNumber = order.orderId || order.id || "سفارش";
         const notification = {
-
-            id:
-                "notification_" +
-                orderNumber +
-                "_" +
-                Date.now(),
-
-            title:
-                title,
-
-            text:
-                text,
-
-            icon:
-                icon ||
-                "fa-box",
-
-            orderId:
-                orderNumber,
-
-            createdAt:
-                new Date()
-                .toISOString(),
-
-            read:
-                false
-
+            id: "notification_" + orderNumber + "_" + Date.now(),
+            title: title,
+            text: text,
+            icon: icon || "fa-box",
+            orderId: orderNumber,
+            createdAt: new Date().toISOString(),
+            read: false
         };
-
-
-        addLocalNotification(
-            notification
-        );
-
-
-        return notification;
-
+        addLocalNotification(notification);
     }
 
+    function showStatusNotification(order, oldStatus, newStatus) {
+        if (!order || !newStatus || oldStatus === newStatus) return;
+        const orderNumber = order.orderId || order.id || "سفارش";
+        const text = `وضعیت سفارش ${orderNumber} به «${newStatus}» تغییر کرد.`;
 
-    function showStatusNotification(
-        order,
-        oldStatus,
-        newStatus
-    ) {
-
-        if (
-            !order ||
-            !newStatus ||
-            oldStatus === newStatus
-        ) {
-            return;
+        const toast = document.getElementById("notification-toast");
+        const toastText = document.getElementById("notification-toast-text");
+        if (toast && toastText) {
+            toastText.innerHTML = escapeHtml(text);
+            toast.classList.add("show");
+            clearTimeout(notificationTimer);
+            notificationTimer = setTimeout(() => { toast.classList.remove("show"); }, 5500);
         }
 
-
-        const orderNumber =
-            order.orderId ||
-            order.id ||
-            "سفارش";
-
-
-        const text =
-            `وضعیت سفارش ${orderNumber} به «${newStatus}» تغییر کرد.`;
-
-
-        const toast =
-            document.getElementById(
-                "notification-toast"
-            );
-
-
-        const toastText =
-            document.getElementById(
-                "notification-toast-text"
-            );
-
-
-        if (
-            toast &&
-            toastText
-        ) {
-
-            toastText.innerHTML =
-                escapeHtml(text);
-
-
-            toast.classList.add(
-                "show"
-            );
-
-
-            clearTimeout(
-                notificationTimer
-            );
-
-
-            notificationTimer =
-                setTimeout(
-                    () => {
-
-                        toast.classList.remove(
-                            "show"
-                        );
-
-                    },
-                    5500
-                );
-
-        }
-
-
-        createOrderNotification(
-
-            order,
-
-            "تغییر وضعیت سفارش",
-
-            text,
-
-            "fa-rotate"
-
-        );
-
+        createOrderNotification(order, "تغییر وضعیت سفارش", text, "fa-rotate");
     }
 
-
-    /* =========================================================
-       ORDER TIMELINE
-    ========================================================= */
-
-    function renderOrderTimeline(
-        statusText
-    ) {
-
-        if (
-            statusText ===
-            "لغو شد"
-        ) {
-
+    function renderOrderTimeline(statusText) {
+        if (statusText === "لغو شد") {
             return `
-
-                <div
-                    class="status-updated-badge"
-                    style="
-                    background:rgba(239,68,68,.10);
-                    color:#f87171;
-                    ">
-
-                    <i class="fa-solid fa-circle-xmark"></i>
-
-                    این سفارش لغو شده است.
-
+                <div class="status-updated-badge" style="background:rgba(239,68,68,.10); color:#f87171;">
+                    <i class="fa-solid fa-circle-xmark"></i> این سفارش لغو شده است.
                 </div>
-
             `;
-
         }
 
-
-        const currentIndex =
-            STATUS_INDEX[
-                statusText
-            ] ?? 0;
-
+        const currentIndex = STATUS_INDEX[statusText] ?? 0;
 
         return `
-
             <div class="order-timeline">
-
-                ${
-                    STATUS_STEPS
-                    .map(
-                        (step, index) => {
-
-                            const done =
-                                index <
-                                currentIndex;
-
-
-                            const current =
-                                index ===
-                                currentIndex;
-
-
-                            return `
-
-                                <div
-                                    class="
-                                    timeline-step
-                                    ${
-                                        done
-                                        ? "done"
-                                        : ""
-                                    }
-                                    ${
-                                        current
-                                        ? "active current"
-                                        : ""
-                                    }">
-
-                                    <div class="timeline-dot">
-
-                                        <i class="fa-solid ${
-                                            step.icon
-                                        }"></i>
-
-                                    </div>
-
-                                    <div class="timeline-label">
-
-                                        ${
-                                            step.label
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                            `;
-
-                        }
-                    )
-                    .join("")
-                }
-
+                ${STATUS_STEPS.map((step, index) => {
+                    const done = index < currentIndex;
+                    const current = index === currentIndex;
+                    return `
+                        <div class="timeline-step ${done ? "done" : ""} ${current ? "active current" : ""}">
+                            <div class="timeline-dot"><i class="fa-solid ${step.icon}"></i></div>
+                            <div class="timeline-label">${step.label}</div>
+                        </div>
+                    `;
+                }).join("")}
             </div>
-
         `;
-
     }
 
-
-    /* =========================================================
-       ORDER REALTIME
-    ========================================================= */
-
-    function renderOrdersSnapshot(
-        snapshot
-    ) {
-
-        const activeContainer =
-            document.getElementById(
-                "active-orders"
-            );
-
-
-        const pastContainer =
-            document.getElementById(
-                "past-orders"
-            );
-
+    function renderOrdersSnapshot(snapshot) {
+        const activeContainer = document.getElementById("active-orders");
+        const pastContainer = document.getElementById("past-orders");
 
         const activeOrders = [];
-
         const pastOrders = [];
 
+        snapshot.forEach(docSnap => {
+            const order = { id: docSnap.id, ...docSnap.data() };
+            const old = previousOrders.get(docSnap.id);
+            const newStatus = getStatusText(order);
 
-        snapshot.forEach(
-            docSnap => {
-
-                const order = {
-
-                    id:
-                        docSnap.id,
-
-                    ...docSnap.data()
-
-                };
-
-
-                const old =
-                    previousOrders.get(
-                        docSnap.id
-                    );
-
-
-                const newStatus =
-                    getStatusText(
-                        order
-                    );
-
-
-                if (
-                    !firstOrdersSnapshot &&
-                    old &&
-                    getStatusText(old) !==
-                    newStatus
-                ) {
-
-                    showStatusNotification(
-                        order,
-                        getStatusText(old),
-                        newStatus
-                    );
-
-                }
-
-
-                previousOrders.set(
-                    docSnap.id,
-                    order
-                );
-
-
-                if (
-                    orderIsPast(order)
-                ) {
-
-                    pastOrders.push(
-                        order
-                    );
-
-                } else {
-
-                    activeOrders.push(
-                        order
-                    );
-
-                }
-
+            if (!firstOrdersSnapshot && old && getStatusText(old) !== newStatus) {
+                showStatusNotification(order, getStatusText(old), newStatus);
             }
-        );
 
+            previousOrders.set(docSnap.id, order);
 
-        firstOrdersSnapshot =
-            false;
+            if (orderIsPast(order)) {
+                pastOrders.push(order);
+            } else {
+                activeOrders.push(order);
+            }
+        });
 
+        firstOrdersSnapshot = false;
 
-        activeOrders.sort(
-            (a, b) =>
-                String(
-                    b.createdAt || ""
-                )
-                .localeCompare(
-                    String(
-                        a.createdAt || ""
-                    )
-                )
-        );
+        activeOrders.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+        pastOrders.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
 
-
-        pastOrders.sort(
-            (a, b) =>
-                String(
-                    b.createdAt || ""
-                )
-                .localeCompare(
-                    String(
-                        a.createdAt || ""
-                    )
-                )
-        );
-
-
-        renderOrderList(
-            activeContainer,
-            activeOrders,
-            false
-        );
-
-
-        renderOrderList(
-            pastContainer,
-            pastOrders,
-            true
-        );
-
-
-        updateActiveOrderCounter(
-            activeOrders.length
-        );
-
+        renderOrderList(activeContainer, activeOrders, false);
+        renderOrderList(pastContainer, pastOrders, true);
+        updateActiveOrderCounter(activeOrders.length);
     }
 
-
-    function renderOrderList(
-        container,
-        orders,
-        past
-    ) {
-
-        if (!container) {
-            return;
-        }
-
-
+    function renderOrderList(container, orders, past) {
+        if (!container) return;
         if (!orders.length) {
-
-            container.innerHTML =
-                `
+            container.innerHTML = `
                 <div class="empty-state">
-
-                    <i class="fa-solid ${
-                        past
-                        ? "fa-clock-rotate-left"
-                        : "fa-box-open"
-                    }"></i>
-
-                    <p>
-                        ${
-                            past
-                            ?
-                            "هنوز سفارش تکمیل‌شده یا لغوشده‌ای ندارید."
-                            :
-                            "در حال حاضر سفارش فعالی ندارید."
-                        }
-                    </p>
-
+                    <i class="fa-solid ${past ? "fa-clock-rotate-left" : "fa-box-open"}"></i>
+                    <p>${past ? "هنوز سفارش تکمیل‌شده یا لغوشده‌ای ندارید." : "در حال حاضر سفارش فعالی ندارید."}</p>
                 </div>
-                `;
-
+            `;
             return;
-
         }
 
-
-        container.innerHTML =
-            orders
-            .map(
-                order => {
-
-                    return renderSingleOrder(
-                        order,
-                        past
-                    );
-
-                }
-            )
-            .join("");
-
+        container.innerHTML = orders.map(order => renderSingleOrder(order, past)).join("");
     }
 
+    function renderSingleOrder(order, past) {
+        const date = formatDate(order.createdAt);
+        const statusText = getStatusText(order);
+        const items = Array.isArray(order.items) ? order.items : [];
 
-    function renderSingleOrder(
-        order,
-        past
-    ) {
+        const itemsHtml = items.map(item => {
+            const price = Number(item.price) || 0;
+            const quantity = Number(item.quantity) || 1;
+            return `
+                <div class="order-product">
+                    <div>
+                        <strong>${escapeHtml(item.name || item.title || "محصول")}</strong>
+                        <div class="order-product-info">تعداد: ${quantity.toLocaleString("fa-IR")}</div>
+                    </div>
+                    <span>${(price * quantity).toLocaleString("fa-IR")} تومان</span>
+                </div>
+            `;
+        }).join("");
 
-        const date =
-            formatDate(
-                order.createdAt
-            );
-
-
-        const statusText =
-            getStatusText(
-                order
-            );
-
-
-        const items =
-            Array.isArray(
-                order.items
-            )
-            ?
-            order.items
-            :
-            [];
-
-
-        const itemsHtml =
-            items
-            .map(
-                item => {
-
-                    const price =
-                        Number(
-                            item.price
-                        ) || 0;
-
-
-                    const quantity =
-                        Number(
-                            item.quantity
-                        ) || 1;
-
-
-                    return `
-
-                        <div class="order-product">
-
-                            <div>
-
-                                <strong>
-
-                                    ${escapeHtml(
-                                        item.name ||
-                                        item.title ||
-                                        "محصول"
-                                    )}
-
-                                </strong>
-
-                                <div class="order-product-info">
-
-                                    تعداد:
-
-                                    ${quantity.toLocaleString(
-                                        "fa-IR"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-                            <span>
-
-                                ${
-                                    (
-                                        price *
-                                        quantity
-                                    ).toLocaleString(
-                                        "fa-IR"
-                                    )
-                                }
-
-                                تومان
-
-                            </span>
-
-                        </div>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-
-        const lastUpdated =
-            order.statusUpdatedAt ||
-            order.updatedAt ||
-            order.createdAt;
-
+        const lastUpdated = order.statusUpdatedAt || order.updatedAt || order.createdAt;
 
         return `
-
             <div class="active-order-card">
-
                 <div class="order-header">
-
                     <div>
-
-                        <strong>
-
-                            سفارش
-                            ${escapeHtml(
-                                order.orderId ||
-                                order.id
-                            )}
-
-                        </strong>
-
-                        <small>
-
-                            تاریخ ثبت:
-                            ${date}
-
-                        </small>
-
+                        <strong>سفارش ${escapeHtml(order.orderId || order.id)}</strong>
+                        <small>تاریخ ثبت: ${date}</small>
                     </div>
-
-                    <span
-                        class="
-                        order-status
-                        ${getStatusClass(
-                            statusText
-                        )}">
-
-                        ${escapeHtml(
-                            statusText
-                        )}
-
-                    </span>
-
+                    <span class="order-status ${getStatusClass(statusText)}">${escapeHtml(statusText)}</span>
                 </div>
-
-
-                ${
-                    !past
-                    ?
-                    renderOrderTimeline(
-                        statusText
-                    )
-                    :
-                    ""
-                }
-
-
-                <div class="order-products">
-
-                    ${itemsHtml}
-
-                </div>
-
-
+                ${!past ? renderOrderTimeline(statusText) : ''}
+                <div class="order-products">${itemsHtml}</div>
                 <div class="order-footer">
-
-                    <span>
-                        مبلغ کل
-                    </span>
-
-                    <strong>
-
-                        ${
-                            Number(
-                                order.total || 0
-                            ).toLocaleString(
-                                "fa-IR"
-                            )
-                        }
-
-                        تومان
-
-                    </strong>
-
+                    <span>مبلغ کل</span>
+                    <strong>${Number(order.total || 0).toLocaleString("fa-IR")} تومان</strong>
                 </div>
-
-
-                ${
-                    !past
-                    ?
-                    `
-
+                ${!past ? `
                     <div class="status-updated-badge">
-
-                        <i class="fa-solid fa-clock"></i>
-
-                        آخرین بروزرسانی:
-                        ${formatDateTime(
-                            lastUpdated
-                        )}
-
+                        <i class="fa-solid fa-clock"></i> آخرین بروزرسانی: ${formatDateTime(lastUpdated)}
                     </div>
-
-                    `
-                    :
-                    ""
-                }
-
+                ` : ''}
             </div>
-
         `;
-
     }
-
 
     function startOrdersRealtime() {
+        const user = auth.currentUser;
+        if (!user) return;
+        if (ordersUnsubscribe) return;
 
-        const user =
-            auth.currentUser;
+        const ordersRef = collection(db, "users", user.uid, "orders");
+        const q = query(ordersRef, orderBy("createdAt", "desc"));
 
+        firstOrdersSnapshot = true;
+        previousOrders = new Map();
 
-        if (!user) {
-            return;
-        }
-
-
-        if (ordersUnsubscribe) {
-            return;
-        }
-
-
-        const ordersRef =
-            collection(
-                db,
-                "users",
-                user.uid,
-                "orders"
-            );
-
-
-        const q =
-            query(
-                ordersRef,
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
-            );
-
-
-        firstOrdersSnapshot =
-            true;
-
-
-        previousOrders =
-            new Map();
-
-
-        ordersUnsubscribe =
-            onSnapshot(
-
-                q,
-
-                renderOrdersSnapshot,
-
-                error => {
-
-                    console.error(
-                        "Realtime orders error:",
-                        error
-                    );
-
-
-                    ordersUnsubscribe =
-                        null;
-
-
-                    const active =
-                        document.getElementById(
-                            "active-orders"
-                        );
-
-
-                    if (active) {
-
-                        active.innerHTML =
-                            `
-                            <div class="empty-state">
-
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                                <p>
-                                    دریافت لحظه‌ای سفارشات
-                                    با خطا مواجه شد.
-                                </p>
-
-                            </div>
-                            `;
-
-                    }
-
-                }
-
-            );
-
+        ordersUnsubscribe = onSnapshot(q, renderOrdersSnapshot, error => {
+            console.error("Realtime orders error:", error);
+            ordersUnsubscribe = null;
+        });
     }
-
 
     function stopOrdersRealtime() {
-
-        if (
-            ordersUnsubscribe
-        ) {
-
-            ordersUnsubscribe();
-
-        }
-
-
-        ordersUnsubscribe =
-            null;
-
-
-        previousOrders =
-            new Map();
-
-
-        firstOrdersSnapshot =
-            true;
-
+        if (ordersUnsubscribe) ordersUnsubscribe();
+        ordersUnsubscribe = null;
+        previousOrders = new Map();
+        firstOrdersSnapshot = true;
     }
 
-
-    /* =========================================================
-       ACTIVE ORDER COUNTER
-    ========================================================= */
-
-    function updateActiveOrderCounter(
-        count
-    ) {
-
+    function updateActiveOrderCounter(count) {
         const elements = [
-
-            document.getElementById(
-                "active-order-count"
-            ),
-
-            document.getElementById(
-                "summary-active"
-            )
-
+            document.getElementById("active-order-count"),
+            document.getElementById("summary-active")
         ];
 
-
-        elements.forEach(
-            element => {
-
-                if (!element) {
-                    return;
-                }
-
-
-                element.textContent =
-                    Number(
-                        count || 0
-                    )
-                    .toLocaleString(
-                        "fa-IR"
-                    );
-
-            }
-        );
-
+        elements.forEach(element => {
+            if (!element) return;
+            element.textContent = Number(count || 0).toLocaleString("fa-IR");
+        });
     }
-
-
-    /* =========================================================
-       CART
-    ========================================================= */
 
     function getCart() {
-
         try {
-
-            const cart =
-                JSON.parse(
-                    localStorage.getItem(
-                        CART_KEY
-                    )
-                );
-
-
-            return Array.isArray(cart)
-                ? cart
-                : [];
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
+            const cart = JSON.parse(localStorage.getItem(CART_KEY));
+            return Array.isArray(cart) ? cart : [];
+        } catch {
             return [];
-
         }
-
     }
-
 
     function saveCart(cart) {
-
-        localStorage.setItem(
-            CART_KEY,
-            JSON.stringify(cart)
-        );
-
-
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
         renderCart();
-
     }
-
 
     function renderCart() {
+        const cart = getCart();
+        const container = document.getElementById("cart-items");
+        const empty = document.getElementById("cart-empty");
+        const summary = document.getElementById("cart-summary");
+        const totalElement = document.getElementById("cart-total");
+        const cartCount = document.getElementById("cart-count");
+        const headerCount = document.getElementById("header-cart-count");
+        const summaryCart = document.getElementById("summary-cart");
 
-        const cart =
-            getCart();
-
-
-        const container =
-            document.getElementById(
-                "cart-items"
-            );
-
-
-        const empty =
-            document.getElementById(
-                "cart-empty"
-            );
-
-
-        const summary =
-            document.getElementById(
-                "cart-summary"
-            );
-
-
-        const totalElement =
-            document.getElementById(
-                "cart-total"
-            );
-
-
-        const cartCount =
-            document.getElementById(
-                "cart-count"
-            );
-
-
-        const headerCount =
-            document.getElementById(
-                "header-cart-count"
-            );
-
-
-        const summaryCart =
-            document.getElementById(
-                "summary-cart"
-            );
-
-
-        if (!container) {
-            return;
-        }
-
+        if (!container) return;
 
         let totalQuantity = 0;
-
         let totalPrice = 0;
 
+        cart.forEach(item => {
+            const quantity = Number(item.quantity) || 1;
+            const price = Number(item.price) || 0;
+            totalQuantity += quantity;
+            totalPrice += price * quantity;
+        });
 
-        cart.forEach(
-            item => {
-
-                const quantity =
-                    Number(
-                        item.quantity
-                    ) || 1;
-
-
-                const price =
-                    Number(
-                        item.price
-                    ) || 0;
-
-
-                totalQuantity +=
-                    quantity;
-
-
-                totalPrice +=
-                    price *
-                    quantity;
-
-            }
-        );
-
-
-        const countText =
-            totalQuantity.toLocaleString(
-                "fa-IR"
-            );
-
-
-        if (cartCount) {
-            cartCount.textContent =
-                countText;
-        }
-
-
-        if (headerCount) {
-            headerCount.textContent =
-                countText;
-        }
-
-
-        if (summaryCart) {
-            summaryCart.textContent =
-                countText;
-        }
-
+        const countText = totalQuantity.toLocaleString("fa-IR");
+        if (cartCount) cartCount.textContent = countText;
+        if (headerCount) headerCount.textContent = countText;
+        if (summaryCart) summaryCart.textContent = countText;
 
         if (!cart.length) {
-
-            container.innerHTML =
-                "";
-
-            empty.style.display =
-                "block";
-
-            summary.style.display =
-                "none";
-
+            container.innerHTML = "";
+            empty.style.display = "block";
+            summary.style.display = "none";
             return;
-
         }
 
+        empty.style.display = "none";
+        summary.style.display = "block";
 
-        empty.style.display =
-            "none";
+        container.innerHTML = cart.map((item, index) => {
+            const title = item.name || item.title || "محصول";
+            const price = Number(item.price) || 0;
+            const quantity = Number(item.quantity) || 1;
+            const image = item.image || "";
 
+            return `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=&quot;fa-solid fa-box&quot;></i>';">` : '<i class="fa-solid fa-box"></i>'}
+                    </div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${escapeHtml(title)}</div>
+                        <div class="cart-item-price">${formatPrice(price)} تومان</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQuantity(${index}, 1)">+</button>
+                        <span class="quantity-number">${quantity.toLocaleString("fa-IR")}</span>
+                        <button class="quantity-btn" onclick="changeQuantity(${index}, -1)">−</button>
+                    </div>
+                    <button class="remove-cart-btn" onclick="removeFromCart(${index})" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+        }).join("");
 
-        summary.style.display =
-            "block";
-
-
-        container.innerHTML =
-            cart
-            .map(
-                (item, index) => {
-
-                    const title =
-                        item.name ||
-                        item.title ||
-                        "محصول";
-
-
-                    const price =
-                        Number(
-                            item.price
-                        ) || 0;
-
-
-                    const quantity =
-                        Number(
-                            item.quantity
-                        ) || 1;
-
-
-                    const image =
-                        item.image ||
-                        "";
-
-
-                    return `
-
-                        <div class="cart-item">
-
-                            <div class="cart-item-image">
-
-                                ${
-                                    image
-                                    ?
-                                    `
-                                    <img
-                                        src="${escapeHtml(image)}"
-                                        alt="${escapeHtml(title)}"
-                                        onerror="
-                                            this.style.display='none';
-                                            this.parentElement.innerHTML='<i class=&quot;fa-solid fa-box&quot;></i>';
-                                        "
-                                    >
-                                    `
-                                    :
-                                    `
-                                    <i class="fa-solid fa-box"></i>
-                                    `
-                                }
-
-                            </div>
-
-
-                            <div class="cart-item-info">
-
-                                <div class="cart-item-title">
-
-                                    ${escapeHtml(title)}
-
-                                </div>
-
-                                <div class="cart-item-price">
-
-                                    ${formatPrice(price)}
-                                    تومان
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="quantity-control">
-
-                                <button
-                                    class="quantity-btn"
-                                    onclick="changeQuantity(${index}, 1)">
-
-                                    +
-
-                                </button>
-
-
-                                <span class="quantity-number">
-
-                                    ${quantity.toLocaleString(
-                                        "fa-IR"
-                                    )}
-
-                                </span>
-
-
-                                <button
-                                    class="quantity-btn"
-                                    onclick="changeQuantity(${index}, -1)">
-
-                                    −
-
-                                </button>
-
-                            </div>
-
-
-                            <button
-                                class="remove-cart-btn"
-                                onclick="removeFromCart(${index})"
-                                title="حذف">
-
-                                <i class="fa-solid fa-trash"></i>
-
-                            </button>
-
-                        </div>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-
-        totalElement.textContent =
-            formatPrice(totalPrice) +
-            " تومان";
-
+        totalElement.textContent = formatPrice(totalPrice) + " تومان";
     }
 
+    window.changeQuantity = function(index, change) {
+        const cart = getCart();
+        if (!cart[index]) return;
+        cart[index].quantity = (Number(cart[index].quantity) || 1) + change;
+        if (cart[index].quantity <= 0) cart.splice(index, 1);
+        saveCart(cart);
+    };
 
-    window.changeQuantity =
-        function(
-            index,
-            change
-        ) {
+    window.removeFromCart = function(index) {
+        const cart = getCart();
+        if (!cart[index]) return;
+        cart.splice(index, 1);
+        saveCart(cart);
+    };
 
-            const cart =
-                getCart();
+    window.clearCart = function() {
+        if (!getCart().length) return;
+        if (!confirm("آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟")) return;
+        localStorage.removeItem(CART_KEY);
+        renderCart();
+    };
 
+    window.submitCart = async function() {
+        const cart = getCart();
+        if (!cart.length) {
+            alert("سبد خرید شما خالی است.");
+            return;
+        }
 
-            if (!cart[index]) {
-                return;
+        const user = auth.currentUser;
+        if (!user) {
+            alert("لطفاً ابتدا وارد حساب کاربری خود شوید.");
+            return;
+        }
+
+        const total = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
+        const orderId = "order_" + Date.now();
+
+        let customerName = "";
+        let phone = "";
+        let email = user.email || "";
+
+        try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                customerName = userData.fullName || [userData.firstName, userData.lastName].filter(Boolean).join(" ") || "";
+                phone = userData.phone || "";
+                email = userData.email || user.email || "";
             }
+        } catch (error) {
+            console.error("Customer info error:", error);
+        }
 
-
-            cart[index].quantity =
-                (
-                    Number(
-                        cart[index].quantity
-                    ) || 1
-                ) +
-                change;
-
-
-            if (
-                cart[index].quantity <= 0
-            ) {
-
-                cart.splice(
-                    index,
-                    1
-                );
-
-            }
-
-
-            saveCart(
-                cart
-            );
-
+        const order = {
+            orderId,
+            uid: user.uid,
+            customerName,
+            phone,
+            email,
+            items: cart.map(item => ({
+                id: item.id || "",
+                name: item.name || item.title || "محصول",
+                title: item.title || item.name || "محصول",
+                price: Number(item.price) || 0,
+                quantity: Number(item.quantity) || 1,
+                image: item.image || ""
+            })),
+            total,
+            status: "active",
+            statusText: "در انتظار بررسی",
+            createdAt: new Date().toISOString(),
+            statusUpdatedAt: new Date().toISOString()
         };
 
+        try {
+            await setDoc(doc(db, "users", user.uid, "orders", orderId), order);
 
-    window.removeFromCart =
-        function(index) {
-
-            const cart =
-                getCart();
-
-
-            if (!cart[index]) {
-                return;
+            try {
+                await fetch(GOOGLE_SHEET_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(order)
+                });
+            } catch (sheetError) {
+                console.error("Google Sheet error:", sheetError);
             }
 
-
-            cart.splice(
-                index,
-                1
-            );
-
-
-            saveCart(
-                cart
-            );
-
-        };
-
-
-    window.clearCart =
-        function() {
-
-            if (
-                !getCart().length
-            ) {
-                return;
-            }
-
-
-            const confirmed =
-                confirm(
-                    "آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            localStorage.removeItem(
-                CART_KEY
-            );
-
-
+            localStorage.removeItem(CART_KEY);
             renderCart();
 
-        };
-
-
-    /* =========================================================
-       SUBMIT ORDER
-       GOOGLE SHEETS CONNECTION IS PRESERVED
-    ========================================================= */
-
-    window.submitCart =
-        async function() {
-
-            const cart =
-                getCart();
-
-
-            if (!cart.length) {
-
-                alert(
-                    "سبد خرید شما خالی است."
-                );
-
-                return;
-
-            }
-
-
-            const user =
-                auth.currentUser;
-
-
-            if (!user) {
-
-                alert(
-                    "لطفاً ابتدا وارد حساب کاربری خود شوید."
-                );
-
-                return;
-
-            }
-
-
-            const total =
-                cart.reduce(
-                    (
-                        sum,
-                        item
-                    ) => {
-
-                        const price =
-                            Number(
-                                item.price
-                            ) || 0;
-
-
-                        const quantity =
-                            Number(
-                                item.quantity
-                            ) || 1;
-
-
-                        return (
-                            sum +
-                            price *
-                            quantity
-                        );
-
-                    },
-                    0
-                );
-
-
-            const orderId =
-                "order_" +
-                Date.now();
-
-
-            let customerName =
-                "";
-
-            let phone =
-                "";
-
-            let email =
-                user.email ||
-                "";
-
-
-            try {
-
-                const userDoc =
-                    await getDoc(
-
-                        doc(
-                            db,
-                            "users",
-                            user.uid
-                        )
-
-                    );
-
-
-                if (
-                    userDoc.exists()
-                ) {
-
-                    const userData =
-                        userDoc.data();
-
-
-                    customerName =
-                        userData.fullName ||
-                        [
-                            userData.firstName,
-                            userData.lastName
-                        ]
-                        .filter(Boolean)
-                        .join(" ") ||
-                        "";
-
-
-                    phone =
-                        userData.phone ||
-                        "";
-
-
-                    email =
-                        userData.email ||
-                        user.email ||
-                        "";
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Customer information error:",
-                    error
-                );
-
-            }
-
-
-            /* =================================================
-               ساخت سفارش
-            ================================================= */
-
-            const order = {
-
-                orderId:
-                    orderId,
-
-                uid:
-                    user.uid,
-
-                customerName:
-                    customerName,
-
-                phone:
-                    phone,
-
-                email:
-                    email,
-
-                items:
-                    cart.map(
-                        item => ({
-
-                            id:
-                                item.id ||
-                                "",
-
-                            name:
-                                item.name ||
-                                item.title ||
-                                "محصول",
-
-                            title:
-                                item.title ||
-                                item.name ||
-                                "محصول",
-
-                            price:
-                                Number(
-                                    item.price
-                                ) || 0,
-
-                            quantity:
-                                Number(
-                                    item.quantity
-                                ) || 1,
-
-                            image:
-                                item.image ||
-                                ""
-
-                        })
-                    ),
-
-                total:
-                    total,
-
-                status:
-                    "active",
-
-                statusText:
-                    "در انتظار بررسی",
-
-                createdAt:
-                    new Date()
-                    .toISOString(),
-
-                statusUpdatedAt:
-                    new Date()
-                    .toISOString()
-
-            };
-
-
-            try {
-
-                /* =============================================
-                   1. FIREBASE
-                ============================================= */
-
-                await setDoc(
-
-                    doc(
-                        db,
-                        "users",
-                        user.uid,
-                        "orders",
-                        orderId
-                    ),
-
-                    order
-
-                );
-
-
-                /* =============================================
-                   2. GOOGLE SHEETS
-                   این بخش قطع نشده و همان آدرس قبلی است.
-                ============================================= */
-
-                try {
-
-                    await fetch(
-                        GOOGLE_SHEET_URL,
-                        {
-
-                            method:
-                                "POST",
-
-                            mode:
-                                "no-cors",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "text/plain;charset=utf-8"
-
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    order
-                                )
-
-                        }
-                    );
-
-                } catch (
-                    sheetError
-                ) {
-
-                    console.error(
-                        "Google Sheet error:",
-                        sheetError
-                    );
-
-                }
-
-
-                /* =============================================
-                   3. CLEAR CART
-                ============================================= */
-
-                localStorage.removeItem(
-                    CART_KEY
-                );
-
-
-                renderCart();
-
-
-                /* =============================================
-                   4. LOCAL NOTIFICATION
-                ============================================= */
-
-                createOrderNotification(
-
-                    order,
-
-                    "سفارش جدید ثبت شد",
-
-                    `سفارش ${orderId} با موفقیت ثبت شد و در انتظار بررسی است.`,
-
-                    "fa-paper-plane"
-
-                );
-
-
-                /* =============================================
-                   5. LOAD ORDERS
-                ============================================= */
-
-                await loadActiveOrders();
-
-
-                await loadPastOrders();
-
-
-                /* =============================================
-                   6. ACTIVE TAB
-                ============================================= */
-
-                const activeMenu =
-                    document.querySelector(
-                        '.menu-item[onclick*="switchDashboardTab(\'active\'"]'
-                    );
-
-
-                switchDashboardTab(
-                    "active",
-                    activeMenu
-                );
-
-
-                /* =============================================
-                   7. SUCCESS
-                ============================================= */
-
-                alert(
-                    "سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد."
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Order error:",
-                    error
-                );
-
-
-                alert(
-                    "ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید."
-                );
-
-            }
-
-        };
-
-
-    /* =========================================================
-       LOAD ACTIVE ORDERS
-    ========================================================= */
+            createOrderNotification(order, "سفارش جدید ثبت شد", `سفارش ${orderId} با موفقیت ثبت شد و در انتظار بررسی است.`, "fa-paper-plane");
+
+            await loadActiveOrders();
+            await loadPastOrders();
+
+            const activeMenu = document.querySelector('.menu-item[onclick*="switchDashboardTab(\'active\'"]');
+            switchDashboardTab("active", activeMenu);
+
+            alert("سفارش شما با موفقیت ثبت شد و به سفارشات فعال منتقل شد.");
+        } catch (error) {
+            console.error("Order error:", error);
+            alert("ثبت سفارش انجام نشد. لطفاً دوباره تلاش کنید.");
+        }
+    };
 
     async function loadActiveOrders() {
-
-        const user =
-            auth.currentUser;
-
-
-        if (!user) {
-            return;
-        }
-
-
-        const container =
-            document.getElementById(
-                "active-orders"
-            );
-
-
-        if (!container) {
-            return;
-        }
-
+        const user = auth.currentUser;
+        if (!user) return;
+        const container = document.getElementById("active-orders");
+        if (!container) return;
 
         try {
-
-            const ordersRef =
-                collection(
-                    db,
-                    "users",
-                    user.uid,
-                    "orders"
-                );
-
-
-            const q =
-                query(
-                    ordersRef,
-                    orderBy(
-                        "createdAt",
-                        "desc"
-                    )
-                );
-
-
-            const snapshot =
-                await getDocs(q);
-
-
-            const activeOrders =
-                [];
-
-
-            snapshot.forEach(
-                docSnap => {
-
-                    const order =
-                        docSnap.data();
-
-
-                    if (
-                        order.status ===
-                        "active"
-                    ) {
-
-                        activeOrders.push({
-
-                            id:
-                                docSnap.id,
-
-                            ...order
-
-                        });
-
-                    }
-
+            const ordersRef = collection(db, "users", user.uid, "orders");
+            const snapshot = await getDocs(query(ordersRef, orderBy("createdAt", "desc")));
+            
+            const activeOrders = [];
+            snapshot.forEach(docSnap => {
+                const order = docSnap.data();
+                if (order.status === "active") {
+                    activeOrders.push({ id: docSnap.id, ...order });
                 }
-            );
+            });
 
-
-            activeOrders.sort(
-                (a, b) =>
-                    String(
-                        b.createdAt || ""
-                    )
-                    .localeCompare(
-                        String(
-                            a.createdAt || ""
-                        )
-                    )
-            );
-
-
-            renderOrderList(
-                container,
-                activeOrders,
-                false
-            );
-
-
-            updateActiveOrderCounter(
-                activeOrders.length
-            );
-
+            activeOrders.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+            renderOrderList(container, activeOrders, false);
+            updateActiveOrderCounter(activeOrders.length);
         } catch (error) {
-
-            console.error(
-                "Load active orders error:",
-                error
-            );
-
-
-            container.innerHTML =
-                `
+            console.error("Load active orders error:", error);
+            container.innerHTML = `
                 <div class="empty-state">
-
                     <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <p>
-                        دریافت سفارشات با خطا مواجه شد.
-                    </p>
-
+                    <p>دریافت سفارشات با خطا مواجه شد.</p>
                 </div>
-                `;
-
+            `;
         }
-
     }
-
-
-    /* =========================================================
-       LOAD PAST ORDERS
-    ========================================================= */
 
     async function loadPastOrders() {
-
-        const user =
-            auth.currentUser;
-
-
-        if (!user) {
-            return;
-        }
-
-
-        const container =
-            document.getElementById(
-                "past-orders"
-            );
-
-
-        if (!container) {
-            return;
-        }
-
+        const user = auth.currentUser;
+        if (!user) return;
+        const container = document.getElementById("past-orders");
+        if (!container) return;
 
         try {
-
-            const ordersRef =
-                collection(
-                    db,
-                    "users",
-                    user.uid,
-                    "orders"
-                );
-
-
-            const q =
-                query(
-                    ordersRef,
-                    orderBy(
-                        "createdAt",
-                        "desc"
-                    )
-                );
-
-
-            const snapshot =
-                await getDocs(q);
-
-
-            const pastOrders =
-                [];
-
-
-            snapshot.forEach(
-                docSnap => {
-
-                    const order =
-                        docSnap.data();
-
-
-                    if (
-                        order.status ===
-                        "completed" ||
-
-                        order.status ===
-                        "cancelled"
-                    ) {
-
-                        pastOrders.push({
-
-                            id:
-                                docSnap.id,
-
-                            ...order
-
-                        });
-
-                    }
-
+            const ordersRef = collection(db, "users", user.uid, "orders");
+            const snapshot = await getDocs(query(ordersRef, orderBy("createdAt", "desc")));
+            
+            const pastOrders = [];
+            snapshot.forEach(docSnap => {
+                const order = docSnap.data();
+                if (order.status === "completed" || order.status === "cancelled") {
+                    pastOrders.push({ id: docSnap.id, ...order });
                 }
-            );
+            });
 
-
-            renderOrderList(
-                container,
-                pastOrders,
-                true
-            );
-
+            renderOrderList(container, pastOrders, true);
         } catch (error) {
-
-            console.error(
-                "Past orders error:",
-                error
-            );
-
+            console.error("Past orders error:", error);
         }
-
     }
 
+    window.switchDashboardTab = function(tab, element) {
+        document.querySelectorAll(".tab-content").forEach(item => { item.classList.remove("active"); });
+        document.querySelectorAll(".menu-item").forEach(item => { item.classList.remove("active"); });
 
-    /* =========================================================
-       DASHBOARD TABS
-    ========================================================= */
+        const target = document.getElementById("tab-" + tab);
+        if (target) target.classList.add("active");
+        if (element) element.classList.add("active");
 
-    window.switchDashboardTab =
-        function(
-            tab,
-            element
-        ) {
+        if (tab === "active") loadActiveOrders();
+        if (tab === "past") loadPastOrders();
+        if (tab === "cart") renderCart();
+        if (tab === "notifications") renderNotifications();
+        if (tab === "tickets") loadUserTickets();
+    };
 
-            document
-                .querySelectorAll(
-                    ".tab-content"
-                )
-                .forEach(
-                    item => {
+    window.openCart = function() {
+        const cartMenu = document.getElementById("cart-menu-item");
+        switchDashboardTab("cart", cartMenu);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-                        item.classList.remove(
-                            "active"
-                        );
+    window.openNotifications = function() {
+        const menu = document.getElementById("notifications-menu-item");
+        switchDashboardTab("notifications", menu);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-                    }
-                );
+    window.showRegister = function() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("register-form").style.display = "block";
+    };
 
+    window.showLogin = function() {
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+    };
 
-            document
-                .querySelectorAll(
-                    ".menu-item"
-                )
-                .forEach(
-                    item => {
+    document.getElementById("login-form-element").addEventListener("submit", async event => {
+        event.preventDefault();
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value;
 
-                        item.classList.remove(
-                            "active"
-                        );
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            console.error(error);
+            let message = "ورود انجام نشد.";
+            if (error.code === "auth/invalid-credential") message = "ایمیل یا رمز عبور اشتباه است.";
+            if (error.code === "auth/user-not-found") message = "حساب کاربری پیدا نشد.";
+            if (error.code === "auth/too-many-requests") message = "تعداد تلاش‌های ورود بیش از حد مجاز است.";
+            alert(message);
+        }
+    });
 
-                    }
-                );
+    document.getElementById("register-form-element").addEventListener("submit", async event => {
+        event.preventDefault();
+        const fname = document.getElementById("reg-firstname").value.trim();
+        const lname = document.getElementById("reg-lastname").value.trim();
+        const phone = document.getElementById("reg-phone").value.trim();
+        const email = document.getElementById("reg-email").value.trim();
+        const province = document.getElementById("reg-province").value.trim();
+        const city = document.getElementById("reg-city").value.trim();
+        const address = document.getElementById("reg-address").value.trim();
+        const password = document.getElementById("reg-password").value;
 
+        try {
+            const credential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = credential.user;
 
-            const target =
-                document.getElementById(
-                    "tab-" +
-                    tab
-                );
-
-
-            if (target) {
-
-                target.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            if (element) {
-
-                element.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            if (
-                tab ===
-                "active"
-            ) {
-
-                loadActiveOrders();
-
-            }
-
-
-            if (
-                tab ===
-                "past"
-            ) {
-
-                loadPastOrders();
-
-            }
-
-
-            if (
-                tab ===
-                "cart"
-            ) {
-
-                renderCart();
-
-            }
-
-
-            if (
-                tab ===
-                "notifications"
-            ) {
-
-                renderNotifications();
-
-            }
-
-        };
-
-
-    /* =========================================================
-       OPEN CART
-    ========================================================= */
-
-    window.openCart =
-        function() {
-
-            const cartMenu =
-                document.getElementById(
-                    "cart-menu-item"
-                );
-
-
-            switchDashboardTab(
-                "cart",
-                cartMenu
-            );
-
-
-            window.scrollTo({
-
-                top: 0,
-
-                behavior: "smooth"
-
+            await setDoc(doc(db, "users", user.uid), {
+                firstName: fname,
+                lastName: lname,
+                fullName: fname + " " + lname,
+                phone,
+                email,
+                province,
+                city,
+                address,
+                createdAt: new Date().toISOString()
             });
 
-        };
-
-
-    /* =========================================================
-       OPEN NOTIFICATIONS
-    ========================================================= */
-
-    window.openNotifications =
-        function() {
-
-            const menu =
-                document.getElementById(
-                    "notifications-menu-item"
-                );
-
-
-            switchDashboardTab(
-                "notifications",
-                menu
-            );
-
-
-            window.scrollTo({
-
-                top: 0,
-
-                behavior: "smooth"
-
-            });
-
-        };
-
-
-    /* =========================================================
-       AUTH SWITCH
-    ========================================================= */
-
-    window.showRegister =
-        function() {
-
-            document.getElementById(
-                "login-form"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "register-form"
-            ).style.display =
-                "block";
-
-        };
-
-
-    window.showLogin =
-        function() {
-
-            document.getElementById(
-                "register-form"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "login-form"
-            ).style.display =
-                "block";
-
-        };
-
-
-    /* =========================================================
-       LOGIN
-    ========================================================= */
-
-    document
-        .getElementById(
-            "login-form-element"
-        )
-        .addEventListener(
-            "submit",
-            async event => {
-
-                event.preventDefault();
-
-
-                const email =
-                    document.getElementById(
-                        "login-email"
-                    )
-                    .value
-                    .trim();
-
-
-                const password =
-                    document.getElementById(
-                        "login-password"
-                    )
-                    .value;
-
-
-                try {
-
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        error
-                    );
-
-
-                    let message =
-                        "ورود انجام نشد.";
-
-
-                    if (
-                        error.code ===
-                        "auth/invalid-credential"
-                    ) {
-
-                        message =
-                            "ایمیل یا رمز عبور اشتباه است.";
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "auth/user-not-found"
-                    ) {
-
-                        message =
-                            "حساب کاربری پیدا نشد.";
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "auth/too-many-requests"
-                    ) {
-
-                        message =
-                            "تعداد تلاش‌های ورود بیش از حد مجاز است. کمی بعد دوباره امتحان کنید.";
-
-                    }
-
-
-                    alert(
-                        message
-                    );
-
-                }
-
-            }
-        );
-
-
-    /* =========================================================
-       REGISTER
-    ========================================================= */
-
-    document
-        .getElementById(
-            "register-form-element"
-        )
-        .addEventListener(
-            "submit",
-            async event => {
-
-                event.preventDefault();
-
-
-                const fname =
-                    document.getElementById(
-                        "reg-firstname"
-                    )
-                    .value
-                    .trim();
-
-
-                const lname =
-                    document.getElementById(
-                        "reg-lastname"
-                    )
-                    .value
-                    .trim();
-
-
-                const phone =
-                    document.getElementById(
-                        "reg-phone"
-                    )
-                    .value
-                    .trim();
-
-
-                const email =
-                    document.getElementById(
-                        "reg-email"
-                    )
-                    .value
-                    .trim();
-
-
-                const province =
-                    document.getElementById(
-                        "reg-province"
-                    )
-                    .value
-                    .trim();
-
-
-                const city =
-                    document.getElementById(
-                        "reg-city"
-                    )
-                    .value
-                    .trim();
-
-
-                const address =
-                    document.getElementById(
-                        "reg-address"
-                    )
-                    .value
-                    .trim();
-
-
-                const password =
-                    document.getElementById(
-                        "reg-password"
-                    )
-                    .value;
-
-
-                try {
-
-                    const credential =
-                        await createUserWithEmailAndPassword(
-                            auth,
-                            email,
-                            password
-                        );
-
-
-                    const user =
-                        credential.user;
-
-
-                    await setDoc(
-
-                        doc(
-                            db,
-                            "users",
-                            user.uid
-                        ),
-
-                        {
-
-                            firstName:
-                                fname,
-
-                            lastName:
-                                lname,
-
-                            fullName:
-                                fname +
-                                " " +
-                                lname,
-
-                            phone:
-                                phone,
-
-                            email:
-                                email,
-
-                            province:
-                                province,
-
-                            city:
-                                city,
-
-                            address:
-                                address,
-
-                            createdAt:
-                                new Date()
-                                .toISOString()
-
-                        }
-
-                    );
-
-
-                    alert(
-                        "حساب کاربری شما با موفقیت ایجاد شد."
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        error
-                    );
-
-
-                    let message =
-                        "ثبت نام انجام نشد.";
-
-
-                    if (
-                        error.code ===
-                        "auth/email-already-in-use"
-                    ) {
-
-                        message =
-                            "این ایمیل قبلاً ثبت شده است.";
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "auth/weak-password"
-                    ) {
-
-                        message =
-                            "رمز عبور باید حداقل ۶ کاراکتر باشد.";
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "auth/invalid-email"
-                    ) {
-
-                        message =
-                            "فرمت ایمیل صحیح نیست.";
-
-                    }
-
-
-                    alert(
-                        message
-                    );
-
-                }
-
-            }
-        );
-
-
-    /* =========================================================
-       LOGOUT
-    ========================================================= */
-
-    window.logoutUser =
-        async function() {
+            alert("حساب کاربری شما با موفقیت ایجاد شد.");
+        } catch (error) {
+            console.error(error);
+            let message = "ثبت نام انجام نشد.";
+            if (error.code === "auth/email-already-in-use") message = "این ایمیل قبلاً ثبت شده است.";
+            if (error.code === "auth/weak-password") message = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+            if (error.code === "auth/invalid-email") message = "فرمت ایمیل صحیح نیست.";
+            alert(message);
+        }
+    });
+
+    window.logoutUser = async function() {
+        try {
+            stopOrdersRealtime();
+            stopNotificationsRealtime();
+            await signOut(auth);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    onAuthStateChanged(auth, async user => {
+        const authSection = document.getElementById("auth-section");
+        const dashboard = document.getElementById("dashboard");
+
+        if (user) {
+            authSection.style.display = "none";
+            dashboard.style.display = "block";
 
             try {
-
-                stopOrdersRealtime();
-
-                stopNotificationsRealtime();
-
-
-                await signOut(
-                    auth
-                );
-
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    document.getElementById("profile-name").textContent = data.fullName || "-";
+                    document.getElementById("profile-phone").textContent = data.phone || "-";
+                    document.getElementById("profile-email").textContent = data.email || user.email || "-";
+                    document.getElementById("profile-province").textContent = data.province || "-";
+                    document.getElementById("profile-city").textContent = data.city || "-";
+                    document.getElementById("profile-address").textContent = data.address || "-";
+                } else {
+                    document.getElementById("profile-email").textContent = user.email || "-";
+                }
             } catch (error) {
-
-                console.error(
-                    error
-                );
-
+                console.error("Profile error:", error);
             }
 
-        };
-
-
-    /* =========================================================
-       AUTH STATE
-    ========================================================= */
-
-    onAuthStateChanged(
-
-        auth,
-
-        async user => {
-
-            const authSection =
-                document.getElementById(
-                    "auth-section"
-                );
-
-
-            const dashboard =
-                document.getElementById(
-                    "dashboard"
-                );
-
-
-            if (user) {
-
-                authSection.style.display =
-                    "none";
-
-
-                dashboard.style.display =
-                    "block";
-
-
-                /* ==========================================
-                   PROFILE
-                ========================================== */
-
-                try {
-
-                    const userDoc =
-                        await getDoc(
-
-                            doc(
-                                db,
-                                "users",
-                                user.uid
-                            )
-
-                        );
-
-
-                    if (
-                        userDoc.exists()
-                    ) {
-
-                        const data =
-                            userDoc.data();
-
-
-                        document.getElementById(
-                            "profile-name"
-                        ).textContent =
-                            data.fullName ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-phone"
-                        ).textContent =
-                            data.phone ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-email"
-                        ).textContent =
-                            data.email ||
-                            user.email ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-province"
-                        ).textContent =
-                            data.province ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-city"
-                        ).textContent =
-                            data.city ||
-                            "-";
-
-
-                        document.getElementById(
-                            "profile-address"
-                        ).textContent =
-                            data.address ||
-                            "-";
-
-                    } else {
-
-                        document.getElementById(
-                            "profile-email"
-                        ).textContent =
-                            user.email ||
-                            "-";
-
-                    }
-
-                } catch (error) {
-
-                    console.error(
-                        "Profile error:",
-                        error
-                    );
-
-                }
-
-
-                /* ==========================================
-                   CART
-                ========================================== */
-
-                renderCart();
-
-
-                /* ==========================================
-                   NOTIFICATIONS
-                ========================================== */
-
-                renderNotifications();
-
-                startNotificationsRealtime();
-
-
-                /* ==========================================
-                   INITIAL ORDERS
-                ========================================== */
-
-                await loadActiveOrders();
-
-                await loadPastOrders();
-
-
-                /* ==========================================
-                   REALTIME ORDERS
-                ========================================== */
-
-                startOrdersRealtime();
-
-
-                /* ==========================================
-                   CART URL
-                ========================================== */
-
-                const params =
-                    new URLSearchParams(
-                        window.location.search
-                    );
-
-
-                if (
-                    params.get("cart") === "1"
-                ) {
-
-                    setTimeout(
-                        () => {
-
-                            openCart();
-
-                        },
-                        300
-                    );
-
-                }
-
-            } else {
-
-                stopOrdersRealtime();
-
-                stopNotificationsRealtime();
-
-
-                authSection.style.display =
-                    "block";
-
-
-                dashboard.style.display =
-                    "none";
-
+            renderCart();
+            renderNotifications();
+            startNotificationsRealtime();
+
+            await loadActiveOrders();
+            await loadPastOrders();
+            await loadUserTickets();
+
+            startOrdersRealtime();
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("cart") === "1") {
+                setTimeout(() => { openCart(); }, 300);
             }
-
+        } else {
+            stopOrdersRealtime();
+            stopNotificationsRealtime();
+            authSection.style.display = "block";
+            dashboard.style.display = "none";
         }
-
-    );
-
-
-    /* =========================================================
-       INITIAL CART
-    ========================================================= */
+    });
 
     renderCart();
-
 </script>
 
 </body>
 </html>
-
