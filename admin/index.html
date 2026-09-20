@@ -128,7 +128,12 @@
     <div class="modal-box" style="max-width: 700px;">
         <div class="modal-head">
             <h3 id="ticketModalTitle">پاسخ به تیکت</h3>
-            <button class="modal-close" id="ticketModalClose"><i class="fa-solid fa-xmark"></i></button>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button class="icon-btn btn-danger" id="ticketDeleteBtn" hidden>
+                    <i class="fa-solid fa-trash"></i> حذف تیکت
+                </button>
+                <button class="modal-close" id="ticketModalClose"><i class="fa-solid fa-xmark"></i></button>
+            </div>
         </div>
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
@@ -223,6 +228,10 @@ function ticketBadge(status) {
     };
     const info = map[status] || { label: status, cls: "" };
     return `<span class="badge ${info.cls}">${escapeHtml(info.label)}</span>`;
+}
+
+function canDeleteTickets() {
+    return state.isSuper || can("tickets", "delete");
 }
 
 function formatDateTime(value) {
@@ -623,6 +632,10 @@ function renderTickets(list) {
                 <button class="icon-btn btn-primary" onclick="openAdminTicketChat('${t.userId}', '${t.id}')">
                     <i class="fa-solid fa-comments"></i> بررسی و پاسخ
                 </button>
+                ${canDeleteTickets() ? `
+                <button class="icon-btn btn-danger" onclick="deleteTicketFromRow('${t.userId}', '${t.id}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>` : ""}
             </td>
         </tr>
     `).join("");
@@ -636,6 +649,7 @@ window.openAdminTicketChat = function(userId, ticketId) {
     el("ticketModalTitle").textContent = ticket.subject || "جزئیات تیکت";
     el("ticketModalUserInfo").textContent = `کاربر: ${ticket.userName} (${ticket.userEmail})`;
     el("ticketStatusSelect").value = ticket.status || "open";
+    el("ticketDeleteBtn").hidden = !canDeleteTickets();
 
     renderAdminChatMessages();
     el("ticketModalOverlay").hidden = false;
@@ -686,6 +700,41 @@ window.updateTicketStatusDirect = async function() {
         showToast(friendlyError(err), "error");
     }
 };
+
+async function deleteTicket(userId, ticketId) {
+    if (!confirm("آیا از حذف این تیکت مطمئن هستید؟ این عملیات قابل بازگشت نیست.")) {
+        return;
+    }
+
+    try {
+        await apiFetch(
+            `/admin/tickets/${encodeURIComponent(userId)}/${encodeURIComponent(ticketId)}`,
+            { method: "DELETE" }
+        );
+
+        allTickets = allTickets.filter(t => !(t.userId === userId && t.id === ticketId));
+        renderTickets(allTickets);
+        el("ticketsMeta").textContent = `${allTickets.length} تیکت`;
+
+        if (activeAdminTicket && activeAdminTicket.userId === userId && activeAdminTicket.id === ticketId) {
+            el("ticketModalOverlay").hidden = true;
+            activeAdminTicket = null;
+        }
+
+        showToast("تیکت حذف شد.");
+    } catch (err) {
+        showToast(friendlyError(err), "error");
+    }
+}
+
+window.deleteTicketFromRow = function(userId, ticketId) {
+    deleteTicket(userId, ticketId);
+};
+
+el("ticketDeleteBtn").addEventListener("click", () => {
+    if (!activeAdminTicket) return;
+    deleteTicket(activeAdminTicket.userId, activeAdminTicket.id);
+});
 
 el("ticketModalClose").addEventListener("click", () => {
     el("ticketModalOverlay").hidden = true;
