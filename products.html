@@ -1730,22 +1730,11 @@
 
 
         /* ==========================================
-           GOOGLE SHEETS
+           API (پنل ادمین / Cloudflare Worker)
         ========================================== */
 
-        const SHEET_ID =
-            '138i-vFOWfolwYGW7brhRAiHFjuVtpDU0sF2bHdyMYQg';
-
-
-        const SHEET_TITLE =
-            'Sheet1';
-
-
-        const FULL_URL =
-            'https://docs.google.com/spreadsheets/d/' +
-            SHEET_ID +
-            '/gviz/tq?sheet=' +
-            SHEET_TITLE;
+        const PRODUCTS_API_URL =
+            '/api/public/products';
 
 
 
@@ -2583,14 +2572,14 @@
 
 
         /* ==========================================
-           دریافت محصولات از Google Sheets
+           دریافت محصولات از پنل ادمین (Cloudflare Worker)
         ========================================== */
 
-        fetch(FULL_URL)
+        fetch(PRODUCTS_API_URL)
 
             .then(function(res) {
 
-                return res.text();
+                return res.json();
 
             })
 
@@ -2598,14 +2587,12 @@
             .then(function(rep) {
 
 
-                var data =
-                    JSON.parse(
-                        rep.substr(47).slice(0, -2)
-                    );
-
-
-                var rows =
-                    data.table.rows;
+                var products =
+                    (rep && rep.ok && Array.isArray(rep.products))
+                    ?
+                    rep.products
+                    :
+                    [];
 
 
                 var container =
@@ -2618,7 +2605,7 @@
 
 
 
-                if (!rows || rows.length === 0) {
+                if (!products.length) {
 
                     container.innerHTML =
 
@@ -2638,19 +2625,15 @@
                    ساخت کارت محصولات
                 ========================================== */
 
-                rows.forEach(function(row, index) {
+                products.forEach(function(product) {
 
 
                     /* نام محصول */
 
                     var title =
-                        (
-                            row.c &&
-                            row.c[0] &&
-                            row.c[0].v
-                        )
+                        product.title
                         ?
-                        String(row.c[0].v)
+                        String(product.title)
                         :
                         'دستگاه پزشکی';
 
@@ -2659,13 +2642,9 @@
                     /* توضیحات */
 
                     var desc =
-                        (
-                            row.c &&
-                            row.c[1] &&
-                            row.c[1].v
-                        )
+                        product.description
                         ?
-                        String(row.c[1].v)
+                        String(product.description)
                         :
                         '';
 
@@ -2675,12 +2654,11 @@
 
                     var price =
                         (
-                            row.c &&
-                            row.c[2] &&
-                            row.c[2].v
+                            product.price !== undefined &&
+                            product.price !== null
                         )
                         ?
-                        row.c[2].v
+                        product.price
                         :
                         0;
 
@@ -2689,13 +2667,9 @@
                     /* تصویر */
 
                     var image =
-                        (
-                            row.c &&
-                            row.c[3] &&
-                            row.c[3].v
-                        )
+                        product.imageUrl
                         ?
-                        String(row.c[3].v)
+                        String(product.imageUrl)
                         :
                         'https://via.placeholder.com/300x200/0f172a/14b8a6?text=Medical+Product';
 
@@ -2704,8 +2678,7 @@
                     /* شناسه */
 
                     var productId =
-                        'sheet-product-' +
-                        index;
+                        String(product.id);
 
 
 
@@ -2941,9 +2914,7 @@
 
                     '<i class="fa-solid fa-triangle-exclamation"></i> ' +
 
-                    'خطا در دریافت لیست محصولات. ' +
-
-                    'لطفاً بررسی کنید دسترسی شیت عمومی (Public) باشد.' +
+                    'خطا در دریافت لیست محصولات.' +
 
                     '</div>';
 
