@@ -2,14 +2,22 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO -->
     <title>دکتر محمدصادق تاج | وب‌سایت رسمی</title>
-    <meta name="description" content="وب‌سایت رسمی دکتر محمدصادق تاج؛ معرفی، اطلاعات، خدمات و مطالب مرتبط با پزشکی و فعالیت‌های حرفه‌ای.">
-    <meta name="keywords" content="دکتر محمدصادق تاج, محمدصادق تاج, دکتر محمد صادق تاج, پزشک, پزشکی, وب سایت دکتر محمدصادق تاج">
+
+    <meta name="description"
+          content="وب‌سایت رسمی دکتر محمدصادق تاج؛ معرفی، اطلاعات، خدمات و مطالب مرتبط با پزشکی و فعالیت‌های حرفه‌ای.">
+
+    <meta name="keywords"
+          content="دکتر محمدصادق تاج, محمدصادق تاج, دکتر محمد صادق تاج, پزشک, پزشکی, وب سایت دکتر محمدصادق تاج">
+
     <meta name="author" content="دکتر محمدصادق تاج">
+
     <meta name="robots" content="index, follow">
+
     <meta name="googlebot" content="index, follow">
 
     <!-- Canonical -->
@@ -18,7 +26,8 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="دکتر محمدصادق تاج | وب‌سایت رسمی">
-    <meta property="og:description" content="وب‌سایت رسمی دکتر محمدصادق تاج؛ معرفی و اطلاعات مرتبط با فعالیت‌های پزشکی.">
+    <meta property="og:description"
+          content="وب‌سایت رسمی دکتر محمدصادق تاج؛ معرفی و اطلاعات مرتبط با فعالیت‌های پزشکی.">
     <meta property="og:url" content="https://www.drmohammadsadeqtaj.ir/">
     <meta property="og:site_name" content="دکتر محمدصادق تاج">
     <meta property="og:locale" content="fa_IR">
@@ -27,19 +36,27 @@
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="دکتر محمدصادق تاج | وب‌سایت رسمی">
-    <meta name="twitter:description" content="وب‌سایت رسمی دکتر محمدصادق تاج.">
-    <meta name="twitter:image" content="https://www.drmohammadsadeqtaj.ir/bg.jpg">
+    <meta name="twitter:description"
+          content="وب‌سایت رسمی دکتر محمدصادق تاج.">
+    <meta name="twitter:image"
+          content="https://www.drmohammadsadeqtaj.ir/bg.jpg">
 
     <!-- Theme -->
     <meta name="theme-color" content="#0f172a">
 
     <!-- Vazirmatn Font CDN -->
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+          rel="stylesheet"
+          type="text/css">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Structured Data / Schema.org -->
+    <!--
+        Structured Data / Schema.org
+        برای معرفی شخص و وب‌سایت به موتورهای جستجو
+    -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,6 +77,7 @@
     }
     </script>
 
+    <!-- Website Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -76,6 +94,7 @@
     </script>
 
     <style>
+
         :root {
             --primary-blue: #0284c7;
             --dark-blue: #0f172a;
@@ -100,6 +119,8 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* --- Header --- */
 
         header {
             background: rgba(15, 23, 42, 0.75);
@@ -152,6 +173,8 @@
             box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
         }
 
+        /* --- Navigation --- */
+
         .nav-links {
             display: flex;
             justify-content: center;
@@ -194,6 +217,8 @@
             color: #38bdf8;
         }
 
+        /* --- Ticker --- */
+
         .ticker-wrap {
             max-width: 800px;
             margin: 0 auto 20px auto;
@@ -229,13 +254,20 @@
         }
 
         @keyframes marquee {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(100%, 0, 0); }
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            100% {
+                transform: translate3d(100%, 0, 0);
+            }
         }
 
         .ticker-box:hover .ticker-text {
             animation-play-state: paused;
         }
+
+        /* --- Main Content --- */
 
         main {
             flex-grow: 1;
@@ -324,6 +356,50 @@
             background: #0369a1;
         }
 
+        .phone-link {
+            color: #38bdf8;
+            font-weight: bold;
+            text-decoration: none;
+            direction: ltr;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 16px;
+        }
+
+        /* --- Visitor Counter --- */
+
+        .visitor-counter-box {
+            max-width: 320px;
+            margin: 25px auto 15px auto;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .counter-title {
+            font-size: 13px;
+            color: var(--accent-teal);
+            margin-bottom: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .counter-widget {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        /* --- Footer --- */
+
         footer {
             text-align: center;
             padding: 20px;
@@ -331,6 +407,46 @@
             color: #64748b;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        /* --- Mobile --- */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 10px 15px;
+            }
+
+            .doctor-title-box h1 {
+                font-size: 17px;
+            }
+
+            .doctor-title-box span {
+                font-size: 11px;
+            }
+
+            .doctor-avatar-left {
+                width: 48px;
+                height: 48px;
+            }
+
+            .doctor-info-right i {
+                font-size: 23px;
+            }
+
+            .nav-btn {
+                font-size: 13px;
+                padding: 9px 12px;
+            }
+
+            .medical-post {
+                padding: 18px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+        }
+
     </style>
 </head>
 
@@ -339,41 +455,89 @@
     <!-- Header -->
     <header>
         <div class="header-container">
+
             <div class="doctor-info-right">
+
                 <i class="fa-solid fa-user-doctor"></i>
+
                 <div class="doctor-title-box">
-                    <!-- شناسه اضافه شد -->
+
                     <h1 id="site-header-title">دکتر محمدصادق تاج</h1>
-                    <!-- شناسه اضافه شد -->
+
                     <span id="site-header-subtitle">دانشجوی پزشکی</span>
+
                 </div>
+
             </div>
-            <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" loading="eager" onerror="this.src='https://via.placeholder.com/150'">
+
+            <img
+                src="bg.jpg"
+                alt="دکتر محمدصادق تاج"
+                class="doctor-avatar-left"
+                loading="eager"
+                onerror="this.src='https://via.placeholder.com/150'"
+            >
+
         </div>
     </header>
 
+
     <!-- Navigation -->
     <nav class="nav-links" aria-label="منوی اصلی">
-        <a href="panel.html" class="nav-btn nav-btn-panel"><i class="fa-solid fa-user-gear"></i> ورود / ثبت نام</a>
-        <a href="products.html" class="nav-btn nav-btn-highlight"><i class="fa-solid fa-boxes-stacked"></i> لیست محصولات پزشکی</a>
-        <a href="https://instagram.com/mst_2102" target="_blank" rel="noopener noreferrer" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
-        <a href="https://t.me/mst_2102" target="_blank" rel="noopener noreferrer" class="nav-btn"><i class="fa-brands fa-telegram"></i> تلگرام</a>
+
+        <a href="panel.html"
+           class="nav-btn nav-btn-panel">
+            <i class="fa-solid fa-user-gear"></i>
+            ورود / ثبت نام
+        </a>
+
+        <a href="products.html"
+           class="nav-btn nav-btn-highlight">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            لیست محصولات پزشکی
+        </a>
+
+        <a href="https://instagram.com/mst_2102"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="nav-btn">
+            <i class="fa-brands fa-instagram"></i>
+            اینستاگرام
+        </a>
+
+        <a href="https://t.me/mst_2102"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="nav-btn">
+            <i class="fa-brands fa-telegram"></i>
+            تلگرام
+        </a>
+
     </nav>
+
 
     <!-- Ticker -->
     <div class="ticker-wrap">
+
         <div class="ticker-box">
+
             <div class="ticker-content-container">
-                <!-- شناسه اضافه شد -->
+
                 <div class="ticker-text" id="site-ticker">
                     به وب‌سایت رسمی دکتر محمدصادق تاج خوش آمدید
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 
     <!-- Main -->
     <main>
+
+        <!-- Latest news & articles (filled from the API, hidden until there's something to show) -->
         <div class="section-title" id="latestPostsTitle" hidden>
             <i class="fa-solid fa-newspaper"></i>
             <h2>آخرین اخبار و مطالب</h2>
@@ -382,58 +546,93 @@
         <div id="latestPosts"></div>
 
         <div class="section-title">
+
             <i class="fa-solid fa-notes-medical"></i>
-            <h2>اطلاعات و خدمات پزشکی</h2>
+
+            <h2>
+                اطلاعات و خدمات پزشکی
+            </h2>
+
         </div>
+
 
         <!-- Introduction -->
         <article class="medical-post">
+
             <div class="post-header">
-                <span class="post-tag">معرفی</span>
-                <span class="post-date">رسمی</span>
+
+                <span class="post-tag" id="site-intro-tag">
+                    معرفی
+                </span>
+
+                <span class="post-date" id="site-intro-badge">
+                    رسمی
+                </span>
+
             </div>
-            <!-- شناسه اضافه شد -->
+
             <h2 class="post-title" id="site-intro-title">
                 دکتر محمدصادق تاج
             </h2>
-            <!-- شناسه اضافه شد -->
+
             <p class="post-content" id="site-intro-body">
                 به وب‌سایت رسمی دکتر محمدصادق تاج خوش آمدید.
                 این وب‌سایت با هدف ارائه اطلاعات، معرفی فعالیت‌ها،
                 مطالب مرتبط با حوزه پزشکی و دسترسی آسان به خدمات
                 و ارتباطات آنلاین راه‌اندازی شده است.
             </p>
+
         </article>
+
 
         <!-- Products -->
         <article class="medical-post">
+
             <div class="post-header">
-                <span class="post-tag">تجهیزات و خدمات</span>
-                <span class="post-date">پشتیبانی</span>
+
+                <span class="post-tag" id="site-products-tag">
+                    تجهیزات و خدمات
+                </span>
+
+                <span class="post-date" id="site-products-badge">
+                    پشتیبانی
+                </span>
+
             </div>
-            <h2 class="post-title">
+
+            <h2 class="post-title" id="site-products-title">
                 فروش محصولات پزشکی
             </h2>
-            <p class="post-content">
+
+            <p class="post-content" id="site-products-body">
                 برای اطلاع از موجودی محصولات و قیمت روز،
                 می‌توانید از بخش محصولات پزشکی سایت بازدید کنید.
             </p>
-            <a href="products.html" class="post-link-btn">
+
+            <a
+                href="products.html"
+                class="post-link-btn"
+            >
                 <i class="fa-solid fa-store"></i>
-                مشاهده کاتالوگ و محصولات
+                <span id="site-products-button-text">مشاهده کاتالوگ و محصولات</span>
             </a>
+
         </article>
-    </main>
-    <!-- بسته شدن تگ main اضافه شد -->
+
 
     <!-- Footer -->
     <footer>
+
         © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
+
     </footer>
 
-    <!-- اسکریپت بارگذاری اخبار -->
+
+    <!-- Latest news & articles from the API -->
     <script type="text/javascript">
+
         (function () {
+
             var API_BASE = "/api";
             var MAX_POSTS = 6;
 
@@ -536,12 +735,16 @@
                 .catch(function (error) {
                     console.error("Failed to load latest posts:", error);
                 });
+
         })();
+
     </script>
 
     <!-- Goftino -->
     <script type="text/javascript">
+
         !function(){
+
             var i="JHf7dD",
                 d=document,
                 g=d.createElement("script"),
@@ -552,43 +755,57 @@
             g.async=!0;
             g.src=l?s+"?o="+l:s;
 
-            d.getElementsByTagName("head")[0].appendChild(g);
+            d.getElementsByTagName("head")[0]
+                .appendChild(g);
+
         }();
+
     </script>
 
-    <!-- اسکریپت دریافت و اعمال متن‌های پنل مدیریت -->
-    <script>
-    async function loadAndRenderHomeTexts() {
-      try {
-        const response = await fetch('/api/public/pages/home');
-        const result = await response.json();
+        <script>
+async function loadAndRenderHomeTexts() {
+  try {
+    // درخواست به روت عمومی وورکر برای گرفتن متن‌های صفحه اصلی
+    // (اگر مسیر روت عمومی در وورکر شما متفاوت است، آدرس زیر را متناسب با آن تغییر دهید)
+    const response = await fetch('/api/public/pages/home');
+    const result = await response.json();
 
-        if (result.ok && result.fields) {
-          const data = result.fields;
+    if (result.ok && result.fields) {
+      const data = result.fields;
 
-          if (data.headerTitle && document.getElementById('site-header-title')) {
-            document.getElementById('site-header-title').textContent = data.headerTitle;
-          }
-          if (data.headerSubtitle && document.getElementById('site-header-subtitle')) {
-            document.getElementById('site-header-subtitle').textContent = data.headerSubtitle;
-          }
-          if (data.tickerText && document.getElementById('site-ticker')) {
-            document.getElementById('site-ticker').textContent = data.tickerText;
-          }
-          if (data.introTitle && document.getElementById('site-intro-title')) {
-            document.getElementById('site-intro-title').textContent = data.introTitle;
-          }
-          if (data.introBody && document.getElementById('site-intro-body')) {
-            document.getElementById('site-intro-body').textContent = data.introBody;
-          }
+      // نگاشت همه‌ی فیلدهای صفحه اصلی (مطابق PAGE_DEFS پنل ادمین) به آی‌دی متناظرشان در HTML
+      const fieldToId = {
+        headerTitle: 'site-header-title',
+        headerSubtitle: 'site-header-subtitle',
+        tickerText: 'site-ticker',
+        introTag: 'site-intro-tag',
+        introBadge: 'site-intro-badge',
+        introTitle: 'site-intro-title',
+        introBody: 'site-intro-body',
+        productsTag: 'site-products-tag',
+        productsBadge: 'site-products-badge',
+        productsTitle: 'site-products-title',
+        productsBody: 'site-products-body',
+        productsButtonText: 'site-products-button-text',
+      };
+
+      // هرکدام از شناسه‌ها (id) که در صفحه اصلی وجود داشته باشد، به صورت خودکار آپدیت می‌شود
+      Object.keys(fieldToId).forEach(function (field) {
+        const value = data[field];
+        const el = document.getElementById(fieldToId[field]);
+        if (value && el) {
+          el.textContent = value;
         }
-      } catch (err) {
-        console.error('خطا در دریافت متن‌های سایت:', err);
-      }
+      });
     }
+  } catch (err) {
+    console.error('خطا در دریافت متن‌های سایت:', err);
+  }
+}
 
-    window.addEventListener('DOMContentLoaded', loadAndRenderHomeTexts);
-    </script>
+// اجرای تابع به محض لود شدن صفحه اصلی
+window.addEventListener('DOMContentLoaded', loadAndRenderHomeTexts);
+</script>
 
 </body>
 </html>
