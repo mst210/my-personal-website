@@ -764,3 +764,24 @@
 
 </body>
 </html>
+
+
+<script>
+async function renderSiteTexts() {
+  try {
+    const response = await fetch('/api/public/pages/home'); // روت عمومی برای خواندن اطلاعات
+    const result = await response.json();
+    if (result.ok && result.fields) {
+      // جایگذاری مقادیر در تگ‌های صفحه اصلی (شناسه‌ها را مطابق تگ‌های سایت خود تنظیم کنید)
+      if(document.getElementById('site-header-title')) document.getElementById('site-header-title').innerText = result.fields.headerTitle;
+      if(document.getElementById('site-header-subtitle')) document.getElementById('site-header-subtitle').innerText = result.fields.headerSubtitle;
+      if(document.getElementById('site-welcome-text')) document.getElementById('site-welcome-text').innerText = result.fields.welcomeText;
+      if(document.getElementById('site-intro-title')) document.getElementById('site-intro-title').innerText = result.fields.introTitle;
+    }
+  } catch (err) {
+    console.error('خطا در بارگذاری متن‌های سایت', err);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', renderSiteTexts);
+</script>
