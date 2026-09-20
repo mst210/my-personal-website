@@ -511,9 +511,21 @@ el("orderEditForm").addEventListener("submit", async (e) => {
     const newStatusText = el("editOrderStatus").value;
     const nowIso = new Date().toISOString();
 
+    // تعیین مقدار فیلد سیستمی status بر اساس متن انتخاب شده
+    let newStatus = "active";
+    if (newStatusText === "تکمیل شد") {
+        newStatus = "completed";
+    } else if (newStatusText === "لغو شد") {
+        newStatus = "لغو شد" ? "cancelled" : "active"; // یا cancelled
+    }
+    // اگر تمایل دارید حالت‌های دیگر فعال بمانند:
+    if (newStatusText === "تکمیل شد") newStatus = "completed";
+    else if (newStatusText === "لغو شد") newStatus = "cancelled";
+
     const updatedData = {
         ...activeEditingOrder,
-        statusText: newStatusText,
+        status: newStatus,          // مقدار سیستمی برای انتقال به گذشته
+        statusText: newStatusText,  // متن نمایشی وضعیت
         statusUpdatedAt: nowIso
     };
     delete updatedData.userId;
