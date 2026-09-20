@@ -78,7 +78,7 @@
             <div class="table-wrap">
                 <table class="data-table" id="usersTable" hidden>
                     <thead>
-                        <tr><th>کاربر</th><th>شناسه</th><th>ایمیل</th></tr>
+                        <tr><th>کاربر</th><th>شناسه</th><th>ایمیل</th><th>عملیات</th></tr>
                     </thead>
                     <tbody id="usersBody"></tbody>
                 </table>
@@ -95,14 +95,13 @@
             <div class="table-wrap">
                 <table class="data-table" id="ordersTable" hidden>
                     <thead>
-                        <tr><th>شناسه سفارش</th><th>کاربر</th><th>وضعیت</th></tr>
+                        <tr><th>شناسه سفارش</th><th>کاربر</th><th>مبلغ کل</th><th>وضعیت</th><th>عملیات</th></tr>
                     </thead>
                     <tbody id="ordersBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- TICKETS SECTION -->
         <div class="section-card" id="ticketsSection" hidden>
             <h2><i class="fa-solid fa-ticket"></i> تیکت‌های پشتیبانی کاربران</h2>
             <div class="toolbar">
@@ -132,15 +131,51 @@
             <button class="modal-close" id="ticketModalClose"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-        <div style="margin-bottom: 15px; font-size: 13px; color: var(--text-muted);" id="ticketModalUserInfo"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+            <div style="font-size: 13px; color: var(--text-muted);" id="ticketModalUserInfo"></div>
+            <div>
+                <select id="ticketStatusSelect" class="field" style="margin:0; padding:6px 10px; font-size:12px;" onchange="updateTicketStatusDirect()">
+                    <option value="open">در انتظار پاسخ</option>
+                    <option value="answered">پاسخ داده شده</option>
+                    <option value="closed">بسته شده</option>
+                </select>
+            </div>
+        </div>
 
         <!-- Messages Thread -->
-        <div id="adminChatMessages" style="display:flex; flex-direction:column; gap:12px; max-height:350px; overflow-y:auto; padding:10px; background:rgba(15,23,42,0.4); border-radius:12px; border:1px solid var(--border-color); margin-bottom:15px;"></div>
+        <div id="adminChatMessages" style="display:flex; flex-direction:column; gap:12px; max-height:320px; overflow-y:auto; padding:10px; background:rgba(15,23,42,0.4); border-radius:12px; border:1px solid var(--border-color); margin-bottom:15px;"></div>
 
         <!-- Reply Form -->
         <form id="adminReplyForm" style="display:flex; gap:10px;">
             <input type="text" id="adminReplyText" class="field" style="margin:0; flex:1;" required placeholder="پاسخ خود را بنویسید...">
             <button type="submit" class="icon-btn btn-primary"><i class="fa-solid fa-paper-plane"></i> ارسال پاسخ</button>
+        </form>
+    </div>
+</div>
+
+<!-- Order Edit Modal -->
+<div class="modal-overlay" id="orderModalOverlay" hidden>
+    <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-head">
+            <h3>ویرایش وضعیت سفارش</h3>
+            <button class="modal-close" id="orderModalClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="orderEditForm">
+            <div class="field">
+                <label>تغییر وضعیت سفارش</label>
+                <select id="editOrderStatus" class="field" required>
+                    <option value="در انتظار بررسی">در انتظار بررسی</option>
+                    <option value="در حال پردازش">در حال پردازش</option>
+                    <option value="آماده ارسال">آماده ارسال</option>
+                    <option value="ارسال شد">ارسال شد</option>
+                    <option value="تکمیل شد">تکمیل شد (تحویل)</option>
+                    <option value="لغو شد">لغو شد</option>
+                </select>
+            </div>
+            <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button type="button" class="icon-btn" id="orderCancelBtn">انصراف</button>
+                <button type="submit" class="icon-btn btn-primary">ذخیره تغییرات</button>
+            </div>
         </form>
     </div>
 </div>
@@ -165,6 +200,7 @@ const state = {
 
 let allTickets = [];
 let activeAdminTicket = null;
+let activeEditingOrder = null;
 
 function can(section, action) {
     return state.permissions.includes(`${section}.${action}`);
@@ -180,12 +216,10 @@ const ORDER_STATUS_LABELS = {
 
 function orderBadge(status) {
     const s = String(status || "").toLowerCase();
-    const cls = s === "delivered" ? "success"
-        : s === "cancelled" ? "danger"
-        : s === "pending" ? "warn"
-        : "";
-    const label = ORDER_STATUS_LABELS[s] || status || "نامشخص";
-    return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+    const cls = s === "delivered" || status === "تکمیل شد" ? "success"
+        : s === "cancelled" || status === "لغو شد" ? "danger"
+        : "warn";
+    return `<span class="badge ${cls}">${escapeHtml(status || "نامشخص")}</span>`;
 }
 
 function ticketBadge(status) {
@@ -209,10 +243,6 @@ function formatDateTime(value) {
         return "—";
     }
 }
-
-/* =========================================================
-   Boot / auth gate
-========================================================= */
 
 async function boot() {
     const session = readSession();
@@ -250,26 +280,18 @@ async function boot() {
             loadOrders();
         }
 
-        // Load tickets for admin / super admin
         if (can("tickets", "view") || state.isSuper || can("dashboard", "view")) {
             el("ticketsSection").hidden = false;
             loadTickets();
         }
 
-        if (!can("users", "view") && !can("orders", "view") && !can("dashboard", "view")) {
-            el("deniedText").textContent = "حساب شما به هیچ بخشی از داشبورد دسترسی ندارد.";
-            el("deniedSection").hidden = false;
-        }
-
     } catch (error) {
         el("loading").hidden = true;
-
         if (error.status === 401) {
             saveSession(null);
             el("loginSection").hidden = false;
             return;
         }
-
         el("deniedText").textContent = friendlyError(error);
         el("deniedSection").hidden = false;
         el("logoutBtn").hidden = false;
@@ -281,11 +303,8 @@ el("logoutBtn").addEventListener("click", () => {
     location.reload();
 });
 
-/* ---------- login ---------- */
-
 el("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const errBox = el("loginError");
     errBox.classList.remove("show");
 
@@ -310,7 +329,6 @@ el("loginForm").addEventListener("submit", async (e) => {
         });
 
         location.reload();
-
     } catch (error) {
         errBox.textContent = friendlyError(error);
         errBox.classList.add("show");
@@ -320,14 +338,9 @@ el("loginForm").addEventListener("submit", async (e) => {
     }
 });
 
-/* =========================================================
-   Stat cards
-========================================================= */
-
 async function renderStats(me) {
     const grid = el("statGrid");
     grid.innerHTML = "";
-
     const cards = [];
 
     if (can("dashboard", "view")) {
@@ -338,15 +351,8 @@ async function renderStats(me) {
     cards.push({
         icon: state.isSuper ? "fa-crown" : "fa-user-shield",
         label: "سطح دسترسی شما",
-        value: state.isSuper ? "مدیر ارشد" : (me.role ? roleLabel(me.role) : "—"),
+        value: state.isSuper ? "مدیر ارشد" : "مدیر",
         id: "statRole",
-    });
-
-    cards.push({
-        icon: "fa-key",
-        label: "تعداد دسترسی‌های فعال",
-        value: state.permissions.length,
-        id: "statPerms",
     });
 
     grid.innerHTML = cards.map((c) => `
@@ -362,28 +368,16 @@ async function renderStats(me) {
     if (can("dashboard", "view")) {
         try {
             const stats = await apiFetch("/admin/stats");
-            const usersEl = el("statUsers");
-            const ordersEl = el("statOrders");
-            if (usersEl) usersEl.textContent = stats.users ?? 0;
-            if (ordersEl) ordersEl.textContent = stats.orders ?? 0;
+            if (el("statUsers")) el("statUsers").textContent = stats.users ?? 0;
+            if (el("statOrders")) el("statOrders").textContent = stats.orders ?? 0;
         } catch (error) {
             console.error(error);
         }
     }
 }
 
-function roleLabel(role) {
-    const labels = {
-        super_admin: "مدیر ارشد",
-        admin: "مدیر کل",
-        content_manager: "مدیر محتوا",
-        editor: "ویرایشگر",
-    };
-    return labels[role] || role;
-}
-
 /* =========================================================
-   Users table
+   Users Management
 ========================================================= */
 
 async function loadUsers() {
@@ -398,7 +392,6 @@ async function loadUsers() {
     try {
         const result = await apiFetch("/admin/users");
         state.users = result.users || [];
-
         el("usersMeta").textContent = `${state.users.length} کاربر`;
 
         if (!state.users.length) {
@@ -409,7 +402,6 @@ async function loadUsers() {
         status.hidden = true;
         table.hidden = false;
         renderUsers(state.users);
-
     } catch (error) {
         status.className = "status-box error";
         status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(friendlyError(error))}`;
@@ -427,9 +419,23 @@ function renderUsers(list) {
             </td>
             <td style="color:var(--text-muted);font-size:11.5px;">${escapeHtml(u.id)}</td>
             <td>${escapeHtml(u.email || "—")}</td>
+            <td>
+                <button class="icon-btn btn-danger" onclick="deleteUserRecord('${escapeHtml(u.id)}')"><i class="fa-solid fa-trash"></i> حذف</button>
+            </td>
         </tr>
     `).join("");
 }
+
+window.deleteUserRecord = async function(userId) {
+    if (!confirm("آیا از حذف این کاربر مطمئن هستید؟")) return;
+    try {
+        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${userId}`)}`, { method: "DELETE" });
+        showToast("کاربر حذف شد.");
+        loadUsers();
+    } catch (err) {
+        showToast(friendlyError(err), "error");
+    }
+};
 
 el("userSearch").addEventListener("input", () => {
     const q = el("userSearch").value.trim().toLowerCase();
@@ -443,7 +449,7 @@ el("userSearch").addEventListener("input", () => {
 });
 
 /* =========================================================
-   Orders table
+   Orders Management
 ========================================================= */
 
 async function loadOrders() {
@@ -456,8 +462,29 @@ async function loadOrders() {
     table.hidden = true;
 
     try {
-        const result = await apiFetch("/admin/orders");
-        state.orders = result.orders || [];
+        if (!state.users || !state.users.length) {
+            const userRes = await apiFetch("/admin/users");
+            state.users = userRes.users || [];
+        }
+
+        allOrders = [];
+        for (const user of state.users) {
+            try {
+                const res = await apiFetch(`/firestore?path=${encodeURIComponent(`users/${user.id}/orders`)}`);
+                const docs = res.documents || [];
+                docs.forEach(docSnap => {
+                    allOrders.push({
+                        userId: user.id,
+                        userEmail: user.email || user.id,
+                        id: docSnap.id,
+                        ...docSnap.data
+                    });
+                });
+            } catch (e) {}
+        }
+
+        allOrders.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+        state.orders = allOrders;
 
         el("ordersMeta").textContent = `${state.orders.length} سفارش`;
 
@@ -469,35 +496,92 @@ async function loadOrders() {
         status.hidden = true;
         table.hidden = false;
         renderOrders(state.orders);
-
     } catch (error) {
         status.className = "status-box error";
         status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(friendlyError(error))}`;
     }
 }
+let allOrders = [];
 
 function renderOrders(list) {
     el("ordersBody").innerHTML = list.map((o) => `
         <tr>
-            <td style="font-weight:600;">${escapeHtml(o.id)}</td>
-            <td style="color:var(--text-muted);font-size:11.5px;">${escapeHtml(o.userId || "—")}</td>
-            <td>${orderBadge(o.status)}</td>
+            <td style="font-weight:600;">${escapeHtml(o.orderId || o.id)}</td>
+            <td style="color:var(--text-muted);font-size:11.5px;">${escapeHtml(o.userEmail)}</td>
+            <td>${Number(o.total || 0).toLocaleString("fa-IR")} تومان</td>
+            <td>${orderBadge(o.statusText || o.status)}</td>
+            <td>
+                <button class="icon-btn" onclick="openOrderEditModal('${o.userId}', '${o.id}')"><i class="fa-solid fa-pen"></i> ویرایش وضعیت</button>
+                <button class="icon-btn btn-danger" onclick="deleteOrderRecord('${o.userId}', '${o.id}')"><i class="fa-solid fa-trash"></i></button>
+            </td>
         </tr>
     `).join("");
 }
+
+window.openOrderEditModal = function(userId, orderId) {
+    const order = state.orders.find(o => o.userId === userId && o.id === orderId);
+    if (!order) return;
+    activeEditingOrder = order;
+
+    el("editOrderStatus").value = order.statusText || "در انتظار بررسی";
+    el("orderModalOverlay").hidden = false;
+};
+
+el("orderModalClose").addEventListener("click", () => { el("orderModalOverlay").hidden = true; });
+el("orderCancelBtn").addEventListener("click", () => { el("orderModalOverlay").hidden = true; });
+
+el("orderEditForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!activeEditingOrder) return;
+
+    const newStatusText = el("editOrderStatus").value;
+    const nowIso = new Date().toISOString();
+
+    const updatedData = {
+        ...activeEditingOrder,
+        statusText: newStatusText,
+        statusUpdatedAt: nowIso
+    };
+    delete updatedData.userId;
+    delete updatedData.userEmail;
+
+    try {
+        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${activeEditingOrder.userId}/orders/${activeEditingOrder.id}`)}`, {
+            method: "PUT",
+            body: JSON.stringify({ data: updatedData })
+        });
+
+        showToast("وضعیت سفارش به‌روزرسانی شد.");
+        el("orderModalOverlay").hidden = true;
+        loadOrders();
+    } catch (err) {
+        showToast(friendlyError(err), "error");
+    }
+});
+
+window.deleteOrderRecord = async function(userId, orderId) {
+    if (!confirm("آیا از حذف این سفارش مطمئن هستید؟")) return;
+    try {
+        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${userId}/orders/${orderId}`)}`, { method: "DELETE" });
+        showToast("سفارش حذف شد.");
+        loadOrders();
+    } catch (err) {
+        showToast(friendlyError(err), "error");
+    }
+};
 
 el("orderSearch").addEventListener("input", () => {
     const q = el("orderSearch").value.trim().toLowerCase();
     const filtered = !q ? state.orders : state.orders.filter((o) =>
         String(o.id || "").toLowerCase().includes(q) ||
-        String(o.userId || "").toLowerCase().includes(q)
+        String(o.userEmail || "").toLowerCase().includes(q)
     );
     renderOrders(filtered);
     el("ordersMeta").textContent = `${filtered.length} از ${state.orders.length} سفارش`;
 });
 
 /* =========================================================
-   Tickets table & chat management
+   Tickets Management
 ========================================================= */
 
 async function loadTickets() {
@@ -529,13 +613,10 @@ async function loadTickets() {
                         ...docSnap.data
                     });
                 });
-            } catch (e) {
-                // User has no tickets subcollection
-            }
+            } catch (e) {}
         }
 
         allTickets.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-
         el("ticketsMeta").textContent = `${allTickets.length} تیکت`;
 
         if (!allTickets.length) {
@@ -546,7 +627,6 @@ async function loadTickets() {
         status.hidden = true;
         table.hidden = false;
         renderTickets(allTickets);
-
     } catch (error) {
         status.className = "status-box error";
         status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(friendlyError(error))}`;
@@ -572,25 +652,15 @@ function renderTickets(list) {
     `).join("");
 }
 
-el("ticketSearch").addEventListener("input", () => {
-    const q = el("ticketSearch").value.trim().toLowerCase();
-    const filtered = !q ? allTickets : allTickets.filter((t) =>
-        String(t.subject || "").toLowerCase().includes(q) ||
-        String(t.userName || "").toLowerCase().includes(q) ||
-        String(t.userEmail || "").toLowerCase().includes(q)
-    );
-    renderTickets(filtered);
-    el("ticketsMeta").textContent = `${filtered.length} از ${allTickets.length} تیکت`;
-});
-
 window.openAdminTicketChat = function(userId, ticketId) {
     const ticket = allTickets.find(t => t.userId === userId && t.id === ticketId);
     if (!ticket) return;
     activeAdminTicket = ticket;
 
     el("ticketModalTitle").textContent = ticket.subject || "جزئیات تیکت";
-    el("ticketModalUserInfo").textContent = `کاربر: ${ticket.userName} (${ticket.userEmail}) — ثبت شده در: ${formatDateTime(ticket.createdAt)}`;
-    
+    el("ticketModalUserInfo").textContent = `کاربر: ${ticket.userName} (${ticket.userEmail})`;
+    el("ticketStatusSelect").value = ticket.status || "open";
+
     renderAdminChatMessages();
     el("ticketModalOverlay").hidden = false;
 };
@@ -619,9 +689,31 @@ function renderAdminChatMessages() {
     container.scrollTop = container.scrollHeight;
 }
 
+window.updateTicketStatusDirect = async function() {
+    if (!activeAdminTicket) return;
+    const newStatus = el("ticketStatusSelect").value;
+    activeAdminTicket.status = newStatus;
+    
+    const updatedData = { ...activeAdminTicket };
+    delete updatedData.userId;
+    delete updatedData.userEmail;
+    delete updatedData.userName;
+
+    try {
+        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${activeAdminTicket.userId}/tickets/${activeAdminTicket.id}`)}`, {
+            method: "PUT",
+            body: JSON.stringify({ data: updatedData })
+        });
+        showToast("وضعیت تیکت تغییر کرد.");
+        renderTickets(allTickets);
+    } catch (err) {
+        showToast(friendlyError(err), "error");
+    }
+};
+
 el("ticketModalClose").addEventListener("click", () => {
     el("ticketModalOverlay").hidden = true;
-    activeAdmin = null;
+    activeAdminTicket = null;
 });
 
 el("adminReplyForm").addEventListener("submit", async (e) => {
@@ -641,12 +733,12 @@ el("adminReplyForm").addEventListener("submit", async (e) => {
         timestamp: nowIso
     });
 
-    const updatedData = {
-        ...activeAdminTicket,
-        status: "answered",
-        updatedAt: nowIso,
-        messages: messages
-    };
+    activeAdminTicket.messages = messages;
+    activeAdminTicket.status = "answered";
+    activeAdminTicket.updatedAt = nowIso;
+    el("ticketStatusSelect").value = "answered";
+
+    const updatedData = { ...activeAdminTicket };
     delete updatedData.userId;
     delete updatedData.userEmail;
     delete updatedData.userName;
@@ -657,17 +749,24 @@ el("adminReplyForm").addEventListener("submit", async (e) => {
             body: JSON.stringify({ data: updatedData })
         });
 
-        activeAdminTicket.messages = messages;
-        activeAdminTicket.status = "answered";
-        activeAdminTicket.updatedAt = nowIso;
-
         input.value = "";
         renderAdminChatMessages();
         renderTickets(allTickets);
-        showToast("پاسخ شما با موفقیت ارسال شد.");
+        showToast("پاسخ ارسال شد.");
     } catch (err) {
         showToast(friendlyError(err), "error");
     }
+});
+
+el("ticketSearch").addEventListener("input", () => {
+    const q = el("ticketSearch").value.trim().toLowerCase();
+    const filtered = !q ? allTickets : allTickets.filter((t) =>
+        String(t.subject || "").toLowerCase().includes(q) ||
+        String(t.userName || "").toLowerCase().includes(q) ||
+        String(t.userEmail || "").toLowerCase().includes(q)
+    );
+    renderTickets(filtered);
+    el("ticketsMeta").textContent = `${filtered.length} از ${allTickets.length} تیکت`;
 });
 
 boot();
