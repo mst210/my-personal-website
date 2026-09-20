@@ -78,7 +78,7 @@
             <div class="table-wrap">
                 <table class="data-table" id="usersTable" hidden>
                     <thead>
-                        <tr><th>کاربر</th><th>شناسه</th><th>ایمیل</th><th>عملیات</th></tr>
+                        <tr><th>کاربر</th><th>شناسه</th><th>ایمیل</th></tr>
                     </thead>
                     <tbody id="usersBody"></tbody>
                 </table>
@@ -201,18 +201,11 @@ const state = {
 let allTickets = [];
 let activeAdminTicket = null;
 let activeEditingOrder = null;
+let allOrders = [];
 
 function can(section, action) {
     return state.permissions.includes(`${section}.${action}`);
 }
-
-const ORDER_STATUS_LABELS = {
-    pending: "در انتظار",
-    processing: "در حال پردازش",
-    shipped: "ارسال‌شده",
-    delivered: "تحویل‌شده",
-    cancelled: "لغوشده",
-};
 
 function orderBadge(status) {
     const s = String(status || "").toLowerCase();
@@ -419,23 +412,9 @@ function renderUsers(list) {
             </td>
             <td style="color:var(--text-muted);font-size:11.5px;">${escapeHtml(u.id)}</td>
             <td>${escapeHtml(u.email || "—")}</td>
-            <td>
-                <button class="icon-btn btn-danger" onclick="deleteUserRecord('${escapeHtml(u.id)}')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </td>
         </tr>
     `).join("");
 }
-
-window.deleteUserRecord = async function(userId) {
-    if (!confirm("آیا از حذف این کاربر مطمئن هستید؟")) return;
-    try {
-        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${userId}`)}`, { method: "DELETE" });
-        showToast("کاربر حذف شد.");
-        loadUsers();
-    } catch (err) {
-        showToast(friendlyError(err), "error");
-    }
-};
 
 el("userSearch").addEventListener("input", () => {
     const q = el("userSearch").value.trim().toLowerCase();
@@ -501,7 +480,6 @@ async function loadOrders() {
         status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(friendlyError(error))}`;
     }
 }
-let allOrders = [];
 
 function renderOrders(list) {
     el("ordersBody").innerHTML = list.map((o) => `
@@ -511,8 +489,8 @@ function renderOrders(list) {
             <td>${Number(o.total || 0).toLocaleString("fa-IR")} تومان</td>
             <td>${orderBadge(o.statusText || o.status)}</td>
             <td>
-                <button class="icon-btn" onclick="openOrderEditModal('${o.userId}', '${o.id}')"><i class="fa-solid fa-pen"></i> ویرایش وضعیت</button>
-                <button class="icon-btn btn-danger" onclick="deleteOrderRecord('${o.userId}', '${o.id}')"><i class="fa-solid fa-trash"></i></button>
+                <button class="icon-btn" onclick="openOrderEditModal('${o.userId}', '${o.id}')"><i class="fa-solid fa-pen"></i> ویرایش</button>
+                <button class="icon-btn btn-danger" onclick="deleteOrderRecord('${o.userId}', '${o.id}')"><i class="fa-solid fa-trash"></i> لغو/حذف</button>
             </td>
         </tr>
     `).join("");
@@ -559,11 +537,28 @@ el("orderEditForm").addEventListener("submit", async (e) => {
     }
 });
 
+// استفاده از PUT برای لغو/حذف منطقی سفارش به جای متد DELETE که روی سرور پشتیبانی نمی‌شود
 window.deleteOrderRecord = async function(userId, orderId) {
-    if (!confirm("آیا از حذف این سفارش مطمئن هستید؟")) return;
+    if (!confirm("آیا از لغو این سفارش مطمئن هستید؟")) return;
     try {
-        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${userId}/orders/${orderId}`)}`, { method: "DELETE" });
-        showToast("سفارش حذف شد.");
+        const order = state.orders.find(o => o.userId === userId && o.id === orderId);
+        if (!order) return;
+
+        const updatedData = {
+            ...order,
+            status: "cancelled",
+            statusText: "لغو شد",
+            statusUpdatedAt: new Date().toISOString()
+        };
+        delete updatedData.userId;
+        delete updatedData.userEmail;
+
+        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${userId}/orders/${orderId}`)}`, {
+            method: "PUT",
+            body: JSON.stringify({ data: updatedData })
+        });
+
+        showToast("سفارش با موفقیت لغو شد.");
         loadOrders();
     } catch (err) {
         showToast(friendlyError(err), "error");
@@ -679,7 +674,7 @@ function renderAdminChatMessages() {
 
         return `
             <div style="background:${bg}; border:1px solid ${border}; border-radius:12px; padding:10px 14px; max-width:80%; ${align}">
-                <div style="font-weight:700; font-size:11px; margin-bottom:4px; color:${color};">${senderLabel}</div>
+                <div style="font-weight:700; font-size:11.5px; margin-bottom:4px; color:${color};">${senderLabel}</div>
                 <div style="font-size:13px; line-height:1.8; color:var(--text-main);">${escapeHtml(msg.text)}</div>
                 <div style="font-size:10px; color:var(--text-muted); margin-top:4px; text-align:left;">${formatDateTime(msg.timestamp)}</div>
             </div>
