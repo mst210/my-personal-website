@@ -2437,10 +2437,17 @@
             try {
                 const result = await apiFetch("/auth/session");
 
-                if (result?.user) {
+                 if (result?.user) {
+                    const restoredUser = {
+                        ...(session.user || {}),
+                        ...result.user,
+                        uid: result.user.localId || session.user?.uid,
+                        localId: result.user.localId || session.user?.localId
+                    };
+
                     const nextSession = {
                         ...session,
-                        user: result.user
+                        user: restoredUser
                     };
 
                     localStorage.setItem(
@@ -2448,8 +2455,8 @@
                         JSON.stringify(nextSession)
                     );
 
-                    auth.currentUser = result.user;
-                    callback(result.user);
+                    auth.currentUser = restoredUser;
+                    callback(restoredUser);
                     return;
                 }
             } catch (error) {
