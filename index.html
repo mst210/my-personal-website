@@ -762,26 +762,43 @@
 
     </script>
 
-</body>
-</html>
-
-
-<script>
-async function renderSiteTexts() {
+        <script>
+async function loadAndRenderHomeTexts() {
   try {
-    const response = await fetch('/api/public/pages/home'); // روت عمومی برای خواندن اطلاعات
+    // درخواست به روت عمومی وورکر برای گرفتن متن‌های صفحه اصلی
+    // (اگر مسیر روت عمومی در وورکر شما متفاوت است، آدرس زیر را متناسب با آن تغییر دهید)
+    const response = await fetch('/api/public/pages/home');
     const result = await response.json();
+
     if (result.ok && result.fields) {
-      // جایگذاری مقادیر در تگ‌های صفحه اصلی (شناسه‌ها را مطابق تگ‌های سایت خود تنظیم کنید)
-      if(document.getElementById('site-header-title')) document.getElementById('site-header-title').innerText = result.fields.headerTitle;
-      if(document.getElementById('site-header-subtitle')) document.getElementById('site-header-subtitle').innerText = result.fields.headerSubtitle;
-      if(document.getElementById('site-welcome-text')) document.getElementById('site-welcome-text').innerText = result.fields.welcomeText;
-      if(document.getElementById('site-intro-title')) document.getElementById('site-intro-title').innerText = result.fields.introTitle;
+      const data = result.fields;
+
+      // هرکدام از شناسه‌ها (id) که در صفحه اصلی وجود داشته باشد، به صورت خودکار آپدیت می‌شود
+      if (data.headerTitle && document.getElementById('site-header-title')) {
+        document.getElementById('site-header-title').textContent = data.headerTitle;
+      }
+      if (data.headerSubtitle && document.getElementById('site-header-subtitle')) {
+        document.getElementById('site-header-subtitle').textContent = data.headerSubtitle;
+      }
+      if (data.tickerText && document.getElementById('site-ticker')) {
+        document.getElementById('site-ticker').textContent = data.tickerText;
+      }
+      if (data.introTitle && document.getElementById('site-intro-title')) {
+        document.getElementById('site-intro-title').textContent = data.introTitle;
+      }
+      if (data.introBody && document.getElementById('site-intro-body')) {
+        document.getElementById('site-intro-body').textContent = data.introBody;
+      }
+      // اگر بخش‌های دیگری مثل محصولات دارید می‌توانید به همین شکل اضافه کنید
     }
   } catch (err) {
-    console.error('خطا در بارگذاری متن‌های سایت', err);
+    console.error('خطا در دریافت متن‌های سایت:', err);
   }
 }
 
-window.addEventListener('DOMContentLoaded', renderSiteTexts);
+// اجرای تابع به محض لود شدن صفحه اصلی
+window.addEventListener('DOMContentLoaded', loadAndRenderHomeTexts);
 </script>
+
+</body>
+</html>
