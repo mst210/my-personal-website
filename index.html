@@ -2,11 +2,99 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
     <title>دکتر محمدصادق تاج | وب‌سایت رسمی</title>
-    <!-- Font Awesome for Medical & Social Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <meta name="description"
+          content="وب‌سایت رسمی دکتر محمدصادق تاج؛ معرفی، اطلاعات، خدمات و مطالب مرتبط با پزشکی و فعالیت‌های حرفه‌ای.">
+
+    <meta name="keywords"
+          content="دکتر محمدصادق تاج, محمدصادق تاج, دکتر محمد صادق تاج, پزشک, پزشکی, وب سایت دکتر محمدصادق تاج">
+
+    <meta name="author" content="دکتر محمدصادق تاج">
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="googlebot" content="index, follow">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.drmohammadsadeqtaj.ir/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="دکتر محمدصادق تاج | وب‌سایت رسمی">
+    <meta property="og:description"
+          content="وب‌سایت رسمی دکتر محمدصادق تاج؛ معرفی و اطلاعات مرتبط با فعالیت‌های پزشکی.">
+    <meta property="og:url" content="https://www.drmohammadsadeqtaj.ir/">
+    <meta property="og:site_name" content="دکتر محمدصادق تاج">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:image" content="https://www.drmohammadsadeqtaj.ir/bg.jpg">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="دکتر محمدصادق تاج | وب‌سایت رسمی">
+    <meta name="twitter:description"
+          content="وب‌سایت رسمی دکتر محمدصادق تاج.">
+    <meta name="twitter:image"
+          content="https://www.drmohammadsadeqtaj.ir/bg.jpg">
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Vazirmatn Font CDN -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+          rel="stylesheet"
+          type="text/css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!--
+        Structured Data / Schema.org
+        برای معرفی شخص و وب‌سایت به موتورهای جستجو
+    -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://www.drmohammadsadeqtaj.ir/#person",
+      "name": "دکتر محمدصادق تاج",
+      "alternateName": [
+        "محمدصادق تاج",
+        "محمد صادق تاج"
+      ],
+      "url": "https://www.drmohammadsadeqtaj.ir/",
+      "image": "https://www.drmohammadsadeqtaj.ir/bg.jpg",
+      "jobTitle": "دانشجوی پزشکی",
+      "sameAs": [
+        "https://instagram.com/mst_2102",
+        "https://t.me/mst_2102"
+      ]
+    }
+    </script>
+
+    <!-- Website Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://www.drmohammadsadeqtaj.ir/#website",
+      "url": "https://www.drmohammadsadeqtaj.ir/",
+      "name": "دکتر محمدصادق تاج | وب‌سایت رسمی",
+      "description": "وب‌سایت رسمی دکتر محمدصادق تاج",
+      "inLanguage": "fa-IR",
+      "publisher": {
+        "@id": "https://www.drmohammadsadeqtaj.ir/#person"
+      }
+    }
+    </script>
+
     <style>
+
         :root {
             --primary-blue: #0284c7;
             --dark-blue: #0f172a;
@@ -23,7 +111,7 @@
         }
 
         body {
-            font-family: Tahoma, 'Vazirmatn', sans-serif;
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             background-attachment: fixed;
             color: #ffffff;
@@ -32,7 +120,8 @@
             flex-direction: column;
         }
 
-        /* --- Header Section --- */
+        /* --- Header --- */
+
         header {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(12px);
@@ -84,7 +173,8 @@
             box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
         }
 
-        /* --- Navigation & Links --- */
+        /* --- Navigation --- */
+
         .nav-links {
             display: flex;
             justify-content: center;
@@ -127,7 +217,8 @@
             color: #38bdf8;
         }
 
-        /* --- Ticker / Running Subtitle Bar --- */
+        /* --- Ticker --- */
+
         .ticker-wrap {
             max-width: 800px;
             margin: 0 auto 20px auto;
@@ -163,8 +254,13 @@
         }
 
         @keyframes marquee {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(100%, 0, 0); }
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            100% {
+                transform: translate3d(100%, 0, 0);
+            }
         }
 
         .ticker-box:hover .ticker-text {
@@ -172,6 +268,7 @@
         }
 
         /* --- Main Content --- */
+
         main {
             flex-grow: 1;
             max-width: 800px;
@@ -269,13 +366,8 @@
             font-size: 16px;
         }
 
-        .aparat-container {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        /* --- Visitor Counter --- */
 
-        /* --- Visitor Counter Box --- */
         .visitor-counter-box {
             max-width: 320px;
             margin: 25px auto 15px auto;
@@ -306,6 +398,8 @@
             min-height: 40px;
         }
 
+        /* --- Footer --- */
+
         footer {
             text-align: center;
             padding: 20px;
@@ -313,111 +407,316 @@
             color: #64748b;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        /* --- Mobile --- */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 10px 15px;
+            }
+
+            .doctor-title-box h1 {
+                font-size: 17px;
+            }
+
+            .doctor-title-box span {
+                font-size: 11px;
+            }
+
+            .doctor-avatar-left {
+                width: 48px;
+                height: 48px;
+            }
+
+            .doctor-info-right i {
+                font-size: 23px;
+            }
+
+            .nav-btn {
+                font-size: 13px;
+                padding: 9px 12px;
+            }
+
+            .medical-post {
+                padding: 18px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+        }
+
     </style>
 </head>
+
 <body>
 
-    <!-- Header Section -->
+    <!-- Header -->
     <header>
         <div class="header-container">
+
             <div class="doctor-info-right">
+
                 <i class="fa-solid fa-user-doctor"></i>
+
                 <div class="doctor-title-box">
+
                     <h1>دکتر محمدصادق تاج</h1>
-                    <span>پزشک</span>
+
+                    <span>دانشجوی پزشکی</span>
+
                 </div>
+
             </div>
-            <img src="bg.jpg" alt="دکتر محمدصادق تاج" class="doctor-avatar-left" onerror="this.src='https://via.placeholder.com/150'">
+
+            <img
+                src="bg.jpg"
+                alt="دکتر محمدصادق تاج"
+                class="doctor-avatar-left"
+                loading="eager"
+                onerror="this.src='https://via.placeholder.com/150'"
+            >
+
         </div>
     </header>
 
-    <!-- Social & Navigation Links -->
-    <div class="nav-links">
-        <a href="panel.html" class="nav-btn nav-btn-panel"><i class="fa-solid fa-user-gear"></i> ورود / ثبت نام</a>
-        <a href="products.html" class="nav-btn nav-btn-highlight"><i class="fa-solid fa-boxes-stacked"></i> لیست محصولات پزشکی</a>
-        <a href="https://instagram.com/mst_2102" target="_blank" class="nav-btn"><i class="fa-brands fa-instagram"></i> اینستاگرام</a>
-        <a href="https://t.me/mst_2102" target="_blank" class="nav-btn"><i class="fa-paper-plane"></i> تلگرام</a>
-        <a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره ما</a>
-    </div>
 
-    <!-- Running Subtitle (Ticker Bar) -->
+    <!-- Navigation -->
+    <nav class="nav-links" aria-label="منوی اصلی">
+
+        <a href="panel.html"
+           class="nav-btn nav-btn-panel">
+            <i class="fa-solid fa-user-gear"></i>
+            ورود / ثبت نام
+        </a>
+
+        <a href="products.html"
+           class="nav-btn nav-btn-highlight">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            لیست محصولات پزشکی
+        </a>
+
+        <a href="https://instagram.com/mst_2102"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="nav-btn">
+            <i class="fa-brands fa-instagram"></i>
+            اینستاگرام
+        </a>
+
+        <a href="https://t.me/mst_2102"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="nav-btn">
+            <i class="fa-brands fa-telegram"></i>
+            تلگرام
+        </a>
+
+    </nav>
+
+
+    <!-- Ticker -->
     <div class="ticker-wrap">
+
         <div class="ticker-box">
+
             <div class="ticker-content-container">
+
                 <div class="ticker-text">
-                    به وب سایت رسمی دکتر محمدصادق تاج خوش آمدید
+                    به وب‌سایت رسمی دکتر محمدصادق تاج خوش آمدید
                 </div>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- Main Content Area -->
+
+    <!-- Main -->
     <main>
+
         <div class="section-title">
-            <i class="fa-notes-medical"></i>
-            <h2>اطلاعات و خدمات پزشکی</h2>
+
+            <i class="fa-solid fa-notes-medical"></i>
+
+            <h2>
+                اطلاعات و خدمات پزشکی
+            </h2>
+
         </div>
 
-        <!-- Post 1 -->
+
+        <!-- Introduction -->
         <article class="medical-post">
+
             <div class="post-header">
-                <span class="post-tag">سازمان رسمی</span>
-                <span class="post-date">رسمی</span>
+
+                <span class="post-tag">
+                    معرفی
+                </span>
+
+                <span class="post-date">
+                    رسمی
+                </span>
+
             </div>
-            <h3 class="post-title">سازمان نظام پزشکی جمهوری اسلامی ایران</h3>
+
+            <h2 class="post-title">
+                دکتر محمدصادق تاج
+            </h2>
+
             <p class="post-content">
-                برای مشاهده آخرین اخبار، آیین‌نامه‌ها، قوانین پزشکی و دسترسی به سامانه‌های خدمات الکترونیک اعضا و مراجعین، می‌توانید به درگاه رسمی سازمان نظام پزشکی مراجعه کنید.
+                به وب‌سایت رسمی دکتر محمدصادق تاج خوش آمدید.
+                این وب‌سایت با هدف ارائه اطلاعات، معرفی فعالیت‌ها،
+                مطالب مرتبط با حوزه پزشکی و دسترسی آسان به خدمات
+                و ارتباطات آنلاین راه‌اندازی شده است.
             </p>
-            <a href="https://irimc.org" target="_blank" class="post-link-btn">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> ورود به سایت سازمان نظام پزشکی (irimc.org)
-            </a>
+
         </article>
 
-        <!-- Post 2 -->
+
+        <!-- Medical Organization -->
         <article class="medical-post">
+
             <div class="post-header">
-                <span class="post-tag">تجهیزات و خدمات</span>
-                <span class="post-date">پشتیبانی</span>
+
+                <span class="post-tag">
+                    سازمان رسمی
+                </span>
+
+                <span class="post-date">
+                    رسمی
+                </span>
+
             </div>
-            <h3 class="post-title">فروش محصولات پزشکی</h3>
+
+            <h2 class="post-title">
+                سازمان نظام پزشکی جمهوری اسلامی ایران
+            </h2>
+
             <p class="post-content">
-                برای اطلاع از موجودی محصولات و قیمت روز به پشتیبانی آنلاین پیام دهید
-                <br>
-                <a href="tel:09381618740" class="phone-link"><i class="fa-solid fa-phone"></i> 09103909971</a>
+                برای مشاهده آخرین اخبار، آیین‌نامه‌ها، قوانین پزشکی
+                و دسترسی به سامانه‌های خدمات الکترونیک اعضا و مراجعین،
+                می‌توانید به درگاه رسمی سازمان نظام پزشکی مراجعه کنید.
             </p>
-            <a href="products.html" class="post-link-btn">
-                <i class="fa-solid fa-store"></i> مشاهده کاتالوگ و محصولات
+
+            <a
+                href="https://irimc.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="post-link-btn"
+            >
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                ورود به سایت سازمان نظام پزشکی
             </a>
+
         </article>
 
 
-    <!-- Visitor Counter -->
-    <div class="visitor-counter-box">
-        <div class="counter-title">
-            <i class="fa-solid fa-chart-line"></i> آمار بازدیدکنندگان سایت
+        <!-- Products -->
+        <article class="medical-post">
+
+            <div class="post-header">
+
+                <span class="post-tag">
+                    تجهیزات و خدمات
+                </span>
+
+                <span class="post-date">
+                    پشتیبانی
+                </span>
+
+            </div>
+
+            <h2 class="post-title">
+                فروش محصولات پزشکی
+            </h2>
+
+            <p class="post-content">
+                برای اطلاع از موجودی محصولات و قیمت روز،
+                می‌توانید از بخش محصولات پزشکی سایت بازدید کنید.
+            </p>
+
+            <a
+                href="products.html"
+                class="post-link-btn"
+            >
+                <i class="fa-solid fa-store"></i>
+                مشاهده کاتالوگ و محصولات
+            </a>
+
+        </article>
+
+
+        <!-- Visitor Counter -->
+        <div class="visitor-counter-box">
+
+            <div class="counter-title">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                آمار بازدیدکنندگان سایت
+
+            </div>
+
+            <div class="counter-widget">
+
+                <a
+                    href="https://www.counters-free.net/"
+                    style="display:none;"
+                    rel="nofollow"
+                >
+                    Get Counters Free!
+                </a>
+
+                <script
+                    type="text/javascript"
+                    src="https://www.freevisitorcounters.com/auth.php?id=6d0f5581f898565f54433e6a39f8c15f52348e19">
+                </script>
+
+                <script
+                    type="text/javascript"
+                    src="https://www.freevisitorcounters.com/en/home/counter/1642282/t/0">
+                </script>
+
+            </div>
+
         </div>
-        <div class="counter-widget">
-            <a href='https://www.counters-free.net/' style="display:none;">Get Counters Free!</a>
-            <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=6d0f5581f898565f54433e6a39f8c15f52348e19'></script>
-            <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1642282/t/0"></script>
-        </div>
-    </div>
+
+    </main>
+
 
     <!-- Footer -->
     <footer>
+
         © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
+
     </footer>
 
-    <!-- Goftino Online Support Widget -->
+
+    <!-- Goftino -->
     <script type="text/javascript">
-      !function(){var i="JHf7dD",d=document,g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.type="text/javascript",g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}();
+
+        !function(){
+
+            var i="JHf7dD",
+                d=document,
+                g=d.createElement("script"),
+                s="https://www.goftino.com/widget/"+i,
+                l=localStorage.getItem("goftino_"+i);
+
+            g.type="text/javascript";
+            g.async=!0;
+            g.src=l?s+"?o="+l:s;
+
+            d.getElementsByTagName("head")[0]
+                .appendChild(g);
+
+        }();
+
     </script>
 
 </body>
 </html>
-
-
-
-
-درباره ما
-<a href="about.html" class="nav-btn"><i class="fa-solid fa-book-medical"></i> درباره ما</a>
