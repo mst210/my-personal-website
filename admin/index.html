@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد | پنل ادمین</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="shared.css">
+
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <div class="top-header">
+        <div class="header-title">
+            <h1>داشبورد مدیریت</h1>
+            <p id="welcomeText">پنل مدیریت تجهیزات و محتوای پزشکی</p>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" id="logoutBtn" hidden><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        </div>
+    </div>
+
+    <!-- Checking access -->
+    <section id="loading" class="status-box">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        در حال بررسی دسترسی...
+    </section>
+
+    <!-- Not logged in -->
+    <section id="loginSection" hidden>
+        <div class="login-card">
+            <h2>ورود مدیر</h2>
+            <div class="form-error" id="loginError"></div>
+            <form id="loginForm">
+                <div class="field">
+                    <label>ایمیل</label>
+                    <input type="email" id="loginEmail" required autocomplete="username">
+                </div>
+                <div class="field">
+                    <label>رمز عبور</label>
+                    <input type="password" id="loginPassword" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="icon-btn btn-primary" style="width:100%;justify-content:center" id="loginSubmit">
+                    ورود
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Logged in but not an admin -->
+    <section id="deniedSection" hidden class="status-box error">
+        <i class="fa-solid fa-lock"></i>
+        <div id="deniedText">شما دسترسی مدیریت را ندارید.</div>
+    </section>
+
+    <!-- Main app -->
+    <section id="app" hidden>
+
+        <div class="nav-bar" id="navBar" hidden></div>
+
+        <div class="stat-grid" id="statGrid"></div>
+
+        <div class="section-card" id="usersSection" hidden>
+            <h2><i class="fa-solid fa-users"></i> کاربران</h2>
+            <div class="toolbar">
+                <input class="field" style="margin:0" type="search" placeholder="جستجوی ایمیل یا شناسه..." id="userSearch">
+                <div id="usersMeta" style="color:var(--text-muted);font-size:12.5px;"></div>
+            </div>
+            <div id="usersStatus" class="status-box" hidden></div>
+            <div class="table-wrap">
+                <table class="data-table" id="usersTable" hidden>
+                    <thead>
+                        <tr><th>کاربر</th><th>شناسه</th><th>ایمیل</th></tr>
+                    </thead>
+                    <tbody id="usersBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card" id="ordersSection" hidden>
+            <h2><i class="fa-solid fa-cart-shopping"></i> سفارش‌ها</h2>
+            <div class="toolbar">
+                <input class="field" style="margin:0" type="search" placeholder="جستجوی شناسه سفارش یا کاربر..." id="orderSearch">
+                <div id="ordersMeta" style="color:var(--text-muted);font-size:12.5px;"></div>
+            </div>
+            <div id="ordersStatus" class="status-box" hidden></div>
+            <div class="table-wrap">
+                <table class="data-table" id="ordersTable" hidden>
+                    <thead>
+                        <tr><th>شناسه سفارش</th><th>کاربر</th><th>وضعیت</th></tr>
+                    </thead>
+                    <tbody id="ordersBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+
+import {
+    readSession, saveSession, apiFetch, friendlyError, showToast,
+    escapeHtml, initials, renderNav
+} from "./shared.js";
+
+const el = (id) => document.getElementById(id);
+
+const state = {
+    permissions: [],
+    isSuper: false,
+    users: [],
+    orders: [],
+};
+
+function can(section, action) {
+    return state.permissions.includes(`${section}.${action}`);
+}
+
+const ORDER_STATUS_LABELS = {
+    pending: "در انتظار",
+    processing: "در حال پردازش",
+    shipped: "ارسال‌شده",
+    delivered: "تحویل‌شده",
+    cancelled: "لغوشده",
+};
+
+function orderBadge(status) {
+    const s = String(status || "").toLowerCase();
+    const cls = s === "delivered" ? "success"
+        : s === "cancelled" ? "danger"
+        : s === "pending" ? "warn"
+        : "";
+    const label = ORDER_STATUS_LABELS[s] || status || "نامشخص";
+    return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+}
+
+/* =========================================================
+   Boot / auth gate
+========================================================= */
+
+async function boot() {
+    const session = readSession();
+
+    if (!session?.idToken) {
+        el("loading").hidden = true;
+        el("loginSection").hidden = false;
+        return;
+    }
+
+    try {
+        const me = await apiFetch("/admin/me");
+        state.permissions = me.permissions || [];
+        state.isSuper = !!me.isSuper;
+
+        el("welcomeText").textContent = me.name
+            ? `خوش آمدید، ${me.name}`
+            : (me.email || "پنل مدیریت تجهیزات و محتوای پزشکی");
+
+        el("logoutBtn").hidden = false;
+        el("loading").hidden = true;
+        el("app").hidden = false;
+
+        el("navBar").hidden = false;
+        renderNav("dashboard", state.isSuper);
+        renderStats(me);
+
+        if (can("users", "view")) {
+            el("usersSection").hidden = false;
+            loadUsers();
+        }
+
+        if (can("orders", "view")) {
+            el("ordersSection").hidden = false;
+            loadOrders();
+        }
+
+        if (!can("users", "view") && !can("orders", "view") && !can("dashboard", "view")) {
+            el("deniedText").textContent = "حساب شما به هیچ بخشی از داشبورد دسترسی ندارد.";
+            el("deniedSection").hidden = false;
+        }
+
+    } catch (error) {
+        el("loading").hidden = true;
+
+        if (error.status === 401) {
+            saveSession(null);
+            el("loginSection").hidden = false;
+            return;
+        }
+
+        el("deniedText").textContent = friendlyError(error);
+        el("deniedSection").hidden = false;
+        el("logoutBtn").hidden = false;
+    }
+}
+
+el("logoutBtn").addEventListener("click", () => {
+    saveSession(null);
+    location.reload();
+});
+
+/* ---------- login ---------- */
+
+el("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const errBox = el("loginError");
+    errBox.classList.remove("show");
+
+    const email = el("loginEmail").value.trim();
+    const password = el("loginPassword").value;
+    const btn = el("loginSubmit");
+
+    btn.disabled = true;
+    btn.textContent = "در حال ورود...";
+
+    try {
+        const result = await apiFetch("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+        }, false);
+
+        saveSession({
+            idToken: result.idToken,
+            refreshToken: result.refreshToken,
+            expiresIn: result.expiresIn,
+            user: result.user,
+        });
+
+        location.reload();
+
+    } catch (error) {
+        errBox.textContent = friendlyError(error);
+        errBox.classList.add("show");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "ورود";
+    }
+});
+
+/* =========================================================
+   Stat cards
+========================================================= */
+
+async function renderStats(me) {
+    const grid = el("statGrid");
+    grid.innerHTML = "";
+
+    const cards = [];
+
+    if (can("dashboard", "view")) {
+        cards.push({ icon: "fa-users", label: "تعداد کاربران", value: "…", id: "statUsers" });
+        cards.push({ icon: "fa-cart-shopping", label: "تعداد سفارش‌ها", value: "…", id: "statOrders" });
+    }
+
+    cards.push({
+        icon: state.isSuper ? "fa-crown" : "fa-user-shield",
+        label: "سطح دسترسی شما",
+        value: state.isSuper ? "مدیر ارشد" : (me.role ? roleLabel(me.role) : "—"),
+        id: "statRole",
+    });
+
+    cards.push({
+        icon: "fa-key",
+        label: "تعداد دسترسی‌های فعال",
+        value: state.permissions.length,
+        id: "statPerms",
+    });
+
+    grid.innerHTML = cards.map((c) => `
+        <div class="stat-card">
+            <div class="icon"><i class="fa-solid ${c.icon}"></i></div>
+            <div>
+                <div class="num" id="${c.id}">${escapeHtml(String(c.value))}</div>
+                <div class="label">${escapeHtml(c.label)}</div>
+            </div>
+        </div>
+    `).join("");
+
+    if (can("dashboard", "view")) {
+        try {
+            const stats = await apiFetch("/admin/stats");
+            const usersEl = el("statUsers");
+            const ordersEl = el("statOrders");
+            if (usersEl) usersEl.textContent = stats.users ?? 0;
+            if (ordersEl) ordersEl.textContent = stats.orders ?? 0;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+}
+
+function roleLabel(role) {
+    const labels = {
+        super_admin: "مدیر ارشد",
+        admin: "مدیر کل",
+        content_manager: "مدیر محتوا",
+        editor: "ویرایشگر",
+    };
+    return labels[role] || role;
+}
+
+/* =========================================================
+   Users table
+========================================================= */
+
+async function loadUsers() {
+    const status = el("usersStatus");
+    const table = el("usersTable");
+
+    status.hidden = false;
+    status.className = "status-box";
+    status.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال بارگذاری...';
+    table.hidden = true;
+
+    try {
+        const result = await apiFetch("/admin/users");
+        state.users = result.users || [];
+
+        el("usersMeta").textContent = `${state.users.length} کاربر`;
+
+        if (!state.users.length) {
+            status.innerHTML = '<i class="fa-solid fa-inbox"></i> کاربری ثبت نشده است.';
+            return;
+        }
+
+        status.hidden = true;
+        table.hidden = false;
+        renderUsers(state.users);
+
+    } catch (error) {
+        status.className = "status-box error";
+        status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(friendlyError(error))}`;
+    }
+}
+
+function renderUsers(list) {
+    el("usersBody").innerHTML = list.map((u) => `
+        <tr>
+            <td>
+                <div class="user-cell">
+                    <div class="avatar">${initials(u.email || u.name || u.id)}</div>
+                    <div class="name">${escapeHtml(u.name || "بدون نام")}</div>
+                </div>
+            </td>
+            <td style="color:var(--text-muted);font-size:11.5px;">${escapeHtml(u.id)}</td>
+            <td>${escapeHtml(u.email || "—")}</td>
+        </tr>
+    `).join("");
+}
+
+el("userSearch").addEventListener("input", () => {
+    const q = el("userSearch").value.trim().toLowerCase();
+    const filtered = !q ? state.users : state.users.filter((u) =>
+        String(u.email || "").toLowerCase().includes(q) ||
+        String(u.id || "").toLowerCase().includes(q) ||
+        String(u.name || "").toLowerCase().includes(q)
+    );
+    renderUsers(filtered);
+    el("usersMeta").textContent = `${filtered.length} از ${state.users.length} کاربر`;
+});
+
+/* =========================================================
+   Orders table
+========================================================= */
+
+async function loadOrders() {
+    const status = el("ordersStatus");
+    const table = el("ordersTable");
+
+    status.hidden = false;
+    status.className = "status-box";
+    status.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال بارگذاری...';
+    table.hidden = true;
+
+    try {
+        const result = await apiFetch("/admin/orders");
+        state.orders = result.orders || [];
+
+        el("ordersMeta").textContent = `${state.orders.length} سفارش`;
+
+        if (!state.orders.length) {
+            status.innerHTML = '<i class="fa-solid fa-inbox"></i> سفارشی ثبت نشده است.';
+            return;
+        }
+
+        status.hidden = true;
+        table.hidden = false;
+        renderOrders(state.orders);
+
+    } catch (error) {
+        status.className = "status-box error";
+        status.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(friendlyError(error))}`;
+    }
+}
+
+function renderOrders(list) {
+    el("ordersBody").innerHTML = list.map((o) => `
+        <tr>
+            <td style="font-weight:600;">${escapeHtml(o.id)}</td>
+            <td style="color:var(--text-muted);font-size:11.5px;">${escapeHtml(o.userId || "—")}</td>
+            <td>${orderBadge(o.status)}</td>
+        </tr>
+    `).join("");
+}
+
+el("orderSearch").addEventListener("input", () => {
+    const q = el("orderSearch").value.trim().toLowerCase();
+    const filtered = !q ? state.orders : state.orders.filter((o) =>
+        String(o.id || "").toLowerCase().includes(q) ||
+        String(o.userId || "").toLowerCase().includes(q)
+    );
+    renderOrders(filtered);
+    el("ordersMeta").textContent = `${filtered.length} از ${state.orders.length} سفارش`;
+});
+
+boot();
+
+</script>
+
+</body>
+</html>
