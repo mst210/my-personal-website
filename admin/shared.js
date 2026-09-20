@@ -96,6 +96,10 @@ export const ERROR_MESSAGES = {
     INVALID_ROLE: "نقش انتخابی معتبر نیست.",
     SUPER_ADMIN_PROTECTED: "مدیر ارشد فقط از طریق Firebase Console قابل تغییر است.",
     NO_CHANGES: "تغییری برای ذخیره وجود ندارد.",
+    INVALID_PRICE: "قیمت باید یک عدد معتبر و غیرمنفی باشد.",
+    INVALID_ORDER: "ترتیب نمایش باید یک عدد باشد.",
+    INVALID_TITLE: "عنوان نمی‌تواند خالی باشد.",
+    INVALID_PAGE: "این بخش از سایت شناخته‌شده نیست.",
 };
 
 export function friendlyError(error) {
@@ -172,6 +176,8 @@ export const ROLE_LABELS = {
 const NAV_ITEMS = [
     { href: "index.html", icon: "fa-gauge", label: "داشبورد", key: "dashboard" },
     { href: "content.html", icon: "fa-newspaper", label: "مدیریت محتوا", key: "content" },
+    { href: "products.html", icon: "fa-boxes-stacked", label: "محصولات", key: "products" },
+    { href: "pages.html", icon: "fa-file-pen", label: "متن‌های سایت", key: "pages" },
     { href: "admins.html", icon: "fa-user-shield", label: "مدیریت ادمین‌ها", key: "admins", superOnly: true },
 ];
 
