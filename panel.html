@@ -1964,6 +1964,14 @@
                             style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px; max-height:400px; overflow-y:auto; padding:5px;">
                         </div>
 
+                        <!-- Closed Ticket Notice (shown instead of the reply form when the ticket is closed) -->
+                        <div
+                            id="ticket-closed-notice"
+                            style="display:none; text-align:center; color:var(--text-muted); background:rgba(255,255,255,.04); border:1px solid var(--border-color); border-radius:12px; padding:14px; font-size:13.5px;">
+                            <i class="fa-solid fa-lock"></i>
+                            این تیکت بسته شده است و امکان ارسال پیام جدید در آن وجود ندارد.
+                        </div>
+
                         <!-- Reply Form -->
                         <form id="ticket-reply-form" style="display:flex; gap:10px;">
                             <input
@@ -3007,6 +3015,10 @@
             document.getElementById("chat-ticket-status").textContent = statusMap[data.status] || data.status;
             document.getElementById("chat-ticket-date").textContent = "ثبت شده در: " + formatDateTime(data.createdAt);
 
+            const isClosed = data.status === "closed";
+            document.getElementById("ticket-reply-form").style.display = isClosed ? "none" : "flex";
+            document.getElementById("ticket-closed-notice").style.display = isClosed ? "block" : "none";
+
             const messagesContainer = document.getElementById("chat-messages-list");
             const messages = Array.isArray(data.messages) ? data.messages : [];
 
@@ -3049,6 +3061,13 @@
             if (!ticketSnap.exists()) return;
 
             const data = ticketSnap.data();
+
+            if (data.status === "closed") {
+                alert("این تیکت بسته شده است و امکان ارسال پیام جدید در آن وجود ندارد.");
+                await fetchAndRenderTicketChat();
+                return;
+            }
+
             const messages = Array.isArray(data.messages) ? data.messages : [];
             const nowIso = new Date().toISOString();
 
