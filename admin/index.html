@@ -177,9 +177,12 @@
                     <option value="لغو شد">لغو شد</option>
                 </select>
             </div>
-            <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-                <button type="button" class="icon-btn" id="orderCancelBtn">انصراف</button>
-                <button type="submit" class="icon-btn btn-primary">ذخیره تغییرات</button>
+            <div class="modal-actions" style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
+                <button type="button" class="icon-btn btn-danger" id="orderDeleteBtn" hidden><i class="fa-solid fa-trash"></i> حذف سفارش</button>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="icon-btn" id="orderCancelBtn">انصراف</button>
+                    <button type="submit" class="icon-btn btn-primary">ذخیره تغییرات</button>
+                </div>
             </div>
         </form>
     </div>
@@ -232,6 +235,10 @@ function ticketBadge(status) {
 
 function canDeleteTickets() {
     return state.isSuper || can("tickets", "delete");
+}
+
+function canDeleteOrders() {
+    return state.isSuper || can("orders", "delete");
 }
 
 function formatDateTime(value) {
@@ -499,6 +506,10 @@ function renderOrders(list) {
             <td>${orderBadge(o.statusText || o.status)}</td>
             <td>
                 <button class="icon-btn" onclick="openOrderEditModal('${o.userId}', '${o.id}')"><i class="fa-solid fa-pen"></i> ویرایش وضعیت</button>
+                ${canDeleteOrders() ? `
+                <button class="icon-btn btn-danger" onclick="deleteOrderFromRow('${o.userId}', '${o.id}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>` : ""}
             </td>
         </tr>
     `).join("");
@@ -510,8 +521,45 @@ window.openOrderEditModal = function(userId, orderId) {
     activeEditingOrder = order;
 
     el("editOrderStatus").value = order.statusText || "در انتظار بررسی";
+    el("orderDeleteBtn").hidden = !canDeleteOrders();
     el("orderModalOverlay").hidden = false;
 };
+
+async function deleteOrder(userId, orderId) {
+    if (!confirm("آیا از حذف این سفارش مطمئن هستید؟ این عملیات قابل بازگشت نیست.")) {
+        return;
+    }
+
+    try {
+        await apiFetch(
+            `/admin/orders/${encodeURIComponent(userId)}/${encodeURIComponent(orderId)}`,
+            { method: "DELETE" }
+        );
+
+        allOrders = allOrders.filter(o => !(o.userId === userId && o.id === orderId));
+        state.orders = allOrders;
+        renderOrders(state.orders);
+        el("ordersMeta").textContent = `${state.orders.length} سفارش`;
+
+        if (activeEditingOrder && activeEditingOrder.userId === userId && activeEditingOrder.id === orderId) {
+            el("orderModalOverlay").hidden = true;
+            activeEditingOrder = null;
+        }
+
+        showToast("سفارش حذف شد.");
+    } catch (err) {
+        showToast(friendlyError(err), "error");
+    }
+}
+
+window.deleteOrderFromRow = function(userId, orderId) {
+    deleteOrder(userId, orderId);
+};
+
+el("orderDeleteBtn").addEventListener("click", () => {
+    if (!activeEditingOrder) return;
+    deleteOrder(activeEditingOrder.userId, activeEditingOrder.id);
+});
 
 el("orderModalClose").addEventListener("click", () => { el("orderModalOverlay").hidden = true; });
 el("orderCancelBtn").addEventListener("click", () => { el("orderModalOverlay").hidden = true; });
