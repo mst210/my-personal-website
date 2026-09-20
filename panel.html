@@ -1385,16 +1385,18 @@
                 <div class="form-group">
 
                     <label>
-                        ایمیل
+                        ایمیل یا شماره موبایل
                     </label>
 
                     <input
                         id="login-email"
-                        type="email"
+                        type="text"
                         class="form-control"
                         required
-                        autocomplete="email"
-                        placeholder="example@gmail.com">
+                        autocomplete="username"
+                        placeholder="ایمیل یا ۰۹xxxxxxxxx"
+                        dir="ltr"
+                        style="text-align: left;">
 
                 </div>
 
@@ -3711,7 +3713,7 @@
         } catch (error) {
             console.error(error);
             let message = "ورود انجام نشد.";
-            if (error.code === "auth/invalid-credential") message = "ایمیل یا رمز عبور اشتباه است.";
+            if (error.code === "auth/invalid-credential") message = "ایمیل / شماره موبایل یا رمز عبور اشتباه است.";
             if (error.code === "auth/user-not-found") message = "حساب کاربری پیدا نشد.";
             if (error.code === "auth/too-many-requests") message = "تعداد تلاش‌های ورود بیش از حد مجاز است.";
             alert(message);
