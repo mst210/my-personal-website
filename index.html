@@ -650,6 +650,15 @@
         </article>
 
 
+        <!-- Latest news & articles (filled from the API, hidden until there's something to show) -->
+        <div class="section-title" id="latestPostsTitle" hidden>
+            <i class="fa-solid fa-newspaper"></i>
+            <h2>آخرین اخبار و مطالب</h2>
+        </div>
+
+        <div id="latestPosts"></div>
+
+
       <!-- Visitor Counter -->
 <div class="visitor-counter-box">
 
@@ -691,6 +700,118 @@
 
     </footer>
 
+
+    <!-- Latest news & articles from the API -->
+    <script type="text/javascript">
+
+        (function () {
+
+            var API_BASE = "/api";
+            var MAX_POSTS = 6;
+
+            function formatDate(value) {
+                if (!value) return "";
+                try {
+                    return new Date(value).toLocaleDateString("fa-IR", {
+                        year: "numeric", month: "long", day: "numeric"
+                    });
+                } catch (e) {
+                    return "";
+                }
+            }
+
+            function typeLabel(type) {
+                return type === "news" ? "خبر" : "مطلب پزشکی";
+            }
+
+            function fetchPosts(type) {
+                return fetch(API_BASE + "/public/posts?type=" + encodeURIComponent(type))
+                    .then(function (response) {
+                        if (!response.ok) return { posts: [] };
+                        return response.json();
+                    })
+                    .then(function (result) {
+                        return (result && result.posts) || [];
+                    })
+                    .catch(function () {
+                        return [];
+                    });
+            }
+
+            function buildPostArticle(post) {
+                var article = document.createElement("article");
+                article.className = "medical-post";
+
+                var header = document.createElement("div");
+                header.className = "post-header";
+
+                var tag = document.createElement("span");
+                tag.className = "post-tag";
+                tag.textContent = post.category || typeLabel(post.type);
+
+                var date = document.createElement("span");
+                date.className = "post-date";
+                date.textContent = formatDate(post.publishedAt);
+
+                header.appendChild(tag);
+                header.appendChild(date);
+
+                var title = document.createElement("h2");
+                title.className = "post-title";
+                title.textContent = post.title || "";
+
+                article.appendChild(header);
+                article.appendChild(title);
+
+                var paragraphs = String(post.body || "")
+                    .split(/\n\s*\n/)
+                    .map(function (part) { return part.trim(); })
+                    .filter(Boolean);
+
+                if (!paragraphs.length && post.summary) {
+                    paragraphs = [post.summary];
+                }
+
+                paragraphs.forEach(function (paragraph) {
+                    var p = document.createElement("p");
+                    p.className = "post-content";
+                    p.textContent = paragraph;
+                    article.appendChild(p);
+                });
+
+                return article;
+            }
+
+            Promise.all([fetchPosts("news"), fetchPosts("article")])
+                .then(function (results) {
+                    var posts = results[0].concat(results[1]);
+
+                    posts.sort(function (a, b) {
+                        var dateA = new Date(a.publishedAt || 0).getTime();
+                        var dateB = new Date(b.publishedAt || 0).getTime();
+                        return dateB - dateA;
+                    });
+
+                    posts = posts.slice(0, MAX_POSTS);
+
+                    if (!posts.length) return;
+
+                    var container = document.getElementById("latestPosts");
+                    var titleEl = document.getElementById("latestPostsTitle");
+
+                    posts.forEach(function (post) {
+                        container.appendChild(buildPostArticle(post));
+                    });
+
+                    titleEl.hidden = false;
+                })
+                .catch(function (error) {
+                    console.error("Failed to load latest posts:", error);
+                });
+
+        })();
+
+    </script>
 
     <!-- Goftino -->
     <script type="text/javascript">
