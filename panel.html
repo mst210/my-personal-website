@@ -296,6 +296,28 @@
             font-weight: 700;
         }
 
+        .forgot-link {
+            display: block;
+            margin: 0 0 16px;
+            font-size: 12.5px;
+            color: #38bdf8;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .forgot-success {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(34, 197, 94, .1);
+            border: 1px solid rgba(34, 197, 94, .25);
+            color: #86efac;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
         .vpn-warning {
             margin-top: 18px;
 
@@ -1417,6 +1439,10 @@
 
                 </div>
 
+                <span class="forgot-link" onclick="showForgot()">
+                    رمز عبور را فراموش کرده‌اید؟
+                </span>
+
                 <button
                     type="submit"
                     class="submit-btn">
@@ -1435,6 +1461,76 @@
 
                 <span onclick="showRegister()">
                     ثبت نام کنید
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORGOT PASSWORD -->
+
+        <div
+            id="forgot-form"
+            class="auth-card"
+            style="display:none;">
+
+            <div class="auth-icon">
+                <i class="fa-solid fa-key"></i>
+            </div>
+
+            <h2>
+                بازیابی رمز عبور
+            </h2>
+
+            <p>
+                ایمیل یا شماره موبایل حساب خود را وارد کنید.
+                لینک بازیابی به ایمیل ثبت‌شده ارسال می‌شود.
+            </p>
+
+            <form id="forgot-form-element" novalidate>
+
+                <div class="form-group">
+
+                    <label>
+                        ایمیل یا شماره موبایل
+                    </label>
+
+                    <input
+                        id="forgot-identifier"
+                        type="text"
+                        class="form-control"
+                        required
+                        autocomplete="username"
+                        placeholder="ایمیل یا ۰۹xxxxxxxxx"
+                        dir="ltr"
+                        style="text-align: left;">
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="forgot-submit-btn">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    ارسال لینک بازیابی
+
+                </button>
+
+            </form>
+
+            <div class="forgot-success" id="forgot-success">
+                اگر حسابی با این مشخصات وجود داشته باشد، لینک بازیابی رمز عبور به ایمیل ثبت‌شده ارسال می‌شود. پوشه هرزنامه را هم بررسی کنید.
+            </div>
+
+            <div class="auth-switch">
+
+                به صفحه ورود برگردید
+
+                <span onclick="showLogin()">
+                    ورود
                 </span>
 
             </div>
@@ -3717,13 +3813,54 @@
 
     window.showRegister = function() {
         document.getElementById("login-form").style.display = "none";
+        document.getElementById("forgot-form").style.display = "none";
         document.getElementById("register-form").style.display = "block";
     };
 
     window.showLogin = function() {
         document.getElementById("register-form").style.display = "none";
+        document.getElementById("forgot-form").style.display = "none";
         document.getElementById("login-form").style.display = "block";
     };
+
+    window.showForgot = function() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("forgot-form").style.display = "block";
+        const success = document.getElementById("forgot-success");
+        if (success) success.style.display = "none";
+    };
+
+    document.getElementById("forgot-form-element").addEventListener("submit", async event => {
+        event.preventDefault();
+        const identifier = document.getElementById("forgot-identifier").value.trim();
+        const btn = document.getElementById("forgot-submit-btn");
+        const success = document.getElementById("forgot-success");
+
+        if (!identifier) {
+            alert("ایمیل یا شماره موبایل را وارد کنید.");
+            return;
+        }
+
+        btn.disabled = true;
+        const original = btn.innerHTML;
+        btn.innerHTML = "در حال ارسال...";
+
+        try {
+            await apiFetch("/auth/forgot-password", {
+                method: "POST",
+                body: JSON.stringify({ email: identifier })
+            }, false);
+
+            success.style.display = "block";
+        } catch (error) {
+            console.error(error);
+            success.style.display = "block";
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    });
 
     document.getElementById("login-form-element").addEventListener("submit", async event => {
         event.preventDefault();
