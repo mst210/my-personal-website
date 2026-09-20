@@ -153,8 +153,8 @@ import {
 const el = (id) => document.getElementById(id);
 
 /*
- * Page keys must match PAGE_DEFAULTS in the Worker exactly.
- * label / fieldLabels are purely for display in this admin UI.
+ * Page keys match the Document IDs in the 'siteTexts' collection:
+ * global, home, about, products
  */
 const PAGE_DEFS = [
     {
@@ -192,7 +192,7 @@ const PAGE_DEFS = [
         },
     },
     {
-        key: "products_page",
+        key: "products",
         label: "صفحه محصولات",
         fieldLabels: {
             headerTitle: "عنوان هدر",
