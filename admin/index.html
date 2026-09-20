@@ -169,6 +169,7 @@
                     <option value="آماده ارسال">آماده ارسال</option>
                     <option value="ارسال شد">ارسال شد</option>
                     <option value="تکمیل شد">تکمیل شد (تحویل)</option>
+                    <option value="لغو شد">لغو شد</option>
                 </select>
             </div>
             <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
@@ -208,7 +209,9 @@ function can(section, action) {
 
 function orderBadge(status) {
     const s = String(status || "").toLowerCase();
-    const cls = s === "delivered" || status === "تکمیل شد" ? "success" : "warn";
+    const cls = s === "delivered" || status === "تکمیل شد" ? "success"
+        : s === "cancelled" || status === "لغو شد" ? "danger"
+        : "warn";
     return `<span class="badge ${cls}">${escapeHtml(status || "نامشخص")}</span>`;
 }
 
@@ -511,20 +514,19 @@ el("orderEditForm").addEventListener("submit", async (e) => {
     const newStatusText = el("editOrderStatus").value;
     const nowIso = new Date().toISOString();
 
-    // تعیین دقیق فیلد سیستمی status بر اساس متن انتخاب شده
     let newStatus = "active";
     if (newStatusText.includes("تکمیل شد")) {
         newStatus = "completed";
     } else if (newStatusText.includes("لغو شد")) {
         newStatus = "cancelled";
     } else {
-        newStatus = "active"; // برای در انتظار بررسی، در حال پردازش، آماده ارسال و ارسال شد
+        newStatus = "active";
     }
 
     const updatedData = {
         ...activeEditingOrder,
-        status: newStatus,          // مقدار سیستمی (completed یا active)
-        statusText: newStatusText,  // متن نمایشی وضعیت
+        status: newStatus,
+        statusText: newStatusText,
         statusUpdatedAt: nowIso
     };
     delete updatedData.userId;
@@ -543,7 +545,7 @@ el("orderEditForm").addEventListener("submit", async (e) => {
         showToast(friendlyError(err), "error");
     }
 });
-    
+
 el("orderSearch").addEventListener("input", () => {
     const q = el("orderSearch").value.trim().toLowerCase();
     const filtered = !q ? state.orders : state.orders.filter((o) =>
