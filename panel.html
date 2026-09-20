@@ -1380,7 +1380,7 @@
                 برای مشاهده سفارش‌ها و اطلاعات حساب خود وارد شوید.
             </p>
 
-            <form id="login-form-element">
+            <form id="login-form-element" novalidate>
 
                 <div class="form-group">
 
@@ -1394,6 +1394,7 @@
                         class="form-control"
                         required
                         autocomplete="username"
+                        inputmode="tel"
                         placeholder="ایمیل یا ۰۹xxxxxxxxx"
                         dir="ltr"
                         style="text-align: left;">
@@ -2481,6 +2482,7 @@
 
             error.code =
                 payload?.code ||
+                payload?.error ||
                 payload?.errorCode ||
                 `http/${response.status}`;
 
@@ -2494,6 +2496,25 @@
         const error = new Error(message || code);
         error.code = code;
         return error;
+    }
+
+    function normalizeClientPhone(value) {
+        const map = {
+            "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
+            "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
+            "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4",
+            "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9"
+        };
+
+        let s = String(value || "").replace(/[۰-۹٠-٩]/g, d => map[d] || d);
+        s = s.replace(/[\s\-()]/g, "");
+
+        if (s.startsWith("+98")) s = "0" + s.slice(3);
+        else if (s.startsWith("0098")) s = "0" + s.slice(4);
+        else if (s.startsWith("98") && s.length === 12) s = "0" + s.slice(2);
+
+        if (/^09\d{9}$/.test(s)) return s;
+        return String(value || "").trim();
     }
 
     async function createUserWithEmailAndPassword(_auth, email, password) {
@@ -2563,7 +2584,8 @@
             if (
                 error.code === "INVALID_LOGIN_CREDENTIALS" ||
                 error.code === "INVALID_PASSWORD" ||
-                error.code === "EMAIL_NOT_FOUND"
+                error.code === "EMAIL_NOT_FOUND" ||
+                error.code === "INVALID_EMAIL"
             ) {
                 throw firebaseError(
                     "auth/invalid-credential",
@@ -3705,15 +3727,17 @@
 
     document.getElementById("login-form-element").addEventListener("submit", async event => {
         event.preventDefault();
-        const email = document.getElementById("login-email").value.trim();
+        const identifier = document.getElementById("login-email").value.trim();
         const password = document.getElementById("login-password").value;
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(auth, identifier, password);
         } catch (error) {
             console.error(error);
             let message = "ورود انجام نشد.";
-            if (error.code === "auth/invalid-credential") message = "ایمیل / شماره موبایل یا رمز عبور اشتباه است.";
+            if (error.code === "auth/invalid-credential" || error.code === "INVALID_LOGIN_CREDENTIALS" || String(error.code || "").includes("401")) {
+                message = "ایمیل / شماره موبایل یا رمز عبور اشتباه است.";
+            }
             if (error.code === "auth/user-not-found") message = "حساب کاربری پیدا نشد.";
             if (error.code === "auth/too-many-requests") message = "تعداد تلاش‌های ورود بیش از حد مجاز است.";
             alert(message);
@@ -3724,7 +3748,7 @@
         event.preventDefault();
         const fname = document.getElementById("reg-firstname").value.trim();
         const lname = document.getElementById("reg-lastname").value.trim();
-        const phone = document.getElementById("reg-phone").value.trim();
+        const phone = normalizeClientPhone(document.getElementById("reg-phone").value.trim());
         const email = document.getElementById("reg-email").value.trim();
         const province = document.getElementById("reg-province").value.trim();
         const city = document.getElementById("reg-city").value.trim();
