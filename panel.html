@@ -4073,16 +4073,19 @@
             const snapshot = await getDocs(query(ordersRef, orderBy("createdAt", "desc")));
             
             const activeOrders = [];
+            let unfinishedCount = 0;
             snapshot.forEach(docSnap => {
                 const order = docSnap.data();
                 if (order.status === "active") {
                     activeOrders.push({ id: docSnap.id, ...order });
                 }
+                if (!orderIsPast(order)) unfinishedCount++;
             });
 
             activeOrders.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
             renderOrderList(container, activeOrders, false);
             updateActiveOrderCounter(activeOrders.length);
+            return unfinishedCount;
         } catch (error) {
             console.error("Load active orders error:", error);
             container.innerHTML = `
@@ -4091,6 +4094,7 @@
                     <p>دریافت سفارشات با خطا مواجه شد.</p>
                 </div>
             `;
+            return 0;
         }
     }
 
@@ -4132,6 +4136,30 @@
         if (tab === "notifications") renderNotifications();
         if (tab === "tickets") loadUserTickets();
     };
+
+    /*
+     * تبِ اولیه‌ی پنل بعد از ورود:
+     *  - اگر سبد خرید محصول دارد ← سبد خرید
+     *  - وگرنه اگر سفارش فعال دارد ← سفارشات فعال
+     *  - در غیر این صورت همان تب پیش‌فرض می‌ماند
+     */
+    let landingTabChosen = false;
+
+    function chooseLandingTab(activeCount) {
+        if (getCart().length) {
+            switchDashboardTab("cart", document.getElementById("cart-menu-item"));
+            return;
+        }
+
+        if (activeCount > 0) {
+            const activeTab = document.getElementById("tab-active");
+
+            if (activeTab && !activeTab.classList.contains("active")) {
+                const item = document.querySelector('.menu-item[onclick*="\'active\'"]');
+                switchDashboardTab("active", item);
+            }
+        }
+    }
 
     window.openCart = function() {
         const cartMenu = document.getElementById("cart-menu-item");
@@ -4292,7 +4320,7 @@
             renderNotifications();
             startNotificationsRealtime();
 
-            await loadActiveOrders();
+            const activeCount = await loadActiveOrders();
             await loadPastOrders();
             await loadUserTickets();
 
@@ -4301,10 +4329,15 @@
             const params = new URLSearchParams(window.location.search);
             if (params.get("cart") === "1") {
                 setTimeout(() => { openCart(); }, 300);
+                landingTabChosen = true;
+            } else if (!landingTabChosen) {
+                landingTabChosen = true;
+                chooseLandingTab(activeCount);
             }
         } else {
             stopOrdersRealtime();
             stopNotificationsRealtime();
+            landingTabChosen = false;
             authSection.style.display = "block";
             dashboard.style.display = "none";
         }
