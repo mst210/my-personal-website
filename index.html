@@ -561,6 +561,23 @@
             }
         }
 
+
+        /* --- post cover image --- */
+        .post-cover {
+            margin: 0 0 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .post-cover img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 340px;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -772,6 +789,24 @@
             function buildPostArticle(post) {
                 var article = document.createElement("article");
                 article.className = "medical-post";
+
+                /* cover image (only https links; removed if it fails to load) */
+                if (/^https:\/\//i.test(String(post.imageUrl || ""))) {
+                    var cover = document.createElement("div");
+                    cover.className = "post-cover";
+
+                    var coverImg = document.createElement("img");
+                    coverImg.alt = post.title || "";
+                    coverImg.loading = "lazy";
+                    coverImg.referrerPolicy = "no-referrer";
+                    coverImg.addEventListener("error", function () {
+                        if (cover.parentNode) cover.parentNode.removeChild(cover);
+                    });
+                    coverImg.src = post.imageUrl;
+
+                    cover.appendChild(coverImg);
+                    article.appendChild(cover);
+                }
 
                 var header = document.createElement("div");
                 header.className = "post-header";
