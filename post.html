@@ -192,6 +192,22 @@
             border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
+
+        .post-cover {
+            margin: 0 0 22px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .post-cover img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 480px;
+            object-fit: cover;
+        }
         @media (max-width: 600px) {
             .post-title { font-size: 19px; }
             article { padding: 20px 16px; }
@@ -223,6 +239,9 @@
                 <span class="post-date" id="postDate"></span>
             </div>
             <h1 class="post-title" id="postTitle"></h1>
+            <figure class="post-cover" id="postCover" hidden>
+                <img id="postCoverImg" alt="">
+            </figure>
             <div class="post-body" id="postBody"></div>
         </article>
     </main>
@@ -280,6 +299,18 @@
                     document.getElementById("postTag").textContent = post.category || typeLabel(post.type);
                     document.getElementById("postDate").textContent = formatDate(post.publishedAt);
                     document.getElementById("postTitle").textContent = post.title || "";
+
+                    /* cover image (only https links; hidden if it fails to load) */
+                    var coverEl = document.getElementById("postCover");
+                    var coverImg = document.getElementById("postCoverImg");
+
+                    if (/^https:\/\//i.test(String(post.imageUrl || ""))) {
+                        coverImg.alt = post.title || "";
+                        coverImg.referrerPolicy = "no-referrer";
+                        coverImg.addEventListener("error", function () { coverEl.hidden = true; });
+                        coverImg.src = post.imageUrl;
+                        coverEl.hidden = false;
+                    }
 
                     var bodyEl = document.getElementById("postBody");
                     bodyEl.innerHTML = "";
