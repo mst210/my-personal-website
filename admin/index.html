@@ -457,26 +457,21 @@ async function loadOrders() {
     table.hidden = true;
 
     try {
-        if (!state.users || !state.users.length) {
-            const userRes = await apiFetch("/admin/users");
-            state.users = userRes.users || [];
-        }
+        const ordersRes = await apiFetch("/admin/orders");
 
-        allOrders = [];
-        for (const user of state.users) {
-            try {
-                const res = await apiFetch(`/firestore?path=${encodeURIComponent(`users/${user.id}/orders`)}`);
-                const docs = res.documents || [];
-                docs.forEach(docSnap => {
-                    allOrders.push({
-                        userId: user.id,
-                        userEmail: user.email || user.id,
-                        id: docSnap.id,
-                        ...docSnap.data
-                    });
-                });
-            } catch (e) {}
-        }
+        const emailById = {};
+        try {
+            if (!state.users || !state.users.length) {
+                const userRes = await apiFetch("/admin/users");
+                state.users = userRes.users || [];
+            }
+            state.users.forEach((u) => { emailById[u.id] = u.email || u.id; });
+        } catch (e) {}
+
+        allOrders = (ordersRes.orders || []).map((o) => ({
+            ...o,
+            userEmail: emailById[o.userId] || o.email || o.userId
+        }));
 
         allOrders.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
         state.orders = allOrders;
@@ -569,31 +564,14 @@ el("orderEditForm").addEventListener("submit", async (e) => {
     if (!activeEditingOrder) return;
 
     const newStatusText = el("editOrderStatus").value;
-    const nowIso = new Date().toISOString();
-
-    let newStatus = "active";
-    if (newStatusText.includes("تکمیل شد")) {
-        newStatus = "completed";
-    } else if (newStatusText.includes("لغو شد")) {
-        newStatus = "cancelled";
-    } else {
-        newStatus = "active";
-    }
-
-    const updatedData = {
-        ...activeEditingOrder,
-        status: newStatus,
-        statusText: newStatusText,
-        statusUpdatedAt: nowIso
-    };
-    delete updatedData.userId;
-    delete updatedData.userEmail;
-
     try {
-        await apiFetch(`/firestore?path=${encodeURIComponent(`users/${activeEditingOrder.userId}/orders/${activeEditingOrder.id}`)}`, {
-            method: "PUT",
-            body: JSON.stringify({ data: updatedData })
-        });
+        await apiFetch(
+            `/admin/orders/${encodeURIComponent(activeEditingOrder.userId)}/${encodeURIComponent(activeEditingOrder.id)}`,
+            {
+                method: "PUT",
+                body: JSON.stringify({ statusText: newStatusText })
+            }
+        );
 
         showToast("وضعیت سفارش به‌روزرسانی شد.");
         el("orderModalOverlay").hidden = true;
