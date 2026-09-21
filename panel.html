@@ -1313,6 +1313,304 @@
 
         }
 
+
+        /* ================= MOBILE NAV (bar + bottom sheet) ================= */
+
+        .mobile-nav-bar,
+        .nav-sheet-overlay {
+            display: none;
+        }
+
+        @media (max-width: 800px) {
+
+            .dashboard-layout > .sidebar {
+                display: none;
+            }
+
+            .mobile-nav-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+
+                position: sticky;
+                top: 8px;
+                z-index: 40;
+
+                margin-bottom: 14px;
+                padding: 10px 12px 10px 10px;
+
+                background: rgba(15, 23, 42, .84);
+                border: 1px solid var(--border-color);
+                border-radius: 18px;
+
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+
+                box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+            }
+
+            .mobile-nav-current {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 0;
+
+                font-size: 15px;
+                font-weight: 700;
+            }
+
+            .mobile-nav-current i {
+                color: #38bdf8;
+                font-size: 16px;
+            }
+
+            .mobile-nav-current span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .mobile-nav-btn {
+                position: relative;
+                flex: 0 0 auto;
+
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+
+                padding: 10px 16px;
+
+                border-radius: 13px;
+                border: 1px solid rgba(56, 189, 248, .35);
+                background: rgba(2, 132, 199, .16);
+                color: #38bdf8;
+
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            .mnav-total {
+                position: absolute;
+                top: -7px;
+                left: -7px;
+
+                min-width: 20px;
+                height: 20px;
+                padding: 0 6px;
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                border-radius: 999px;
+                background: var(--danger);
+                color: #fff;
+
+                font-size: 10px;
+                font-weight: 700;
+            }
+
+            .mnav-total[hidden] {
+                display: none;
+            }
+
+            .nav-sheet-overlay {
+                display: block;
+
+                position: fixed;
+                inset: 0;
+                z-index: 9000;
+
+                background: rgba(2, 6, 23, .62);
+
+                opacity: 0;
+                transition: opacity .25s ease;
+            }
+
+            .nav-sheet-overlay[hidden] {
+                display: none;
+            }
+
+            .nav-sheet-overlay.open {
+                opacity: 1;
+            }
+
+            .nav-sheet {
+                position: absolute;
+                right: 0;
+                left: 0;
+                bottom: 0;
+
+                max-height: 88vh;
+                max-height: 88dvh;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+
+                padding: 8px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+
+                background: #0f1a2e;
+                border: 1px solid var(--border-color);
+                border-bottom: none;
+                border-radius: 26px 26px 0 0;
+
+                box-shadow: 0 -20px 50px rgba(0, 0, 0, .5);
+
+                transform: translateY(100%);
+                transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+
+                outline: none;
+            }
+
+            .nav-sheet-overlay.open .nav-sheet {
+                transform: translateY(0);
+            }
+
+            .nav-sheet.dragging {
+                transition: none;
+            }
+
+            .nav-sheet-handle {
+                width: 44px;
+                height: 5px;
+                margin: 6px auto 12px;
+
+                border-radius: 999px;
+                background: rgba(255, 255, 255, .22);
+
+                touch-action: none;
+            }
+
+            .nav-sheet-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                margin-bottom: 14px;
+
+                touch-action: none;
+            }
+
+            .nav-sheet-head strong {
+                font-size: 16px;
+            }
+
+            .nav-sheet-close {
+                width: 38px;
+                height: 38px;
+
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                background: rgba(255, 255, 255, .06);
+                color: var(--text-main);
+
+                cursor: pointer;
+            }
+
+            .nav-sheet-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .nav-card {
+                position: relative;
+
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+
+                min-height: 96px;
+                padding: 14px;
+
+                text-align: right;
+
+                border-radius: 18px;
+                border: 1px solid var(--border-color);
+                background: rgba(255, 255, 255, .05);
+                color: var(--text-main);
+
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            .nav-card:last-child:nth-child(odd) {
+                grid-column: 1 / -1;
+            }
+
+            .nav-card.active {
+                border-color: rgba(56, 189, 248, .6);
+                background: rgba(2, 132, 199, .18);
+                color: #38bdf8;
+            }
+
+            .nav-card-icon {
+                width: 40px;
+                height: 40px;
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                border-radius: 12px;
+                background: rgba(2, 132, 199, .16);
+                color: #38bdf8;
+
+                font-size: 16px;
+            }
+
+            .nav-card-badge {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+
+                min-width: 22px;
+                height: 22px;
+                padding: 0 7px;
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                border-radius: 999px;
+                background: var(--danger);
+                color: #fff;
+
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+            .nav-sheet-logout {
+                width: 100%;
+                margin-top: 12px;
+                padding: 13px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+
+                border-radius: 14px;
+                border: 1px solid rgba(239, 68, 68, .4);
+                background: rgba(239, 68, 68, .1);
+                color: #fca5a5;
+
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .nav-sheet-overlay,
+            .nav-sheet {
+                transition: none;
+            }
+        }
+
     </style>
 
 </head>
@@ -1717,6 +2015,32 @@
     <section
         id="dashboard"
         class="dashboard">
+
+        <!-- MOBILE NAV BAR (only shown on phones; opens the bottom sheet) -->
+
+        <div class="mobile-nav-bar" id="mobile-nav-bar">
+
+            <div class="mobile-nav-current">
+                <i id="mnav-icon" class="fa-solid fa-box"></i>
+                <span id="mnav-title">سفارشات فعال</span>
+            </div>
+
+            <button
+                type="button"
+                class="mobile-nav-btn"
+                id="mnav-open"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                aria-controls="nav-sheet">
+
+                <i class="fa-solid fa-grip"></i>
+                منو
+
+                <span class="mnav-total" id="mnav-total" hidden>۰</span>
+
+            </button>
+
+        </div>
 
         <div class="dashboard-layout">
 
@@ -3987,6 +4311,323 @@
     });
 
     renderCart();
+</script>
+
+<!-- ================= MOBILE NAV SHEET ================= -->
+
+<div class="nav-sheet-overlay" id="nav-sheet" hidden>
+    <div class="nav-sheet" id="nav-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="nav-sheet-title" tabindex="-1">
+
+        <div class="nav-sheet-handle" id="nav-sheet-handle" aria-hidden="true"></div>
+
+        <div class="nav-sheet-head" id="nav-sheet-head">
+            <strong id="nav-sheet-title">منوی پنل</strong>
+            <button type="button" class="nav-sheet-close" id="nav-sheet-close" aria-label="بستن منو">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="nav-sheet-grid" id="nav-sheet-grid"></div>
+
+        <button type="button" class="nav-sheet-logout" id="nav-sheet-logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            خروج از حساب
+        </button>
+
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   Mobile navigation: bar + bottom sheet
+   Reads the existing sidebar items, so the tab logic
+   (switchDashboardTab / logoutUser) is untouched.
+========================================================= */
+(function () {
+    "use strict";
+
+    var mq = window.matchMedia("(max-width: 800px)");
+    var sidebar = document.querySelector(".sidebar");
+    var bar = document.getElementById("mobile-nav-bar");
+    var sheet = document.getElementById("nav-sheet");
+    var panel = document.getElementById("nav-sheet-panel");
+    var grid = document.getElementById("nav-sheet-grid");
+    var openBtn = document.getElementById("mnav-open");
+    var closeBtn = document.getElementById("nav-sheet-close");
+    var logoutBtn = document.getElementById("nav-sheet-logout");
+    var titleEl = document.getElementById("mnav-title");
+    var iconEl = document.getElementById("mnav-icon");
+    var totalEl = document.getElementById("mnav-total");
+
+    if (!sidebar || !bar || !sheet || !panel) return;
+
+    var lastFocus = null;
+    var hideTimer = null;
+
+    function toNumber(text) {
+        var latin = String(text || "")
+            .replace(/[۰-۹]/g, function (d) { return "۰۱۲۳۴۵۶۷۸۹".indexOf(d); })
+            .replace(/[٠-٩]/g, function (d) { return "٠١٢٣٤٥٦٧٨٩".indexOf(d); })
+            .replace(/[^\d]/g, "");
+
+        return parseInt(latin, 10) || 0;
+    }
+
+    function readItems() {
+        var nodes = sidebar.querySelectorAll(".menu-item");
+
+        return Array.prototype.map.call(nodes, function (el) {
+            var label = el.querySelector("span");
+            var icon = el.querySelector("i");
+            var badge = el.querySelector(".menu-badge");
+            var count = 0;
+
+            if (badge && window.getComputedStyle(badge).display !== "none") {
+                count = toNumber(badge.textContent);
+            }
+
+            return {
+                el: el,
+                label: (label ? label.textContent : "").replace(/\s+/g, " ").trim(),
+                icon: icon ? icon.className : "",
+                count: count,
+                active: el.classList.contains("active"),
+                logout: el.classList.contains("logout")
+            };
+        });
+    }
+
+    function renderGrid(items) {
+        grid.innerHTML = "";
+
+        items.forEach(function (item) {
+            if (item.logout) return;
+
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "nav-card" + (item.active ? " active" : "");
+
+            var iconWrap = document.createElement("span");
+            iconWrap.className = "nav-card-icon";
+            var icon = document.createElement("i");
+            icon.className = item.icon;
+            iconWrap.appendChild(icon);
+
+            var label = document.createElement("span");
+            label.className = "nav-card-label";
+            label.textContent = item.label;
+
+            btn.appendChild(iconWrap);
+            btn.appendChild(label);
+
+            if (item.count > 0) {
+                var badge = document.createElement("span");
+                badge.className = "nav-card-badge";
+                badge.textContent = item.count.toLocaleString("fa-IR");
+                btn.appendChild(badge);
+            }
+
+            btn.addEventListener("click", function () {
+                closeSheet(true);
+                item.el.click();
+                scrollToDashboard();
+            });
+
+            grid.appendChild(btn);
+        });
+    }
+
+    function scrollToDashboard() {
+        var dash = document.getElementById("dashboard");
+
+        if (!dash) return;
+
+        var top = dash.getBoundingClientRect().top + window.pageYOffset - 8;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    }
+
+    function refresh() {
+        var items = readItems();
+        var current = null;
+
+        items.forEach(function (item) {
+            if (!current && item.active && !item.logout) current = item;
+        });
+
+        if (current) {
+            titleEl.textContent = current.label;
+            iconEl.className = current.icon;
+        }
+
+        var total = 0;
+
+        items.forEach(function (item) {
+            if (!item.logout) total += item.count;
+        });
+
+        totalEl.hidden = total <= 0;
+        totalEl.textContent = total.toLocaleString("fa-IR");
+
+        if (!sheet.hidden) renderGrid(items);
+    }
+
+    function focusables() {
+        return Array.prototype.slice.call(
+            panel.querySelectorAll("button:not([disabled])")
+        );
+    }
+
+    function openSheet() {
+        if (!mq.matches || !sheet.hidden) return;
+
+        clearTimeout(hideTimer);
+        lastFocus = document.activeElement;
+
+        renderGrid(readItems());
+
+        sheet.hidden = false;
+        document.body.style.overflow = "hidden";
+
+        // force layout so the transition runs
+        void sheet.offsetWidth;
+
+        sheet.classList.add("open");
+        openBtn.setAttribute("aria-expanded", "true");
+
+        try { closeBtn.focus({ preventScroll: true }); } catch (e) { closeBtn.focus(); }
+    }
+
+    function closeSheet(skipFocus, instant) {
+        if (sheet.hidden) return;
+
+        panel.classList.remove("dragging");
+        panel.style.transform = "";
+        sheet.classList.remove("open");
+        openBtn.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+
+        clearTimeout(hideTimer);
+
+        var finish = function () { sheet.hidden = true; };
+
+        if (instant) {
+            finish();
+        } else {
+            hideTimer = setTimeout(finish, 290);
+        }
+
+        if (!skipFocus && lastFocus && lastFocus.focus) {
+            try { lastFocus.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+        }
+    }
+
+    openBtn.addEventListener("click", openSheet);
+    closeBtn.addEventListener("click", function () { closeSheet(false); });
+
+    logoutBtn.addEventListener("click", function () {
+        var item = sidebar.querySelector(".menu-item.logout");
+
+        closeSheet(true);
+
+        if (item) item.click();
+    });
+
+    sheet.addEventListener("click", function (event) {
+        if (event.target === sheet) closeSheet(false);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (sheet.hidden) return;
+
+        if (event.key === "Escape") {
+            closeSheet(false);
+            return;
+        }
+
+        if (event.key === "Tab") {
+            var items = focusables();
+
+            if (!items.length) return;
+
+            var first = items[0];
+            var last = items[items.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            } else if (!panel.contains(document.activeElement)) {
+                event.preventDefault();
+                first.focus();
+            }
+        }
+    });
+
+    /* swipe down on the handle / header to close */
+    (function () {
+        var startY = null;
+        var delta = 0;
+
+        function begin(event) {
+            startY = event.touches[0].clientY;
+            delta = 0;
+            panel.classList.add("dragging");
+        }
+
+        function move(event) {
+            if (startY === null) return;
+
+            delta = Math.max(0, event.touches[0].clientY - startY);
+            panel.style.transform = "translateY(" + delta + "px)";
+        }
+
+        function end() {
+            if (startY === null) return;
+
+            var shouldClose = delta > 90;
+
+            startY = null;
+            panel.classList.remove("dragging");
+
+            if (shouldClose) {
+                closeSheet(false);
+            } else {
+                panel.style.transform = "";
+            }
+        }
+
+        ["nav-sheet-handle", "nav-sheet-head"].forEach(function (id) {
+            var node = document.getElementById(id);
+
+            node.addEventListener("touchstart", begin, { passive: true });
+            node.addEventListener("touchmove", move, { passive: true });
+            node.addEventListener("touchend", end);
+            node.addEventListener("touchcancel", end);
+        });
+    })();
+
+    var onBreakpoint = function () {
+        if (!mq.matches) closeSheet(true, true);
+    };
+
+    if (mq.addEventListener) {
+        mq.addEventListener("change", onBreakpoint);
+    } else if (mq.addListener) {
+        mq.addListener(onBreakpoint);
+    }
+
+    new MutationObserver(refresh).observe(sidebar, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ["class", "style"]
+    });
+
+    refresh();
+})();
 </script>
 
 </body>
