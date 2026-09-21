@@ -344,8 +344,19 @@
 
         .dashboard-layout {
             display: grid;
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 240px minmax(0, 1fr);
             gap: 20px;
+        }
+
+        /* جلوگیری از بزرگ‌شدن ستون گرید بر اثر محتوای داخلی (تایم‌لاین سفارش و ...) */
+        .sidebar,
+        .main-panel {
+            min-width: 0;
+        }
+
+        .active-order-card {
+            min-width: 0;
+            max-width: 100%;
         }
 
         .sidebar,
@@ -455,7 +466,7 @@
             display: grid;
 
             grid-template-columns:
-                repeat(3, 1fr);
+                repeat(3, minmax(0, 1fr));
 
             gap: 12px;
 
@@ -1211,7 +1222,7 @@
         @media (max-width: 800px) {
 
             .dashboard-layout {
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
             }
 
             .sidebar {
@@ -1252,7 +1263,7 @@
             }
 
             .dashboard-summary {
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
             }
 
         }
@@ -1292,11 +1303,12 @@
             }
 
             .timeline-step {
-                min-width: 82px;
+                min-width: 52px;
             }
 
             .timeline-label {
                 font-size: 8px;
+                white-space: normal;
             }
 
         }
