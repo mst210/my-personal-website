@@ -104,6 +104,7 @@
                     <thead>
                         <tr>
                             <th>محصول</th>
+                            <th>دسته‌بندی</th>
                             <th>قیمت</th>
                             <th>ترتیب نمایش</th>
                             <th>وضعیت</th>
@@ -133,6 +134,13 @@
             <div class="field">
                 <label>نام محصول *</label>
                 <input type="text" id="fTitle" maxlength="200" required>
+            </div>
+
+            <div class="field">
+                <label>دسته‌بندی</label>
+                <input type="text" id="fCategory" maxlength="100" list="categoryOptions" placeholder="مثلاً: تجهیزات پزشکی دیجیتال">
+                <datalist id="categoryOptions"></datalist>
+                <div class="hint">محصولات با دسته‌بندی یکسان، در صفحه محصولات کنار هم نمایش داده می‌شوند. اگر خالی بگذارید، در دسته «سایر» قرار می‌گیرد.</div>
             </div>
 
             <div class="row-2">
@@ -326,6 +334,7 @@ async function loadProducts() {
         status.hidden = true;
         table.hidden = false;
         renderProducts();
+        updateCategoryOptions();
 
     } catch (error) {
         status.className = "status-box error";
@@ -337,6 +346,16 @@ function formatPrice(price) {
     const num = Number(price);
     if (Number.isNaN(num)) return escapeHtml(String(price ?? "—"));
     return num.toLocaleString("fa-IR") + " تومان";
+}
+
+function updateCategoryOptions() {
+    const categories = Array.from(
+        new Set(state.products.map((p) => (p.category || "").trim()).filter(Boolean))
+    ).sort((a, b) => a.localeCompare(b, "fa"));
+
+    el("categoryOptions").innerHTML = categories
+        .map((c) => `<option value="${escapeHtml(c)}"></option>`)
+        .join("");
 }
 
 function renderProducts() {
@@ -376,6 +395,7 @@ function renderProducts() {
                         </div>
                     </div>
                 </td>
+                <td>${escapeHtml(p.category || "سایر")}</td>
                 <td>${formatPrice(p.price)}</td>
                 <td>${escapeHtml(String(p.order ?? 0))}</td>
                 <td><span class="badge ${isActive ? "active" : "inactive"}">${isActive ? "فعال" : "غیرفعال"}</span></td>
@@ -477,6 +497,7 @@ function openForm(product) {
     el("formError").classList.remove("show");
 
     el("fTitle").value = product?.title || "";
+    el("fCategory").value = product?.category || "";
     el("fPrice").value = product?.price ?? "";
     el("fOrder").value = product?.order ?? "";
     el("fDescription").value = product?.description || "";
@@ -546,6 +567,7 @@ el("productForm").addEventListener("submit", async (e) => {
 
     const payload = {
         title,
+        category: el("fCategory").value.trim(),
         price,
         order,
         description: el("fDescription").value.trim(),
