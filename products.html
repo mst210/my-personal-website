@@ -6,6 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لیست محصولات پزشکی | دکتر محمدصادق تاج</title>
+    <meta name="robots" content="index, follow">
+
+    <meta name="description" content="خرید تجهیزات و محصولات پزشکی دکتر محمدصادق تاج؛ مشاهده قیمت و مشخصات کامل هر محصول.">
+    <link rel="canonical" href="https://www.drmohammadsadeqtaj.ir/products.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="دکتر محمدصادق تاج">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:title" content="لیست محصولات پزشکی | دکتر محمدصادق تاج">
+    <meta property="og:description" content="خرید تجهیزات و محصولات پزشکی دکتر محمدصادق تاج؛ مشاهده قیمت و مشخصات کامل هر محصول.">
+    <meta property="og:url" content="https://www.drmohammadsadeqtaj.ir/products.html">
+    <meta property="og:image" content="https://www.drmohammadsadeqtaj.ir/bg.jpg">
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f172a'/%3E%3Cpath d='M50 20c-8 0-14 6-14 14v6h-8v10h8v8c0 8 6 14 14 14s14-6 14-14v-8h8V40h-8v-6c0-8-6-14-14-14z' fill='%2314b8a6'/%3E%3C/svg%3E">
@@ -357,6 +369,14 @@
             font-weight: 700;
             color: var(--primary-teal);
             margin-bottom: 12px;
+        }
+
+        .product-link {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-decoration: none;
+            color: inherit;
         }
 
         .order-btn {
@@ -1003,6 +1023,10 @@
             card.dataset.title = title.toLowerCase();
             card.dataset.category = String(product.category || DEFAULT_CATEGORY).toLowerCase();
 
+            const link = document.createElement('a');
+            link.className = 'product-link';
+            link.href = 'product.html?id=' + encodeURIComponent(productId);
+
             const imageWrap = document.createElement('div');
             imageWrap.className = 'product-image-wrap';
 
@@ -1032,17 +1056,19 @@
                 buyProduct(productId, title, numericPrice, image);
             });
 
-            card.appendChild(imageWrap);
-            card.appendChild(titleElement);
+            link.appendChild(imageWrap);
+            link.appendChild(titleElement);
 
             if (desc) {
                 const descElement = document.createElement('div');
                 descElement.className = 'product-desc';
                 descElement.textContent = desc;
-                card.appendChild(descElement);
+                link.appendChild(descElement);
             }
 
-            card.appendChild(priceElement);
+            link.appendChild(priceElement);
+
+            card.appendChild(link);
             card.appendChild(button);
 
             return card;
