@@ -4,1595 +4,618 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>لیست محصولات پزشکی | دکتر محمدصادق تاج</title>
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f172a'/%3E%3Cpath d='M50 20c-8 0-14 6-14 14v6h-8v10h8v8c0 8 6 14 14 14s14-6 14-14v-8h8V40h-8v-6c0-8-6-14-14-14z' fill='%2314b8a6'/%3E%3C/svg%3E">
 
-
     <!-- Font Awesome -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    >
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Vazirmatn -->
-
-    <link
-        href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
-        rel="stylesheet"
-        type="text/css"
-    />
-
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
 
     <style>
 
         :root {
-
-            --primary-blue: #0284c7;
-
-            --dark-blue: #0f172a;
-
-            --accent-teal: #14b8a6;
-
-            --bg-light: #f8fafc;
-
+            --primary-teal: #0f8a94;
+            --dark-teal: #0b6b73;
+            --accent-orange: #f7941d;
+            --accent-orange-dark: #e0800f;
+            --bg-page: #eef1f4;
+            --card-bg: #ffffff;
             --text-dark: #1e293b;
-
             --text-muted: #64748b;
-
+            --border-color: #e5e9ef;
             --success: #059669;
-
             --danger: #ef4444;
-
         }
 
-
-        * {
-
-            box-sizing: border-box;
-
-            margin: 0;
-
-            padding: 0;
-
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-
             font-family: 'Vazirmatn', Tahoma, sans-serif;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #0f172a 0%,
-                    #1e293b 100%
-                );
-
-            background-attachment: fixed;
-
-            color: #ffffff;
-
+            background: var(--bg-page);
+            color: var(--text-dark);
             min-height: 100vh;
-
             display: flex;
-
             flex-direction: column;
-
         }
-
 
         /* =========================
-           HEADER
+           HEADER (TOP BAR - TEAL)
         ========================= */
 
-        header {
-
-            background:
-                rgba(15, 23, 42, 0.75);
-
-            backdrop-filter:
-                blur(12px);
-
-            border-bottom:
-                1px solid rgba(255, 255, 255, 0.1);
-
-            position:
-                sticky;
-
-            top:
-                0;
-
-            z-index:
-                100;
-
-            padding:
-                12px 24px;
-
+        .top-bar {
+            background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
-
-        .header-container {
-
-            max-width:
-                1000px;
-
-            margin:
-                0 auto;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                15px;
-
+        .top-bar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
-
 
         .doctor-info-right {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                12px;
-
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
         }
-
 
         .doctor-info-right i {
-
-            font-size:
-                28px;
-
-            color:
-                var(--accent-teal);
-
+            font-size: 26px;
+            color: #ffffff;
         }
-
 
         .doctor-title-box h1 {
-
-            font-size:
-                20px;
-
-            color:
-                #ffffff;
-
-            font-weight:
-                bold;
-
+            font-size: 17px;
+            color: #ffffff;
+            font-weight: 700;
         }
-
 
         .doctor-title-box span {
-
-            font-size:
-                13px;
-
-            color:
-                #94a3b8;
-
-            display:
-                block;
-
-            margin-top:
-                2px;
-
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            display: block;
+            margin-top: 2px;
         }
 
+        .search-box {
+            flex: 1 1 260px;
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 0 14px;
+            height: 42px;
+            min-width: 160px;
+        }
 
-        /* =========================
-           HEADER BUTTONS
-        ========================= */
+        .search-box i { color: var(--text-muted); font-size: 14px; }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 13.5px;
+            padding: 0 10px;
+            color: var(--text-dark);
+        }
 
         .header-buttons {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                8px;
-
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
         }
-
 
         .back-btn {
-
-            background:
-                rgba(255, 255, 255, 0.08);
-
-            border:
-                1px solid rgba(255, 255, 255, 0.15);
-
-            color:
-                #ffffff;
-
-            text-decoration:
-                none;
-
-            padding:
-                8px 14px;
-
-            border-radius:
-                8px;
-
-            font-size:
-                13px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                6px;
-
-            transition:
-                all 0.3s ease;
-
-            font-family:
-                inherit;
-
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            white-space: nowrap;
         }
 
-
-        .back-btn:hover {
-
-            background:
-                var(--primary-blue);
-
-        }
-
-
-        /* =========================
-           CART BUTTON
-        ========================= */
+        .back-btn:hover { background: rgba(255,255,255,0.28); }
 
         .cart-btn {
-
-            background:
-                rgba(20, 184, 166, 0.15);
-
-            border:
-                1px solid rgba(20, 184, 166, 0.4);
-
-            color:
-                #5eead4;
-
-            text-decoration:
-                none;
-
-            padding:
-                8px 14px;
-
-            border-radius:
-                8px;
-
-            font-size:
-                13px;
-
-            font-weight:
-                bold;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                7px;
-
-            transition:
-                all 0.3s ease;
-
-            font-family:
-                inherit;
-
-            cursor:
-                pointer;
-
+            background: var(--accent-orange);
+            border: none;
+            color: #ffffff;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
-
-        .cart-btn:hover {
-
-            background:
-                rgba(20, 184, 166, 0.3);
-
-            transform:
-                translateY(-2px);
-
-        }
-
-
-        /* =========================
-           CART COUNT
-        ========================= */
+        .cart-btn:hover { background: var(--accent-orange-dark); transform: translateY(-1px); }
 
         #cart-count {
-
-            min-width:
-                20px;
-
-            height:
-                20px;
-
-            padding:
-                0 5px;
-
-            border-radius:
-                50%;
-
-            background:
-                #ef4444;
-
-            color:
-                #ffffff;
-
-            font-size:
-                11px;
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            font-weight:
-                bold;
-
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: var(--accent-orange-dark);
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
 
+        /* =========================
+           CATEGORY NAV (WHITE BAR)
+        ========================= */
+
+        .category-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 66px;
+            z-index: 90;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+        }
+
+        .category-nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            padding: 10px 20px;
+        }
+
+        .category-pill {
+            background: var(--bg-page);
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 7px 16px;
+            font-size: 12.5px;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .category-pill:hover,
+        .category-pill.active {
+            background: var(--primary-teal);
+            border-color: var(--primary-teal);
+            color: #ffffff;
+        }
 
         /* =========================
            MAIN
         ========================= */
 
         main {
-
-            flex-grow:
-                1;
-
-            max-width:
-                1000px;
-
-            width:
-                100%;
-
-            margin:
-                0 auto;
-
-            padding:
-                30px 20px 40px 20px;
-
+            flex-grow: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px 40px 20px;
         }
 
+        .page-intro {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-intro i { color: var(--primary-teal); }
 
         /* =========================
-           SECTION TITLE
+           CATEGORY SECTION
         ========================= */
 
-        .section-title {
-
-            font-size:
-                20px;
-
-            margin-bottom:
-                25px;
-
-            color:
-                var(--accent-teal);
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-
-            border-bottom:
-                1px solid rgba(255, 255, 255, 0.1);
-
-            padding-bottom:
-                12px;
-
+        .category-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            scroll-margin-top: 120px;
         }
 
-
-        .section-title h2 {
-
-            font-size:
-                20px;
-
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-page);
         }
 
-
-        /* =========================
-           PRODUCTS GRID
-        ========================= */
-
-        .products-grid {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                repeat(auto-fill, minmax(240px, 1fr));
-
-            gap:
-                20px;
-
+        .category-header h2 {
+            font-size: 16px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        .category-header h2 i { color: var(--primary-teal); }
+
+        .category-count {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .products-row {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scroll-behavior: smooth;
+        }
+
+        .products-row::-webkit-scrollbar { height: 6px; }
+        .products-row::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 6px; }
 
         /* =========================
            PRODUCT CARD
         ========================= */
 
         .product-card {
-
-            background:
-                rgba(255, 255, 255, 0.05);
-
-            backdrop-filter:
-                blur(10px);
-
-            border:
-                1px solid rgba(255, 255, 255, 0.1);
-
-            border-radius:
-                16px;
-
-            padding:
-                16px;
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            justify-content:
-                space-between;
-
-            transition:
-                all 0.3s ease;
-
-            box-shadow:
-                0 10px 20px rgba(0, 0, 0, 0.2);
-
+            flex: 0 0 200px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
         }
-
 
         .product-card:hover {
-
-            border-color:
-                rgba(20, 184, 166, 0.5);
-
-            transform:
-                translateY(-4px);
-
+            border-color: var(--primary-teal);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            transform: translateY(-3px);
         }
 
-
-        /* =========================
-           PRODUCT IMAGE
-        ========================= */
+        .product-image-wrap {
+            width: 100%;
+            height: 140px;
+            background: var(--bg-page);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
 
         .product-image {
-
-            width:
-                100%;
-
-            height:
-                180px;
-
-            object-fit:
-                cover;
-
-            border-radius:
-                10px;
-
-            margin-bottom:
-                12px;
-
-            background:
-                #0f172a;
-
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
-
-
-        /* =========================
-           PRODUCT TITLE
-        ========================= */
 
         .product-title {
-
-            font-size:
-                16px;
-
-            font-weight:
-                bold;
-
-            color:
-                #ffffff;
-
-            margin-bottom:
-                8px;
-
-            line-height:
-                1.4;
-
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.5;
+            min-height: 40px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-
-
-        /* =========================
-           PRODUCT DESCRIPTION
-        ========================= */
 
         .product-desc {
-
-            font-size:
-                12px;
-
-            color:
-                #94a3b8;
-
-            margin-bottom:
-                12px;
-
-            line-height:
-                1.6;
-
-            flex-grow:
-                1;
-
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            line-height: 1.6;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-
-
-        /* =========================
-           PRICE
-        ========================= */
 
         .product-price {
-
-            font-size:
-                15px;
-
-            font-weight:
-                bold;
-
-            color:
-                var(--accent-teal);
-
-            margin-bottom:
-                14px;
-
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 12px;
         }
-
-
-        /* =========================
-           ORDER BUTTON
-        ========================= */
 
         .order-btn {
-
-            background:
-                var(--primary-blue);
-
-            color:
-                #ffffff;
-
-            text-align:
-                center;
-
-            padding:
-                10px;
-
-            border-radius:
-                8px;
-
-            font-size:
-                13px;
-
-            font-weight:
-                bold;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            gap:
-                6px;
-
-            transition:
-                all 0.3s;
-
-            cursor:
-                pointer;
-
-            border:
-                none;
-
-            width:
-                100%;
-
-            font-family:
-                inherit;
-
+            background: var(--accent-orange);
+            color: #ffffff;
+            text-align: center;
+            padding: 9px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            font-family: inherit;
         }
 
-
-        .order-btn:hover {
-
-            background:
-                #0369a1;
-
-            transform:
-                translateY(-1px);
-
-        }
-
-
-        .order-btn.added {
-
-            background:
-                #059669;
-
-        }
-
-
-        /* =========================
-           LOADING
-        ========================= */
+        .order-btn:hover { background: var(--accent-orange-dark); }
+        .order-btn.added { background: var(--success); }
 
         .loading-text {
-
-            text-align:
-                center;
-
-            grid-column:
-                1 / -1;
-
-            padding:
-                40px;
-
-            color:
-                #94a3b8;
-
-            font-size:
-                16px;
-
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 15px;
         }
 
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
 
         /* =====================================================
            CART PREVIEW
         ===================================================== */
 
         #cart-preview {
-
-            display:
-                none;
-
-            margin-top:
-                35px;
-
-            background:
-                rgba(255, 255, 255, 0.055);
-
-            border:
-                1px solid rgba(20, 184, 166, 0.35);
-
-            border-radius:
-                18px;
-
-            padding:
-                20px;
-
-            box-shadow:
-                0 15px 35px rgba(0, 0, 0, 0.25);
-
-            animation:
-                cartAppear 0.35s ease;
-
+            display: none;
+            margin-top: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+            animation: cartAppear 0.35s ease;
         }
 
-
-        #cart-preview.show {
-
-            display:
-                block;
-
-        }
-
+        #cart-preview.show { display: block; }
 
         @keyframes cartAppear {
-
-            from {
-
-                opacity:
-                    0;
-
-                transform:
-                    translateY(20px);
-
-            }
-
-            to {
-
-                opacity:
-                    1;
-
-                transform:
-                    translateY(0);
-
-            }
-
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
 
         .cart-preview-header {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                10px;
-
-            margin-bottom:
-                18px;
-
-            padding-bottom:
-                14px;
-
-            border-bottom:
-                1px solid rgba(255, 255, 255, 0.1);
-
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
         }
-
 
         .cart-preview-title {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                9px;
-
-            color:
-                #5eead4;
-
-            font-size:
-                18px;
-
-            font-weight:
-                bold;
-
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--primary-teal);
+            font-size: 17px;
+            font-weight: bold;
         }
 
+        .cart-preview-title i { font-size: 19px; }
 
-        .cart-preview-title i {
+        .cart-preview-count { color: var(--text-muted); font-size: 12px; }
 
-            font-size:
-                20px;
-
-        }
-
-
-        .cart-preview-count {
-
-            color:
-                #94a3b8;
-
-            font-size:
-                12px;
-
-        }
-
-
-        /* =========================
-           CART ITEMS
-        ========================= */
-
-        .cart-items {
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            gap:
-                12px;
-
-        }
-
+        .cart-items { display: flex; flex-direction: column; gap: 12px; }
 
         .cart-item {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                14px;
-
-            padding:
-                12px;
-
-            background:
-                rgba(15, 23, 42, 0.55);
-
-            border:
-                1px solid rgba(255, 255, 255, 0.08);
-
-            border-radius:
-                12px;
-
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px;
+            background: var(--bg-page);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
         }
-
 
         .cart-item-image {
-
-            width:
-                65px;
-
-            height:
-                65px;
-
-            object-fit:
-                cover;
-
-            border-radius:
-                9px;
-
-            background:
-                #0f172a;
-
-            flex-shrink:
-                0;
-
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 9px;
+            background: #ffffff;
+            flex-shrink: 0;
+            border: 1px solid var(--border-color);
         }
 
-
-        .cart-item-info {
-
-            flex:
-                1;
-
-            min-width:
-                0;
-
-        }
-
+        .cart-item-info { flex-grow: 1; min-width: 0; }
 
         .cart-item-name {
-
-            color:
-                #ffffff;
-
-            font-size:
-                14px;
-
-            font-weight:
-                bold;
-
-            margin-bottom:
-                5px;
-
-            line-height:
-                1.5;
-
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-
-        .cart-item-price {
-
-            color:
-                #5eead4;
-
-            font-size:
-                12px;
-
-        }
-
-
-        /* =========================
-           QUANTITY
-        ========================= */
+        .cart-item-price { font-size: 12.5px; color: var(--primary-teal); font-weight: bold; }
 
         .quantity-box {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                6px;
-
-            background:
-                rgba(255, 255, 255, 0.06);
-
-            border:
-                1px solid rgba(255, 255, 255, 0.1);
-
-            border-radius:
-                8px;
-
-            padding:
-                3px;
-
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 4px 8px;
+            flex-shrink: 0;
         }
-
 
         .quantity-btn {
-
-            width:
-                28px;
-
-            height:
-                28px;
-
-            border:
-                none;
-
-            border-radius:
-                6px;
-
-            background:
-                rgba(255, 255, 255, 0.08);
-
-            color:
-                #ffffff;
-
-            cursor:
-                pointer;
-
-            font-family:
-                inherit;
-
-            transition:
-                all 0.2s;
-
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 12px;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
         }
 
+        .quantity-btn:hover { background: var(--bg-page); }
 
-        .quantity-btn:hover {
-
-            background:
-                var(--primary-blue);
-
-        }
-
-
-        .quantity-number {
-
-            min-width:
-                25px;
-
-            text-align:
-                center;
-
-            font-size:
-                13px;
-
-            font-weight:
-                bold;
-
-        }
-
-
-        /* =========================
-           REMOVE
-        ========================= */
+        .quantity-number { font-size: 13px; font-weight: 600; min-width: 16px; text-align: center; }
 
         .remove-cart-item {
-
-            width:
-                32px;
-
-            height:
-                32px;
-
-            border:
-                none;
-
-            border-radius:
-                7px;
-
-            background:
-                rgba(239, 68, 68, 0.1);
-
-            color:
-                #f87171;
-
-            cursor:
-                pointer;
-
-            transition:
-                all 0.2s;
-
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 14px;
+            flex-shrink: 0;
+            padding: 6px;
         }
-
-
-        .remove-cart-item:hover {
-
-            background:
-                rgba(239, 68, 68, 0.25);
-
-            color:
-                #ffffff;
-
-        }
-
-
-        /* =========================
-           CART FOOTER
-        ========================= */
-
-        .cart-summary {
-
-            margin-top:
-                18px;
-
-            padding-top:
-                18px;
-
-            border-top:
-                1px solid rgba(255, 255, 255, 0.1);
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                15px;
-
-        }
-
-
-        .cart-total-label {
-
-            color:
-                #94a3b8;
-
-            font-size:
-                13px;
-
-        }
-
-
-        .cart-total-price {
-
-            color:
-                #5eead4;
-
-            font-size:
-                19px;
-
-            font-weight:
-                bold;
-
-            margin-top:
-                4px;
-
-        }
-
-
-        .cart-actions {
-
-            display:
-                flex;
-
-            gap:
-                10px;
-
-        }
-
-
-        .continue-shopping-btn,
-        .checkout-btn {
-
-            border:
-                none;
-
-            border-radius:
-                9px;
-
-            padding:
-                11px 18px;
-
-            font-family:
-                inherit;
-
-            font-size:
-                13px;
-
-            font-weight:
-                bold;
-
-            cursor:
-                pointer;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            gap:
-                7px;
-
-            transition:
-                all 0.3s;
-
-        }
-
-
-        .continue-shopping-btn {
-
-            background:
-                rgba(255, 255, 255, 0.08);
-
-            color:
-                #ffffff;
-
-            border:
-                1px solid rgba(255, 255, 255, 0.12);
-
-        }
-
-
-        .continue-shopping-btn:hover {
-
-            background:
-                rgba(255, 255, 255, 0.14);
-
-        }
-
-
-        .checkout-btn {
-
-            background:
-                var(--primary-blue);
-
-            color:
-                #ffffff;
-
-        }
-
-
-        .checkout-btn:hover {
-
-            background:
-                #0369a1;
-
-            transform:
-                translateY(-1px);
-
-        }
-
-
-        /* =========================
-           EMPTY CART
-        ========================= */
 
         .empty-cart {
-
-            text-align:
-                center;
-
-            padding:
-                25px;
-
-            color:
-                #94a3b8;
-
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
         }
 
+        .empty-cart i { font-size: 26px; margin-bottom: 10px; display: block; }
 
-        .empty-cart i {
-
-            font-size:
-                35px;
-
-            margin-bottom:
-                10px;
-
-            color:
-                #64748b;
-
+        .cart-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
         }
 
+        .cart-total-label { font-size: 12px; color: var(--text-muted); }
+        .cart-total-price { font-size: 18px; font-weight: bold; color: var(--primary-teal); }
 
-        .empty-cart p {
+        .cart-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-            font-size:
-                13px;
-
+        .continue-shopping-btn {
+            background: var(--bg-page);
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
+        .checkout-btn {
+            background: var(--primary-teal);
+            border: none;
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkout-btn:hover { background: var(--dark-teal); }
 
         /* =========================
            TOAST
         ========================= */
 
         #toast {
-
-            position:
-                fixed;
-
-            bottom:
-                25px;
-
-            right:
-                50%;
-
-            transform:
-                translateX(50%)
-                translateY(100px);
-
-            background:
-                rgba(15, 23, 42, 0.96);
-
-            border:
-                1px solid rgba(20, 184, 166, 0.45);
-
-            color:
-                #ffffff;
-
-            padding:
-                13px 20px;
-
-            border-radius:
-                10px;
-
-            font-size:
-                13px;
-
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.4);
-
-            opacity:
-                0;
-
-            pointer-events:
-                none;
-
-            transition:
-                all 0.35s ease;
-
-            z-index:
-                9999;
-
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-dark);
+            color: #ffffff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.35s ease;
+            z-index: 1000;
+            white-space: nowrap;
         }
 
-
-        #toast.show {
-
-            opacity:
-                1;
-
-            transform:
-                translateX(50%)
-                translateY(0);
-
-        }
-
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         /* =========================
            FOOTER
         ========================= */
 
         footer {
-
-            text-align:
-                center;
-
-            padding:
-                20px;
-
-            font-size:
-                13px;
-
-            color:
-                #64748b;
-
-            border-top:
-                1px solid rgba(255, 255, 255, 0.05);
-
+            text-align: center;
+            padding: 22px 16px;
+            color: var(--text-muted);
+            font-size: 12.5px;
+            border-top: 1px solid var(--border-color);
+            background: #ffffff;
         }
 
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 650px) {
-
-            header {
-
-                padding:
-                    10px 12px;
-
-            }
-
-
-            .header-container {
-
-                flex-direction:
-                    column;
-
-                align-items:
-                    stretch;
-
-            }
-
-
-            .doctor-info-right {
-
-                justify-content:
-                    center;
-
-            }
-
-
-            .doctor-title-box h1 {
-
-                font-size:
-                    17px;
-
-            }
-
-
-            .header-buttons {
-
-                justify-content:
-                    center;
-
-            }
-
-
-            .back-btn,
-            .cart-btn {
-
-                flex:
-                    1;
-
-                justify-content:
-                    center;
-
-            }
-
-
-            .cart-item {
-
-                flex-wrap:
-                    wrap;
-
-            }
-
-
-            .cart-item-info {
-
-                min-width:
-                    calc(100% - 85px);
-
-            }
-
-
-            .quantity-box {
-
-                margin-right:
-                    79px;
-
-            }
-
-
-            .remove-cart-item {
-
-                margin-right:
-                    auto;
-
-            }
-
-
-            .cart-summary {
-
-                flex-direction:
-                    column;
-
-                align-items:
-                    stretch;
-
-            }
-
-
-            .cart-actions {
-
-                width:
-                    100%;
-
-                flex-direction:
-                    column;
-
-            }
-
-
-            .continue-shopping-btn,
-            .checkout-btn {
-
-                width:
-                    100%;
-
-            }
-
-        }
-
-        /* =========================================================
-           THEME REFRESH — brings this page in line with the
-           redesigned homepage (gradient accents, depth, glow).
-           Appended after the original rules so it takes priority.
-        ========================================================= */
-
-        :root {
-            --accent-gold: #f59e0b;
-            --gradient-primary: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
-        }
-
-        body {
-            background: #0b1324;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before,
-        body::after {
-            content: '';
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(90px);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        body::before { width: 400px; height: 400px; top: -140px; left: -120px; background: rgba(2, 132, 199, 0.3); }
-        body::after { width: 360px; height: 360px; bottom: -160px; right: -100px; background: rgba(20, 184, 166, 0.22); }
-
-        header, main, .cart-preview-wrap { position: relative; z-index: 1; }
-
-        header { padding: 14px 24px; }
-
-        header::after {
-            content: '';
-            position: absolute;
-            left: 0; right: 0; bottom: -1px;
-            height: 2px;
-            background: var(--gradient-primary);
-            opacity: .6;
-        }
-
-        .doctor-info-right i { text-shadow: 0 0 18px rgba(20, 184, 166, .5); }
-
-        .doctor-title-box h1 { font-weight: 800; letter-spacing: -0.2px; }
-        .doctor-title-box span { color: var(--accent-teal); font-weight: 600; }
-
-        .section-title {
-            font-weight: 700;
-            color: #ffffff;
-            border-bottom: none;
-            padding-inline-start: 14px;
-            position: relative;
-        }
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            inset-inline-start: 0;
-            top: 1px;
-            bottom: 1px;
-            width: 4px;
-            border-radius: 4px;
-            background: var(--gradient-primary);
-        }
-
-        .section-title i { color: var(--accent-teal); }
-
-        .product-card {
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp .5s ease-out both;
-        }
-
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-            opacity: .7;
-        }
-
-        .product-card:hover {
-            box-shadow: 0 16px 32px rgba(2, 132, 199, 0.22);
-        }
-
-        .order-btn {
-            background: var(--gradient-primary);
-            box-shadow: 0 8px 18px rgba(2, 132, 199, 0.25);
-        }
-
-        .order-btn:hover {
-            background: var(--gradient-primary);
-            filter: brightness(1.08);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(2, 132, 199, 0.35);
-        }
-
-        .order-btn.added { background: #059669; }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to { opacity: 1; transform: translateY(0); }
+        @media (max-width: 640px) {
+            .product-card { flex: 0 0 150px; }
+            .product-image-wrap { height: 110px; }
+            .top-bar-container { gap: 10px; }
+            .doctor-title-box h1 { font-size: 15px; }
         }
 
     </style>
 
 </head>
-
 
 <body>
 
@@ -1601,73 +624,45 @@
          HEADER
     ========================= -->
 
-    <header>
-
-        <div class="header-container">
-
+    <div class="top-bar">
+        <div class="top-bar-container">
 
             <div class="doctor-info-right">
-
                 <i class="fa-solid fa-boxes-stacked"></i>
-
                 <div class="doctor-title-box">
-
-                    <h1 id="site-products-header-title">
-                        تجهیزات و محصولات پزشکی
-                    </h1>
-
-                    <span id="site-products-header-subtitle">
-                        دکتر محمدصادق تاج
-                    </span>
-
+                    <h1 id="site-products-header-title">تجهیزات و محصولات پزشکی</h1>
+                    <span id="site-products-header-subtitle">دکتر محمدصادق تاج</span>
                 </div>
-
             </div>
 
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="نام محصول یا دسته‌بندی موردنظر را وارد نمایید...">
+            </div>
 
             <div class="header-buttons">
-
-
-                <a
-                    href="index.html"
-                    class="back-btn"
-                >
-
+                <a href="index.html" class="back-btn">
                     <i class="fa-solid fa-arrow-right"></i>
-
-                    بازگشت به صفحه اصلی
-
+                    بازگشت
                 </a>
 
-
-                <!--
-                    این دکمه دیگر مستقیماً به panel.html نمی‌رود.
-                    با کلیک روی آن، سبد خرید پایین صفحه نمایش داده می‌شود.
-                -->
-
-                <button
-                    type="button"
-                    class="cart-btn"
-                    id="cart-button"
-                >
-
+                <button type="button" class="cart-btn" id="cart-button">
                     <i class="fa-solid fa-cart-shopping"></i>
-
                     سبد خرید
-
-                    <span id="cart-count">
-                        ۰
-                    </span>
-
+                    <span id="cart-count">۰</span>
                 </button>
-
-
             </div>
 
         </div>
+    </div>
 
-    </header>
+    <!-- =========================
+         CATEGORY NAV
+    ========================= -->
 
+    <nav class="category-nav" id="category-nav" hidden>
+        <div class="category-nav-inner" id="category-nav-inner"></div>
+    </nav>
 
 
     <!-- =========================
@@ -1676,148 +671,65 @@
 
     <main>
 
-
-        <div class="section-title">
-
+        <div class="page-intro">
             <i class="fa-solid fa-store"></i>
-
-            <h2 id="site-products-section-title">
-                لیست محصولات در دسترس
-            </h2>
-
+            <h2 id="site-products-section-title">لیست محصولات در دسترس</h2>
         </div>
 
-
-        <!-- محصولات -->
-
-        <div
-            id="products-container"
-            class="products-grid"
-        >
-
+        <!-- محصولات به تفکیک دسته‌بندی -->
+        <div id="products-container">
             <div class="loading-text">
-
                 <i class="fa-solid fa-spinner fa-spin"></i>
-
                 در حال دریافت لیست محصولات...
-
             </div>
-
         </div>
-
 
 
         <!-- =====================================================
              CART PREVIEW
         ===================================================== -->
 
-        <section
-            id="cart-preview"
-        >
+        <section id="cart-preview">
 
             <div class="cart-preview-header">
-
                 <div class="cart-preview-title">
-
                     <i class="fa-solid fa-cart-shopping"></i>
-
                     سبد خرید شما
-
                 </div>
-
-
-                <div
-                    class="cart-preview-count"
-                    id="cart-preview-count"
-                >
-
-                    ۰ کالا
-
-                </div>
-
+                <div class="cart-preview-count" id="cart-preview-count">۰ کالا</div>
             </div>
 
-
-            <div
-                class="cart-items"
-                id="cart-items"
-            ></div>
-
+            <div class="cart-items" id="cart-items"></div>
 
             <div class="cart-summary">
-
-
                 <div>
-
-                    <div class="cart-total-label">
-
-                        مبلغ کل سبد خرید
-
-                    </div>
-
-                    <div
-                        class="cart-total-price"
-                        id="cart-total-price"
-                    >
-
-                        ۰ تومان
-
-                    </div>
-
+                    <div class="cart-total-label">مبلغ کل سبد خرید</div>
+                    <div class="cart-total-price" id="cart-total-price">۰ تومان</div>
                 </div>
-
 
                 <div class="cart-actions">
-
-
-                    <button
-                        type="button"
-                        class="continue-shopping-btn"
-                        id="continue-shopping-btn"
-                    >
-
+                    <button type="button" class="continue-shopping-btn" id="continue-shopping-btn">
                         <i class="fa-solid fa-arrow-up"></i>
-
                         ادامه خرید
-
                     </button>
 
-
-                    <button
-                        type="button"
-                        class="checkout-btn"
-                        id="checkout-btn"
-                    >
-
+                    <button type="button" class="checkout-btn" id="checkout-btn">
                         ادامه و ثبت سفارش
-
                         <i class="fa-solid fa-arrow-left"></i>
-
                     </button>
-
-
                 </div>
-
-
             </div>
 
         </section>
 
-
     </main>
-
 
 
     <!-- =========================
          TOAST
     ========================= -->
 
-    <div id="toast">
-
-        محصول به سبد خرید اضافه شد.
-
-    </div>
-
+    <div id="toast">محصول به سبد خرید اضافه شد.</div>
 
 
     <!-- =========================
@@ -1825,11 +737,8 @@
     ========================= -->
 
     <footer id="site-footer-text">
-
         © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
-
     </footer>
-
 
 
     <!-- =========================
@@ -1838,847 +747,425 @@
 
     <script>
 
-
         /* ==========================================
            API (پنل ادمین / Cloudflare Worker)
         ========================================== */
 
-        const PRODUCTS_API_URL =
-            '/api/public/products';
+        const PRODUCTS_API_URL = '/api/public/products';
 
+        const FALLBACK_IMAGE =
+            'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20300%20200%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23eef1f4%22/%3E%3Crect%20x%3D%22110%22%20y%3D%2270%22%20width%3D%2280%22%20height%3D%2260%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%230f8a94%22%20stroke-width%3D%225%22/%3E%3Cpath%20d%3D%22M135%2070v-15a15%2015%200%200130%200v15%22%20fill%3D%22none%22%20stroke%3D%22%230f8a94%22%20stroke-width%3D%225%22/%3E%3C/svg%3E';
 
-
-        /* ==========================================
-           CART
-        ========================================== */
-
-        const CART_KEY =
-            'taj_medical_cart';
-
+        const DEFAULT_CATEGORY = 'سایر محصولات';
 
 
         /* ==========================================
-           دریافت سبد خرید
+           CART  (بدون تغییر نسبت به قبل)
         ========================================== */
+
+        const CART_KEY = 'taj_medical_cart';
 
         function getCart() {
-
             try {
-
-                return JSON.parse(
-                    localStorage.getItem(CART_KEY)
-                ) || [];
-
+                return JSON.parse(localStorage.getItem(CART_KEY)) || [];
             } catch (error) {
-
-                console.error(
-                    'خطا در خواندن سبد خرید:',
-                    error
-                );
-
+                console.error('خطا در خواندن سبد خرید:', error);
                 return [];
-
             }
-
         }
-
-
-
-        /* ==========================================
-           ذخیره سبد خرید
-        ========================================== */
 
         function saveCart(cart) {
-
-            localStorage.setItem(
-                CART_KEY,
-                JSON.stringify(cart)
-            );
-
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
         }
 
-
-
-        /* ==========================================
-           اضافه کردن محصول
-        ========================================== */
-
-        function buyProduct(
-            id,
-            title,
-            price,
-            image
-        ) {
-
-
-            const cart =
-                getCart();
-
-
-            const existingProduct =
-                cart.find(
-                    item => item.id === id
-                );
-
+        function buyProduct(id, title, price, image) {
+            const cart = getCart();
+            const existingProduct = cart.find(item => item.id === id);
 
             if (existingProduct) {
-
-                existingProduct.quantity =
-                    (Number(existingProduct.quantity) || 1) + 1;
-
+                existingProduct.quantity = (Number(existingProduct.quantity) || 1) + 1;
             } else {
-
                 cart.push({
-
-                    id:
-                        id,
-
-                    name:
-                        title,
-
-                    title:
-                        title,
-
-                    price:
-                        Number(price) || 0,
-
-                    image:
-                        image,
-
-                    quantity:
-                        1
-
+                    id: id,
+                    name: title,
+                    title: title,
+                    price: Number(price) || 0,
+                    image: image,
+                    quantity: 1
                 });
-
             }
 
-
             saveCart(cart);
-
-
             updateCartCount();
-
-
-            showToast(
-                'محصول «' + title + '» به سبد خرید اضافه شد ✓'
-            );
-
-
-            /* نمایش سبد پایین صفحه */
-
+            showToast('محصول «' + title + '» به سبد خرید اضافه شد ✓');
             renderCartPreview(true);
 
-
-            /* تغییر ظاهر دکمه */
-
-            const buttons =
-                document.querySelectorAll('.order-btn');
-
-
-            buttons.forEach(function(button) {
-
-                const buttonId =
-                    button.getAttribute('data-product-id');
-
-
+            const buttons = document.querySelectorAll('.order-btn');
+            buttons.forEach(function (button) {
+                const buttonId = button.getAttribute('data-product-id');
                 if (buttonId === id) {
-
                     button.classList.add('added');
-
-                    button.innerHTML =
-                        '<i class="fa-solid fa-check"></i> به سبد اضافه شد';
-
-
-                    setTimeout(function() {
-
+                    button.innerHTML = '<i class="fa-solid fa-check"></i> افزوده شد';
+                    setTimeout(function () {
                         button.classList.remove('added');
-
-                        button.innerHTML =
-                            '<i class="fa-solid fa-cart-shopping"></i> خرید محصول';
-
+                        button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> افزودن به سبد';
                     }, 1500);
-
                 }
-
             });
-
         }
-
-
-
-        /* ==========================================
-           تعداد کل محصولات
-        ========================================== */
 
         function getTotalCartCount() {
-
-            const cart =
-                getCart();
-
-
-            return cart.reduce(
-                function(total, item) {
-
-                    return total +
-                        (Number(item.quantity) || 1);
-
-                },
-                0
-            );
-
+            const cart = getCart();
+            return cart.reduce(function (total, item) {
+                return total + (Number(item.quantity) || 1);
+            }, 0);
         }
-
-
-
-        /* ==========================================
-           بروزرسانی تعداد سبد
-        ========================================== */
 
         function updateCartCount() {
-
-            const totalCount =
-                getTotalCartCount();
-
-
-            const cartCount =
-                document.getElementById(
-                    'cart-count'
-                );
-
-
+            const totalCount = getTotalCartCount();
+            const cartCount = document.getElementById('cart-count');
             if (cartCount) {
-
-                cartCount.textContent =
-                    totalCount.toLocaleString('fa-IR');
-
+                cartCount.textContent = totalCount.toLocaleString('fa-IR');
             }
-
         }
-
-
-
-        /* ==========================================
-           فرمت قیمت
-        ========================================== */
 
         function formatPrice(price) {
-
-            return Number(price || 0)
-                .toLocaleString('fa-IR') +
-                ' تومان';
-
+            return Number(price || 0).toLocaleString('fa-IR') + ' تومان';
         }
-
-
-
-        /* ==========================================
-           محاسبه مبلغ کل
-        ========================================== */
 
         function getCartTotal() {
-
-            const cart =
-                getCart();
-
-
-            return cart.reduce(
-                function(total, item) {
-
-                    const price =
-                        Number(item.price) || 0;
-
-
-                    const quantity =
-                        Number(item.quantity) || 1;
-
-
-                    return total +
-                        (price * quantity);
-
-                },
-                0
-            );
-
+            const cart = getCart();
+            return cart.reduce(function (total, item) {
+                const price = Number(item.price) || 0;
+                const quantity = Number(item.quantity) || 1;
+                return total + (price * quantity);
+            }, 0);
         }
 
+        function renderCartPreview(shouldScroll) {
+            const cart = getCart();
+            const preview = document.getElementById('cart-preview');
+            const itemsContainer = document.getElementById('cart-items');
+            const countElement = document.getElementById('cart-preview-count');
+            const totalElement = document.getElementById('cart-total-price');
+            const totalCount = getTotalCartCount();
 
-
-        /* ==========================================
-           نمایش سبد خرید پایین صفحه
-        ========================================== */
-
-        function renderCartPreview(
-            shouldScroll
-        ) {
-
-
-            const cart =
-                getCart();
-
-
-            const preview =
-                document.getElementById(
-                    'cart-preview'
-                );
-
-
-            const itemsContainer =
-                document.getElementById(
-                    'cart-items'
-                );
-
-
-            const countElement =
-                document.getElementById(
-                    'cart-preview-count'
-                );
-
-
-            const totalElement =
-                document.getElementById(
-                    'cart-total-price'
-                );
-
-
-            const totalCount =
-                getTotalCartCount();
-
-
-            /* تعداد */
-
-            countElement.textContent =
-                totalCount.toLocaleString('fa-IR') +
-                ' کالا';
-
-
-            /* مبلغ کل */
-
-            totalElement.textContent =
-                formatPrice(
-                    getCartTotal()
-                );
-
-
-            /* سبد خالی */
+            countElement.textContent = totalCount.toLocaleString('fa-IR') + ' کالا';
+            totalElement.textContent = formatPrice(getCartTotal());
 
             if (!cart.length) {
-
                 itemsContainer.innerHTML =
-
                     '<div class="empty-cart">' +
-
                         '<i class="fa-solid fa-cart-shopping"></i>' +
-
                         '<p>سبد خرید شما خالی است.</p>' +
-
                     '</div>';
-
-
                 preview.classList.remove('show');
-
                 return;
-
             }
-
 
             preview.classList.add('show');
-
-
             itemsContainer.innerHTML = '';
 
-
-            /* ساخت آیتم‌ها */
-
-            cart.forEach(
-                function(item, index) {
-
-
-                    const quantity =
-                        Number(item.quantity) || 1;
-
-
-                    const price =
-                        Number(item.price) || 0;
-
-
-                    const itemTotal =
-                        price * quantity;
-
-
-                    const itemElement =
-                        document.createElement('div');
-
-
-                    itemElement.className =
-                        'cart-item';
-
-
-                    itemElement.innerHTML =
-
-                        '<img ' +
-
-                            'src="' +
-                            escapeHtml(item.image || '') +
-                            '" ' +
-
-                            'class="cart-item-image" ' +
-
-                            'alt="' +
-                            escapeHtml(item.title || item.name || 'محصول') +
-                            '"' +
-
-                        '>' +
-
-
-                        '<div class="cart-item-info">' +
-
-                            '<div class="cart-item-name">' +
-
-                                escapeHtml(
-                                    item.title ||
-                                    item.name ||
-                                    'محصول پزشکی'
-                                ) +
-
-                            '</div>' +
-
-
-                            '<div class="cart-item-price">' +
-
-                                formatPrice(itemTotal) +
-
-                            '</div>' +
-
-                        '</div>' +
-
-
-                        '<div class="quantity-box">' +
-
-                            '<button ' +
-
-                                'type="button" ' +
-
-                                'class="quantity-btn decrease-btn" ' +
-
-                                'data-index="' +
-                                index +
-                                '"' +
-
-                            '>' +
-
-                                '<i class="fa-solid fa-minus"></i>' +
-
-                            '</button>' +
-
-
-                            '<span class="quantity-number">' +
-
-                                quantity.toLocaleString('fa-IR') +
-
-                            '</span>' +
-
-
-                            '<button ' +
-
-                                'type="button" ' +
-
-                                'class="quantity-btn increase-btn" ' +
-
-                                'data-index="' +
-                                index +
-                                '"' +
-
-                            '>' +
-
-                                '<i class="fa-solid fa-plus"></i>' +
-
-                            '</button>' +
-
-                        '</div>' +
-
-
-                        '<button ' +
-
-                            'type="button" ' +
-
-                            'class="remove-cart-item" ' +
-
-                            'data-index="' +
-                            index +
-                            '"' +
-
-                            'title="حذف محصول"' +
-
-                        '>' +
-
-                            '<i class="fa-solid fa-trash"></i>' +
-
-                        '</button>';
-
-
-                    itemsContainer.appendChild(
-                        itemElement
-                    );
-
-                }
-            );
-
-
-            /* رویداد کاهش تعداد */
-
-            document
-                .querySelectorAll('.decrease-btn')
-                .forEach(function(button) {
-
-                    button.addEventListener(
-                        'click',
-                        function() {
-
-                            const index =
-                                Number(
-                                    this.getAttribute(
-                                        'data-index'
-                                    )
-                                );
-
-
-                            changeQuantity(
-                                index,
-                                -1
-                            );
-
-                        }
-                    );
-
+            cart.forEach(function (item, index) {
+                const quantity = Number(item.quantity) || 1;
+                const price = Number(item.price) || 0;
+                const itemTotal = price * quantity;
+
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+
+                itemElement.innerHTML =
+                    '<img src="' + escapeHtml(item.image || FALLBACK_IMAGE) + '" class="cart-item-image" alt="' + escapeHtml(item.title || item.name || 'محصول') + '">' +
+                    '<div class="cart-item-info">' +
+                        '<div class="cart-item-name">' + escapeHtml(item.title || item.name || 'محصول پزشکی') + '</div>' +
+                        '<div class="cart-item-price">' + formatPrice(itemTotal) + '</div>' +
+                    '</div>' +
+                    '<div class="quantity-box">' +
+                        '<button type="button" class="quantity-btn decrease-btn" data-index="' + index + '"><i class="fa-solid fa-minus"></i></button>' +
+                        '<span class="quantity-number">' + quantity.toLocaleString('fa-IR') + '</span>' +
+                        '<button type="button" class="quantity-btn increase-btn" data-index="' + index + '"><i class="fa-solid fa-plus"></i></button>' +
+                    '</div>' +
+                    '<button type="button" class="remove-cart-item" data-index="' + index + '" title="حذف محصول"><i class="fa-solid fa-trash"></i></button>';
+
+                itemsContainer.appendChild(itemElement);
+            });
+
+            document.querySelectorAll('.decrease-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    changeQuantity(Number(this.getAttribute('data-index')), -1);
                 });
+            });
 
-
-            /* رویداد افزایش تعداد */
-
-            document
-                .querySelectorAll('.increase-btn')
-                .forEach(function(button) {
-
-                    button.addEventListener(
-                        'click',
-                        function() {
-
-                            const index =
-                                Number(
-                                    this.getAttribute(
-                                        'data-index'
-                                    )
-                                );
-
-
-                            changeQuantity(
-                                index,
-                                1
-                            );
-
-                        }
-                    );
-
+            document.querySelectorAll('.increase-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    changeQuantity(Number(this.getAttribute('data-index')), 1);
                 });
+            });
 
-
-            /* رویداد حذف */
-
-            document
-                .querySelectorAll('.remove-cart-item')
-                .forEach(function(button) {
-
-                    button.addEventListener(
-                        'click',
-                        function() {
-
-                            const index =
-                                Number(
-                                    this.getAttribute(
-                                        'data-index'
-                                    )
-                                );
-
-
-                            removeCartItem(
-                                index
-                            );
-
-                        }
-                    );
-
+            document.querySelectorAll('.remove-cart-item').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    removeCartItem(Number(this.getAttribute('data-index')));
                 });
-
-
-            /* اسکرول به سبد */
+            });
 
             if (shouldScroll) {
-
-                setTimeout(function() {
-
-                    preview.scrollIntoView({
-
-                        behavior:
-                            'smooth',
-
-                        block:
-                            'center'
-
-                    });
-
+                setTimeout(function () {
+                    preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 80);
-
             }
-
         }
 
+        function changeQuantity(index, change) {
+            const cart = getCart();
+            if (!cart[index]) return;
 
-
-        /* ==========================================
-           تغییر تعداد
-        ========================================== */
-
-        function changeQuantity(
-            index,
-            change
-        ) {
-
-
-            const cart =
-                getCart();
-
-
-            if (!cart[index]) {
-
-                return;
-
-            }
-
-
-            cart[index].quantity =
-                (Number(cart[index].quantity) || 1) +
-                change;
-
+            cart[index].quantity = (Number(cart[index].quantity) || 1) + change;
 
             if (cart[index].quantity <= 0) {
-
-                cart.splice(
-                    index,
-                    1
-                );
-
+                cart.splice(index, 1);
             }
 
-
             saveCart(cart);
-
-
             updateCartCount();
-
-
             renderCartPreview(false);
-
         }
-
-
-
-        /* ==========================================
-           حذف محصول
-        ========================================== */
 
         function removeCartItem(index) {
+            const cart = getCart();
+            if (!cart[index]) return;
 
-
-            const cart =
-                getCart();
-
-
-            if (!cart[index]) {
-
-                return;
-
-            }
-
-
-            const title =
-                cart[index].title ||
-                cart[index].name ||
-                'محصول';
-
-
-            cart.splice(
-                index,
-                1
-            );
-
-
+            const title = cart[index].title || cart[index].name || 'محصول';
+            cart.splice(index, 1);
             saveCart(cart);
-
-
             updateCartCount();
-
-
             renderCartPreview(false);
-
-
-            showToast(
-                '«' + title + '» از سبد خرید حذف شد'
-            );
-
+            showToast('«' + title + '» از سبد خرید حذف شد');
         }
 
+        document.getElementById('cart-button').addEventListener('click', function () {
+            const cart = getCart();
+            if (!cart.length) {
+                showToast('سبد خرید شما خالی است');
+                return;
+            }
+            renderCartPreview(true);
+        });
 
+        document.getElementById('continue-shopping-btn').addEventListener('click', function () {
+            document.getElementById('products-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
 
-        /* ==========================================
-           باز کردن سبد از هدر
-        ========================================== */
-
-        document
-            .getElementById('cart-button')
-            .addEventListener(
-                'click',
-                function() {
-
-                    const cart =
-                        getCart();
-
-
-                    if (!cart.length) {
-
-                        showToast(
-                            'سبد خرید شما خالی است'
-                        );
-
-                        return;
-
-                    }
-
-
-                    renderCartPreview(true);
-
-                }
-            );
-
-
-
-        /* ==========================================
-           ادامه خرید
-        ========================================== */
-
-        document
-            .getElementById('continue-shopping-btn')
-            .addEventListener(
-                'click',
-                function() {
-
-                    const products =
-                        document.getElementById(
-                            'products-container'
-                        );
-
-
-                    products.scrollIntoView({
-
-                        behavior:
-                            'smooth',
-
-                        block:
-                            'start'
-
-                    });
-
-                }
-            );
-
-
-
-        /* ==========================================
-           رفتن به پنل برای ثبت سفارش
-        ========================================== */
-
-        document
-            .getElementById('checkout-btn')
-            .addEventListener(
-                'click',
-                function() {
-
-                    const cart =
-                        getCart();
-
-
-                    if (!cart.length) {
-
-                        showToast(
-                            'سبد خرید شما خالی است'
-                        );
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * همان سبد خرید فعلی در localStorage
-                     * حفظ می‌شود و پنل آن را می‌خواند.
-                     */
-
-                    window.location.href =
-                        'panel.html';
-
-                }
-            );
-
-
-
-        /* ==========================================
-           جلوگیری از HTML ناخواسته
-        ========================================== */
+        document.getElementById('checkout-btn').addEventListener('click', function () {
+            const cart = getCart();
+            if (!cart.length) {
+                showToast('سبد خرید شما خالی است');
+                return;
+            }
+            window.location.href = 'panel.html';
+        });
 
         function escapeHtml(value) {
-
             return String(value || '')
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
-
         }
 
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(function () {
+                toast.classList.remove('show');
+            }, 2200);
+        }
 
 
         /* ==========================================
-           نمایش پیام
+           ساخت کارت یک محصول
         ========================================== */
 
-        function showToast(message) {
+        function buildProductCard(product) {
+            const title = product.title ? String(product.title) : 'دستگاه پزشکی';
+            const desc = product.description ? String(product.description) : '';
+            const price = (product.price !== undefined && product.price !== null) ? product.price : 0;
+            const image = product.imageUrl ? String(product.imageUrl) : FALLBACK_IMAGE;
+            const productId = String(product.id);
 
+            const formattedPrice = (typeof price === 'number' && !isNaN(price))
+                ? price.toLocaleString('fa-IR') + ' تومان'
+                : String(price);
 
-            const toast =
-                document.getElementById(
-                    'toast'
-                );
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.dataset.title = title.toLowerCase();
+            card.dataset.category = String(product.category || DEFAULT_CATEGORY).toLowerCase();
 
+            const imageWrap = document.createElement('div');
+            imageWrap.className = 'product-image-wrap';
 
-            toast.textContent =
-                message;
+            const img = document.createElement('img');
+            img.src = image;
+            img.alt = title;
+            img.className = 'product-image';
+            img.onerror = function () { this.src = FALLBACK_IMAGE; };
+            imageWrap.appendChild(img);
 
+            const titleElement = document.createElement('div');
+            titleElement.className = 'product-title';
+            titleElement.textContent = title;
 
-            toast.classList.add(
-                'show'
-            );
+            const priceElement = document.createElement('div');
+            priceElement.className = 'product-price';
+            priceElement.textContent = formattedPrice;
 
+            const button = document.createElement('button');
+            button.className = 'order-btn';
+            button.setAttribute('data-product-id', productId);
+            button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> افزودن به سبد';
 
-            setTimeout(function() {
+            button.addEventListener('click', function () {
+                let numericPrice = parseFloat(price);
+                if (isNaN(numericPrice)) numericPrice = 0;
+                buyProduct(productId, title, numericPrice, image);
+            });
 
-                toast.classList.remove(
-                    'show'
-                );
+            card.appendChild(imageWrap);
+            card.appendChild(titleElement);
 
-            }, 2200);
+            if (desc) {
+                const descElement = document.createElement('div');
+                descElement.className = 'product-desc';
+                descElement.textContent = desc;
+                card.appendChild(descElement);
+            }
 
+            card.appendChild(priceElement);
+            card.appendChild(button);
+
+            return card;
         }
 
+
+        /* ==========================================
+           گروه‌بندی محصولات بر اساس دسته‌بندی
+           و ساخت بخش‌های کاروسل مانند irantebco
+        ========================================== */
+
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            const navInner = document.getElementById('category-nav-inner');
+            const nav = document.getElementById('category-nav');
+
+            container.innerHTML = '';
+            navInner.innerHTML = '';
+
+            if (!products.length) {
+                container.innerHTML = '<div class="loading-text">هیچ محصولی ثبت نشده است.</div>';
+                nav.hidden = true;
+                return;
+            }
+
+            /* گروه‌بندی بر اساس دسته‌بندی */
+            const groups = new Map();
+
+            products.forEach(function (product) {
+                const category = (product.category && String(product.category).trim())
+                    ? String(product.category).trim()
+                    : DEFAULT_CATEGORY;
+
+                if (!groups.has(category)) groups.set(category, []);
+                groups.get(category).push(product);
+            });
+
+            /* مرتب‌سازی محصولات داخل هر دسته بر اساس order، سپس عنوان */
+            groups.forEach(function (list) {
+                list.sort(function (a, b) {
+                    const orderDiff = (a.order || 0) - (b.order || 0);
+                    if (orderDiff !== 0) return orderDiff;
+                    return String(a.title || '').localeCompare(String(b.title || ''), 'fa');
+                });
+            });
+
+            /* مرتب‌سازی دسته‌ها بر اساس کمترین order محصولاتشان */
+            const categories = Array.from(groups.keys()).sort(function (catA, catB) {
+                const minA = Math.min.apply(null, groups.get(catA).map(function (p) { return p.order || 0; }));
+                const minB = Math.min.apply(null, groups.get(catB).map(function (p) { return p.order || 0; }));
+                if (minA !== minB) return minA - minB;
+                return catA.localeCompare(catB, 'fa');
+            });
+
+            nav.hidden = categories.length < 2;
+
+            categories.forEach(function (category, index) {
+                const sectionId = 'cat-section-' + index;
+
+                /* دکمه ناوبری دسته */
+                if (categories.length > 1) {
+                    const pill = document.createElement('button');
+                    pill.type = 'button';
+                    pill.className = 'category-pill';
+                    pill.textContent = category;
+                    pill.addEventListener('click', function () {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                    navInner.appendChild(pill);
+                }
+
+                /* بخش دسته */
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                section.id = sectionId;
+                section.dataset.category = category.toLowerCase();
+
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.innerHTML =
+                    '<h2><i class="fa-solid fa-layer-group"></i> ' + escapeHtml(category) + '</h2>' +
+                    '<span class="category-count">' + groups.get(category).length.toLocaleString('fa-IR') + ' کالا</span>';
+
+                const row = document.createElement('div');
+                row.className = 'products-row';
+
+                groups.get(category).forEach(function (product) {
+                    row.appendChild(buildProductCard(product));
+                });
+
+                section.appendChild(header);
+                section.appendChild(row);
+                container.appendChild(section);
+            });
+
+            if (getCart().length) {
+                renderCartPreview(false);
+            }
+        }
+
+
+        /* ==========================================
+           جستجوی سمت کاربر (فیلتر زنده)
+        ========================================== */
+
+        document.getElementById('search-input').addEventListener('input', function () {
+            const term = this.value.trim().toLowerCase();
+
+            document.querySelectorAll('.category-section').forEach(function (section) {
+                let visibleCount = 0;
+
+                section.querySelectorAll('.product-card').forEach(function (card) {
+                    const matches = !term ||
+                        card.dataset.title.includes(term) ||
+                        card.dataset.category.includes(term);
+
+                    card.style.display = matches ? '' : 'none';
+                    if (matches) visibleCount += 1;
+                });
+
+                section.style.display = visibleCount ? '' : 'none';
+            });
+        });
 
 
         /* ==========================================
@@ -2686,370 +1173,25 @@
         ========================================== */
 
         fetch(PRODUCTS_API_URL)
-
-            .then(function(res) {
-
-                return res.json();
-
+            .then(function (res) { return res.json(); })
+            .then(function (rep) {
+                const products = (rep && rep.ok && Array.isArray(rep.products)) ? rep.products : [];
+                renderProducts(products);
             })
-
-
-            .then(function(rep) {
-
-
-                var products =
-                    (rep && rep.ok && Array.isArray(rep.products))
-                    ?
-                    rep.products
-                    :
-                    [];
-
-
-                var container =
-                    document.getElementById(
-                        'products-container'
-                    );
-
-
-                container.innerHTML = '';
-
-
-
-                if (!products.length) {
-
-                    container.innerHTML =
-
-                        '<div class="loading-text">' +
-
-                        'هیچ محصولی ثبت نشده است.' +
-
-                        '</div>';
-
-                    return;
-
-                }
-
-
-
-                /* ==========================================
-                   ساخت کارت محصولات
-                ========================================== */
-
-                products.forEach(function(product) {
-
-
-                    /* نام محصول */
-
-                    var title =
-                        product.title
-                        ?
-                        String(product.title)
-                        :
-                        'دستگاه پزشکی';
-
-
-
-                    /* توضیحات */
-
-                    var desc =
-                        product.description
-                        ?
-                        String(product.description)
-                        :
-                        '';
-
-
-
-                    /* قیمت */
-
-                    var price =
-                        (
-                            product.price !== undefined &&
-                            product.price !== null
-                        )
-                        ?
-                        product.price
-                        :
-                        0;
-
-
-
-                    /* تصویر */
-
-                    var image =
-                        product.imageUrl
-                        ?
-                        String(product.imageUrl)
-                        :
-                        'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20300%20200%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%230f172a%22/%3E%3Crect%20x%3D%22110%22%20y%3D%2270%22%20width%3D%2280%22%20height%3D%2260%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%2314b8a6%22%20stroke-width%3D%225%22/%3E%3Cpath%20d%3D%22M135%2070v-15a15%2015%200%200130%200v15%22%20fill%3D%22none%22%20stroke%3D%22%2314b8a6%22%20stroke-width%3D%225%22/%3E%3C/svg%3E';
-
-
-
-                    /* شناسه */
-
-                    var productId =
-                        String(product.id);
-
-
-
-                    /* قیمت نمایش */
-
-                    var formattedPrice;
-
-
-                    if (
-                        typeof price === 'number' &&
-                        !isNaN(price)
-                    ) {
-
-                        formattedPrice =
-                            price.toLocaleString('fa-IR') +
-                            ' تومان';
-
-                    } else {
-
-                        formattedPrice =
-                            String(price);
-
-                    }
-
-
-
-                    /* کارت */
-
-                    var card =
-                        document.createElement('div');
-
-
-                    card.className =
-                        'product-card';
-
-
-
-                    /* تصویر */
-
-                    var img =
-                        document.createElement('img');
-
-
-                    img.src =
-                        image;
-
-
-                    img.alt =
-                        title;
-
-
-                    img.className =
-                        'product-image';
-
-
-                    img.onerror =
-                        function() {
-
-                            this.src =
-                                'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20300%20200%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%230f172a%22/%3E%3Crect%20x%3D%22110%22%20y%3D%2270%22%20width%3D%2280%22%20height%3D%2260%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%2314b8a6%22%20stroke-width%3D%225%22/%3E%3Cpath%20d%3D%22M135%2070v-15a15%2015%200%200130%200v15%22%20fill%3D%22none%22%20stroke%3D%22%2314b8a6%22%20stroke-width%3D%225%22/%3E%3C/svg%3E';
-
-                        };
-
-
-
-                    /* عنوان */
-
-                    var titleElement =
-                        document.createElement('div');
-
-
-                    titleElement.className =
-                        'product-title';
-
-
-                    titleElement.textContent =
-                        title;
-
-
-
-                    /* توضیحات */
-
-                    var descElement =
-                        document.createElement('div');
-
-
-                    descElement.className =
-                        'product-desc';
-
-
-                    descElement.textContent =
-                        desc;
-
-
-
-                    /* قیمت */
-
-                    var priceElement =
-                        document.createElement('div');
-
-
-                    priceElement.className =
-                        'product-price';
-
-
-                    priceElement.textContent =
-                        formattedPrice;
-
-
-
-                    /* دکمه */
-
-                    var button =
-                        document.createElement('button');
-
-
-                    button.className =
-                        'order-btn';
-
-
-                    button.setAttribute(
-                        'data-product-id',
-                        productId
-                    );
-
-
-                    button.innerHTML =
-                        '<i class="fa-solid fa-cart-shopping"></i> خرید محصول';
-
-
-
-                    /* کلیک */
-
-                    button.addEventListener(
-                        'click',
-                        function() {
-
-
-                            var numericPrice =
-                                parseFloat(price);
-
-
-                            if (
-                                isNaN(numericPrice)
-                            ) {
-
-                                numericPrice =
-                                    0;
-
-                            }
-
-
-                            buyProduct(
-                                productId,
-                                title,
-                                numericPrice,
-                                image
-                            );
-
-                        }
-                    );
-
-
-
-                    /* ساخت کارت */
-
-                    card.appendChild(
-                        img
-                    );
-
-
-                    card.appendChild(
-                        titleElement
-                    );
-
-
-                    if (desc) {
-
-                        card.appendChild(
-                            descElement
-                        );
-
-                    }
-
-
-                    card.appendChild(
-                        priceElement
-                    );
-
-
-                    card.appendChild(
-                        button
-                    );
-
-
-                    container.appendChild(
-                        card
-                    );
-
-                });
-
-
-                /*
-                 * اگر از قبل چیزی در سبد بوده،
-                 * سبد پایین صفحه را هم آماده می‌کنیم
-                 * ولی خودکار صفحه را پایین نمی‌بریم.
-                 */
-
-                if (getCart().length) {
-
-                    renderCartPreview(false);
-
-                }
-
-            })
-
-
-            /* ==========================================
-               خطا
-            ========================================== */
-
-            .catch(function(err) {
-
-
+            .catch(function (err) {
                 console.error(err);
-
-
-                document.getElementById(
-                    'products-container'
-                ).innerHTML =
-
+                document.getElementById('products-container').innerHTML =
                     '<div class="loading-text" style="color:#ef4444;">' +
-
-                    '<i class="fa-solid fa-triangle-exclamation"></i> ' +
-
-                    'خطا در دریافت لیست محصولات.' +
-
+                    '<i class="fa-solid fa-triangle-exclamation"></i> خطا در دریافت لیست محصولات.' +
                     '</div>';
-
             });
 
 
-
-        /* ==========================================
-           اجرای اولیه
-        ========================================== */
-
+        /* اجرای اولیه */
         updateCartCount();
-
-
-        /*
-         * اگر کاربر قبلاً محصولی انتخاب کرده باشد،
-         * سبد در پایین صفحه نمایش داده می‌شود.
-         */
-
         if (getCart().length) {
-
             renderCartPreview(false);
-
         }
-
 
     </script>
 
