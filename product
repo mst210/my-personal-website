@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محصول | دکتر محمدصادق تاج</title>
+    <meta name="robots" content="index, follow">
+
+    <meta name="description" id="metaDescription" content="مشاهده مشخصات، تصاویر و قیمت تجهیزات پزشکی در فروشگاه دکتر محمدصادق تاج.">
+    <link rel="canonical" id="canonicalLink" href="https://www.drmohammadsadeqtaj.ir/product.html">
+
+    <meta property="og:type" content="product">
+    <meta property="og:site_name" content="دکتر محمدصادق تاج">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:title" id="ogTitle" content="محصول | دکتر محمدصادق تاج">
+    <meta property="og:description" id="ogDescription" content="مشاهده مشخصات، تصاویر و قیمت تجهیزات پزشکی در فروشگاه دکتر محمدصادق تاج.">
+    <meta property="og:image" id="ogImage" content="https://www.drmohammadsadeqtaj.ir/bg.jpg">
+    <meta property="og:url" id="ogUrl" content="https://www.drmohammadsadeqtaj.ir/product.html">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitterTitle" content="محصول | دکتر محمدصادق تاج">
+    <meta name="twitter:description" id="twitterDescription" content="مشاهده مشخصات، تصاویر و قیمت تجهیزات پزشکی در فروشگاه دکتر محمدصادق تاج.">
+
+    <script type="application/ld+json" id="productJsonLd">{}</script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f172a'/%3E%3Cpath d='M50 20c-8 0-14 6-14 14v6h-8v10h8v8c0 8 6 14 14 14s14-6 14-14v-8h8V40h-8v-6c0-8-6-14-14-14z' fill='%2314b8a6'/%3E%3C/svg%3E">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Vazirmatn -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+    <style>
+
+        :root {
+            --primary-teal: #0f8a94;
+            --dark-teal: #0b6b73;
+            --accent-orange: #f7941d;
+            --accent-orange-dark: #e0800f;
+            --bg-page: #eef1f4;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e5e9ef;
+            --success: #059669;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================
+           HEADER (TOP BAR - TEAL)
+        ========================= */
+
+        .top-bar {
+            background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .top-bar-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 9px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .cart-btn {
+            background: var(--accent-orange);
+            color: #ffffff;
+            border: none;
+            text-decoration: none;
+            padding: 9px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .cart-btn:hover { background: var(--accent-orange-dark); }
+
+        .cart-btn span {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            padding: 1px 8px;
+            font-size: 12px;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
+            flex-grow: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        #status {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        #status i { font-size: 26px; display: block; margin-bottom: 12px; color: var(--primary-teal); }
+
+        .breadcrumb {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .breadcrumb a { color: var(--primary-teal); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        .product-detail {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 28px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+        }
+
+        @media (max-width: 720px) {
+            .product-detail { grid-template-columns: 1fr; }
+        }
+
+        .detail-image-wrap {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: var(--bg-page);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .detail-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .detail-category {
+            display: inline-block;
+            background: rgba(15, 138, 148, 0.1);
+            color: var(--primary-teal);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .detail-title {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .detail-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin-bottom: 18px;
+        }
+
+        .detail-desc {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            line-height: 2;
+            margin-bottom: 22px;
+            white-space: pre-line;
+        }
+
+        .detail-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .qty-box button {
+            background: var(--bg-page);
+            border: none;
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .qty-box button:hover { background: var(--border-color); }
+
+        .qty-box span {
+            width: 42px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .add-cart-btn {
+            background: var(--accent-orange);
+            color: #ffffff;
+            border: none;
+            padding: 0 22px;
+            height: 44px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .add-cart-btn:hover { background: var(--accent-orange-dark); }
+        .add-cart-btn.added { background: var(--success); }
+
+        footer {
+            text-align: center;
+            padding: 24px 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--dark-teal);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 200;
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="top-bar-container">
+            <a href="products.html" class="back-btn">
+                <i class="fa-solid fa-arrow-right"></i>
+                بازگشت به محصولات
+            </a>
+            <a href="products.html" class="cart-btn">
+                <i class="fa-solid fa-cart-shopping"></i>
+                سبد خرید
+                <span id="cart-count">۰</span>
+            </a>
+        </div>
+    </div>
+
+    <main>
+
+        <div id="status">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            در حال دریافت اطلاعات محصول...
+        </div>
+
+        <div id="productDetail" hidden>
+
+            <div class="breadcrumb">
+                <a href="products.html">لیست محصولات</a>
+                <span id="breadcrumbTitle"></span>
+            </div>
+
+            <div class="product-detail">
+
+                <div class="detail-image-wrap">
+                    <img id="detailImage" alt="">
+                </div>
+
+                <div class="detail-info">
+                    <div class="detail-category" id="detailCategory" hidden></div>
+                    <h1 class="detail-title" id="detailTitle"></h1>
+                    <div class="detail-price" id="detailPrice"></div>
+                    <div class="detail-desc" id="detailDesc"></div>
+
+                    <div class="detail-actions">
+                        <div class="qty-box">
+                            <button type="button" id="qtyMinus">−</button>
+                            <span id="qtyValue">۱</span>
+                            <button type="button" id="qtyPlus">+</button>
+                        </div>
+
+                        <button type="button" class="add-cart-btn" id="addCartBtn">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            افزودن به سبد خرید
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="toast"></div>
+
+    <footer id="site-footer-text">
+        © کلیه حقوق برای دکتر محمدصادق تاج محفوظ است.
+    </footer>
+
+    <script>
+        (function () {
+            var API_BASE = '/api';
+
+            var FALLBACK_IMAGE =
+                'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20300%20200%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23eef1f4%22/%3E%3Crect%20x%3D%22110%22%20y%3D%2270%22%20width%3D%2280%22%20height%3D%2260%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%230f8a94%22%20stroke-width%3D%225%22/%3E%3Cpath%20d%3D%22M135%2070v-15a15%2015%200%200130%200v15%22%20fill%3D%22none%22%20stroke%3D%22%230f8a94%22%20stroke-width%3D%225%22/%3E%3C/svg%3E';
+
+            var CART_KEY = 'taj_medical_cart';
+
+            function getCart() {
+                try {
+                    return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveCart(cart) {
+                localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            }
+
+            function updateCartCount() {
+                var cart = getCart();
+                var total = cart.reduce(function (sum, item) {
+                    return sum + (Number(item.quantity) || 1);
+                }, 0);
+                document.getElementById('cart-count').textContent = total.toLocaleString('fa-IR');
+            }
+
+            function showToast(message) {
+                var toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(function () { toast.classList.remove('show'); }, 2200);
+            }
+
+            function formatPrice(price) {
+                var num = Number(price);
+                if (isNaN(num)) return String(price || '');
+                return num.toLocaleString('fa-IR') + ' تومان';
+            }
+
+            function showStatus(html) {
+                document.getElementById('status').innerHTML = html;
+                document.getElementById('status').hidden = false;
+                document.getElementById('productDetail').hidden = true;
+            }
+
+            var params = new URLSearchParams(window.location.search);
+            var id = params.get('id');
+
+            if (!id) {
+                showStatus('<i class="fa-solid fa-circle-exclamation"></i> شناسه محصول مشخص نیست.');
+                updateCartCount();
+                return;
+            }
+
+            var qty = 1;
+
+            fetch(API_BASE + '/public/products/' + encodeURIComponent(id))
+                .then(function (response) {
+                    if (!response.ok) throw new Error('not found');
+                    return response.json();
+                })
+                .then(function (result) {
+                    if (!result || !result.ok || !result.product) throw new Error('not found');
+
+                    var product = result.product;
+                    var title = product.title ? String(product.title) : 'محصول';
+                    var image = product.imageUrl ? String(product.imageUrl) : FALLBACK_IMAGE;
+                    var descText = product.description ? String(product.description) : '';
+                    var shortDesc = (descText || title).slice(0, 155);
+                    var pageUrl = window.location.origin + '/product.html?id=' + encodeURIComponent(id);
+
+                    document.title = title + ' | دکتر محمدصادق تاج';
+                    document.getElementById('breadcrumbTitle').textContent = ' / ' + title;
+
+                    document.getElementById('metaDescription').setAttribute('content', shortDesc);
+                    document.getElementById('canonicalLink').setAttribute('href', pageUrl);
+                    document.getElementById('ogTitle').setAttribute('content', title + ' | دکتر محمدصادق تاج');
+                    document.getElementById('ogDescription').setAttribute('content', shortDesc);
+                    document.getElementById('ogUrl').setAttribute('content', pageUrl);
+                    document.getElementById('twitterTitle').setAttribute('content', title + ' | دکتر محمدصادق تاج');
+                    document.getElementById('twitterDescription').setAttribute('content', shortDesc);
+                    if (/^https:\/\//i.test(image)) {
+                        document.getElementById('ogImage').setAttribute('content', image);
+                    }
+
+                    var jsonLd = {
+                        '@context': 'https://schema.org',
+                        '@type': 'Product',
+                        'name': title,
+                        'image': /^https:\/\//i.test(image) ? [image] : undefined,
+                        'description': descText || title,
+                        'url': pageUrl,
+                        'offers': {
+                            '@type': 'Offer',
+                            'url': pageUrl,
+                            'priceCurrency': 'IRR',
+                            'price': String(Math.round((Number(product.price) || 0) * 10)),
+                            'availability': 'https://schema.org/InStock'
+                        }
+                    };
+                    document.getElementById('productJsonLd').textContent = JSON.stringify(jsonLd);
+
+                    var catEl = document.getElementById('detailCategory');
+                    if (product.category) {
+                        catEl.textContent = product.category;
+                        catEl.hidden = false;
+                    }
+
+                    document.getElementById('detailTitle').textContent = title;
+                    document.getElementById('detailPrice').textContent = formatPrice(product.price);
+
+                    var descEl = document.getElementById('detailDesc');
+                    if (product.description) {
+                        descEl.textContent = product.description;
+                    } else {
+                        descEl.remove();
+                    }
+
+                    var img = document.getElementById('detailImage');
+                    img.src = image;
+                    img.alt = title;
+                    img.onerror = function () { this.src = FALLBACK_IMAGE; };
+
+                    document.getElementById('qtyMinus').addEventListener('click', function () {
+                        if (qty > 1) qty -= 1;
+                        document.getElementById('qtyValue').textContent = qty.toLocaleString('fa-IR');
+                    });
+
+                    document.getElementById('qtyPlus').addEventListener('click', function () {
+                        qty += 1;
+                        document.getElementById('qtyValue').textContent = qty.toLocaleString('fa-IR');
+                    });
+
+                    document.getElementById('addCartBtn').addEventListener('click', function () {
+                        var cart = getCart();
+                        var price = Number(product.price) || 0;
+                        var existing = cart.find(function (item) { return item.id === id; });
+
+                        if (existing) {
+                            existing.quantity = (Number(existing.quantity) || 1) + qty;
+                        } else {
+                            cart.push({
+                                id: id,
+                                name: title,
+                                title: title,
+                                price: price,
+                                image: image,
+                                quantity: qty
+                            });
+                        }
+
+                        saveCart(cart);
+                        updateCartCount();
+                        showToast('محصول «' + title + '» به سبد خرید اضافه شد ✓');
+
+                        var btn = document.getElementById('addCartBtn');
+                        btn.classList.add('added');
+                        btn.innerHTML = '<i class="fa-solid fa-check"></i> افزوده شد';
+                        setTimeout(function () {
+                            btn.classList.remove('added');
+                            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> افزودن به سبد خرید';
+                        }, 1500);
+                    });
+
+                    document.getElementById('status').hidden = true;
+                    document.getElementById('productDetail').hidden = false;
+                })
+                .catch(function () {
+                    showStatus('<i class="fa-solid fa-circle-exclamation"></i> این محصول پیدا نشد یا حذف شده است.');
+                });
+
+            updateCartCount();
+
+            fetch(API_BASE + '/public/pages/global')
+                .then(function (r) { return r.json(); })
+                .then(function (result) {
+                    var footerEl = document.getElementById('site-footer-text');
+                    if (result && result.ok && result.fields && result.fields.footerText && footerEl) {
+                        footerEl.textContent = result.fields.footerText;
+                    }
+                })
+                .catch(function () {});
+        })();
+    </script>
+
+</body>
+</html>
