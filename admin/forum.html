@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدیریت تالار گفتگو | پنل ادمین</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+ .q-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);margin-bottom:10px}
+ .q-row h4{margin:0 0 5px;font-size:14.5px}.q-meta{color:var(--text-muted);font-size:12px}
+ .q-actions{display:flex;gap:6px;flex-wrap:wrap}.q-actions .icon-btn{padding:7px 11px;font-size:12px}
+ .ans{border-right:3px solid var(--border-color);padding:8px 12px;margin:8px 0;background:rgba(255,255,255,.03);border-radius:8px;font-size:13.5px;line-height:1.9;white-space:pre-wrap}
+ .ans.doc{border-color:var(--accent-teal)}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+ .chip{background:rgba(255,255,255,.08);border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer}
+ .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="page-container">
+ <div class="top-header">
+  <div class="header-title"><h1>مدیریت تالار گفتگو</h1><p>تأیید سوالات، پاسخ‌دهی، گزارش‌ها و تنظیمات</p></div>
+  <div class="header-actions"><button class="icon-btn" id="logoutBtn" hidden><i class="fa-solid fa-right-from-bracket"></i> خروج</button></div>
+ </div>
+ <div class="nav-bar" id="navBar" hidden></div>
+ <section id="loading" class="status-box"><i class="fa-solid fa-spinner fa-spin"></i> در حال بررسی دسترسی...</section>
+ <section id="denied" class="status-box error" hidden><i class="fa-solid fa-lock"></i><div id="deniedText">برای ورود ابتدا از <a href="index.html" style="text-decoration:underline">داشبورد</a> وارد شوید.</div></section>
+
+ <section id="app" hidden>
+  <div class="stat-grid" id="stats"></div>
+  <div class="tabs" id="tabs"></div>
+
+  <div id="paneQ">
+   <div class="toolbar">
+    <input class="search-input" id="search" type="search" placeholder="جستجو در عنوان یا نام کاربر...">
+    <select id="catFilter" class="field" style="width:auto;padding:9px"><option value="">همه دسته‌ها</option></select>
+   </div>
+   <div id="list"></div>
+  </div>
+
+  <div id="paneR" hidden><div id="reports"></div></div>
+
+  <div id="paneS" hidden>
+   <div class="section-card">
+    <h2><i class="fa-solid fa-gear"></i> تنظیمات تالار</h2>
+    <label class="chk"><input type="checkbox" id="sOpen"> تالار فعال باشد (ثبت سوال و پاسخ جدید)</label>
+    <label class="chk"><input type="checkbox" id="sAuto"> سوالات بدون تأیید دستی منتشر شوند</label>
+    <label class="chk"><input type="checkbox" id="sReply"> کاربران بتوانند به یکدیگر پاسخ دهند (در غیر این صورت فقط پزشک)</label>
+    <div class="field"><label>دسته‌بندی‌ها (با کاما جدا کنید)</label><input id="sCats"></div>
+    <div class="field"><label>کلمات ممنوعه (با کاما؛ سوال حاوی آن‌ها خودکار برای بررسی نگه داشته می‌شود)</label><textarea id="sWords" style="min-height:60px"></textarea></div>
+    <div class="field"><label>هشدار پزشکی بالای تالار</label><textarea id="sNote" style="min-height:70px"></textarea></div>
+    <div class="field"><label>حداکثر سوال در روز برای هر کاربر</label><input type="number" id="sLimit" min="1" max="50"></div>
+    <button class="icon-btn btn-primary" id="saveSettings">ذخیره تنظیمات</button>
+   </div>
+   <div class="section-card">
+    <h2><i class="fa-solid fa-user-slash"></i> مسدودسازی کاربر</h2>
+    <div class="hint" style="color:var(--text-muted);font-size:12px;margin-bottom:10px">کاربران مسدود نمی‌توانند سوال یا پاسخ ثبت کنند.</div>
+    <div class="field"><label>شناسه کاربر (uid)</label><input id="banUid" dir="ltr"></div>
+    <button class="icon-btn btn-danger" id="banBtn">مسدود کردن</button>
+    <button class="icon-btn" id="unbanBtn">رفع مسدودیت</button>
+    <div class="chips" id="banned"></div>
+   </div>
+  </div>
+ </section>
+</div>
+
+<div class="modal-overlay" id="ov" hidden>
+ <div class="modal-box">
+  <div class="modal-head"><h3 id="mTitle"></h3><button class="modal-close" id="mClose"><i class="fa-solid fa-xmark"></i></button></div>
+  <div id="mMeta" class="q-meta"></div>
+  <div class="field" style="margin-top:10px"><label>عنوان</label><input id="eTitle" maxlength="200"></div>
+  <div class="field"><label>متن سوال</label><textarea id="eBody" maxlength="5000"></textarea></div>
+  <div class="field"><label>دسته‌بندی</label><select id="eCat"></select></div>
+  <div class="chips" style="margin-bottom:10px">
+   <label class="chk"><input type="checkbox" id="ePin"> سنجاق شود</label>
+   <label class="chk"><input type="checkbox" id="eClosed"> بسته شود (عدم امکان پاسخ)</label>
+  </div>
+  <button class="icon-btn" id="saveQ">ذخیره ویرایش</button>
+  <h4 style="margin:18px 0 6px">پاسخ‌ها</h4>
+  <div id="answers"></div>
+  <div class="field"><label>پاسخ رسمی پزشک</label><textarea id="newAns" maxlength="5000"></textarea></div>
+  <button class="icon-btn btn-primary" id="sendAns"><i class="fa-solid fa-user-doctor"></i> ثبت پاسخ پزشک</button>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { apiFetch, friendlyError, showToast, formatDate, escapeHtml, renderNav, readSession, saveSession } from "./shared.js";
+const $ = id => document.getElementById(id);
+const S = { perms: [], isSuper: false, tab: "q", status: "pending", list: [], settings: {}, cur: null };
+const can = a => S.isSuper || S.perms.includes("forum." + a);
+const STATUS = { pending: "در انتظار تأیید", published: "منتشرشده", rejected: "ردشده", hidden: "مخفی" };
+const BADGE = { pending: "warn", published: "published", rejected: "danger", hidden: "draft" };
+const api = (p, m, b) => apiFetch("/admin/forum" + p, m ? { method: m, body: b ? JSON.stringify(b) : undefined } : {});
+
+async function boot() {
+  if (!readSession()?.idToken) { $("loading").hidden = true; $("denied").hidden = false; return; }
+  try {
+    const me = await apiFetch("/admin/me");
+    S.perms = me.permissions || []; S.isSuper = !!me.isSuper;
+    $("navBar").hidden = false; renderNav("forum", S.isSuper); $("logoutBtn").hidden = false;
+    if (!can("view")) throw Object.assign(new Error(), { code: "FORBIDDEN" });
+    $("loading").hidden = true; $("app").hidden = false;
+    await loadSettings(); renderTabs(); await load();
+  } catch (e) {
+    $("loading").hidden = true;
+    if (e.status === 401) { saveSession(null); $("denied").hidden = false; return; }
+    $("deniedText").textContent = friendlyError(e); $("denied").hidden = false;
+  }
+}
+$("logoutBtn").onclick = () => { saveSession(null); location.reload(); };
+
+function renderTabs() {
+  const t = [["pending", "در انتظار تأیید"], ["published", "منتشرشده"], ["rejected", "ردشده"], ["hidden", "مخفی"], ["reports", "گزارش‌ها"], ["settings", "تنظیمات"]];
+  $("tabs").innerHTML = t.map(([k, l]) => `<button class="tab-btn ${k === (S.tab === "q" ? S.status : S.tab) ? "active" : ""}" data-k="${k}">${l}</button>`).join("");
+  $("tabs").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const k = b.dataset.k; S.tab = ["reports", "settings"].includes(k) ? k : "q"; if (S.tab === "q") S.status = k;
+    $("paneQ").hidden = S.tab !== "q"; $("paneR").hidden = S.tab !== "reports"; $("paneS").hidden = S.tab !== "settings";
+    renderTabs(); S.tab === "reports" ? loadReports() : S.tab === "q" ? load() : 0;
+  });
+}
+
+async function loadSettings() {
+  try { S.settings = (await api("/settings")).settings || {}; } catch { S.settings = {}; }
+  const s = S.settings, cats = s.categories || [];
+  $("sOpen").checked = s.open !== false; $("sAuto").checked = !!s.autoApprove; $("sReply").checked = s.userReplies !== false;
+  $("sCats").value = cats.join("، "); $("sWords").value = (s.blockedWords || []).join("، ");
+  $("sNote").value = s.disclaimer || ""; $("sLimit").value = s.dailyLimit || 5;
+  $("catFilter").innerHTML = '<option value="">همه دسته‌ها</option>' + cats.map(c => `<option>${escapeHtml(c)}</option>`).join("");
+  $("eCat").innerHTML = '<option value="">بدون دسته</option>' + cats.map(c => `<option>${escapeHtml(c)}</option>`).join("");
+  $("banned").innerHTML = (s.bannedUids || []).map(u => `<span class="chip" data-u="${escapeHtml(u)}" title="رفع مسدودیت">${escapeHtml(u)} ✕</span>`).join("");
+  $("banned").querySelectorAll(".chip").forEach(c => c.onclick = () => ban(c.dataset.u, false));
+  try { const st = await api("/stats"); $("stats").innerHTML = [["در انتظار", st.pending, "fa-hourglass-half"], ["منتشرشده", st.published, "fa-comments"], ["بدون پاسخ", st.unanswered, "fa-circle-question"], ["گزارش باز", st.reports, "fa-flag"]]
+    .map(([l, v, i]) => `<div class="stat-card"><div><div style="font-size:22px;font-weight:700">${(v ?? 0).toLocaleString("fa-IR")}</div><div class="q-meta">${l}</div></div><i class="fa-solid ${i}" style="margin-right:auto;color:var(--accent-teal)"></i></div>`).join(""); } catch { $("stats").innerHTML = ""; }
+}
+const splitList = v => v.split(/[,،\n]/).map(x => x.trim()).filter(Boolean);
+$("saveSettings").onclick = async () => {
+  if (!can("edit")) return showToast("مجوز ویرایش ندارید.", "error");
+  try {
+    await api("/settings", "PUT", { open: $("sOpen").checked, autoApprove: $("sAuto").checked, userReplies: $("sReply").checked, categories: splitList($("sCats").value), blockedWords: splitList($("sWords").value), disclaimer: $("sNote").value.trim(), dailyLimit: Number($("sLimit").value) || 5 });
+    showToast("تنظیمات ذخیره شد."); loadSettings();
+  } catch (e) { showToast(friendlyError(e), "error"); }
+};
+async function ban(uid, on) {
+  uid = (uid || "").trim(); if (!uid) return;
+  try { await api("/ban", "PUT", { uid, banned: on }); showToast(on ? "کاربر مسدود شد." : "مسدودیت برداشته شد."); $("banUid").value = ""; loadSettings(); } catch (e) { showToast(friendlyError(e), "error"); }
+}
+$("banBtn").onclick = () => ban($("banUid").value, true); $("unbanBtn").onclick = () => ban($("banUid").value, false);
+
+async function load() {
+  $("list").innerHTML = '<div class="status-box"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+  try { S.list = (await api("/questions?status=" + S.status)).questions || []; render(); }
+  catch (e) { $("list").innerHTML = `<div class="status-box error"><i class="fa-solid fa-circle-exclamation"></i>${escapeHtml(friendlyError(e))}</div>`; }
+}
+function render() {
+  const q = $("search").value.trim().toLowerCase(), c = $("catFilter").value;
+  const rows = S.list.filter(x => (!c || x.category === c) && (!q || (x.title + " " + x.authorName).toLowerCase().includes(q)));
+  $("list").innerHTML = rows.length ? rows.map(x => `
+   <div class="q-row"><div><h4>${x.pinned ? "📌 " : ""}${escapeHtml(x.title)}</h4>
+    <div class="q-meta">${escapeHtml(x.authorName || "کاربر")} · ${formatDate(x.createdAt)} · ${(x.answerCount || 0).toLocaleString("fa-IR")} پاسخ ${x.category ? "· " + escapeHtml(x.category) : ""} ${x.closed ? "· بسته" : ""}</div></div>
+    <div class="q-actions"><span class="badge ${BADGE[x.status] || ""}">${STATUS[x.status] || x.status}</span>
+     ${x.status !== "published" && can("publish") ? `<button class="icon-btn btn-primary" data-a="published" data-id="${x.id}">تأیید</button>` : ""}
+     ${x.status === "pending" && can("publish") ? `<button class="icon-btn btn-warn" data-a="rejected" data-id="${x.id}">رد</button>` : ""}
+     ${x.status === "published" && can("publish") ? `<button class="icon-btn" data-a="hidden" data-id="${x.id}">مخفی</button>` : ""}
+     <button class="icon-btn" data-a="open" data-id="${x.id}">مشاهده / پاسخ</button>
+     ${can("delete") ? `<button class="icon-btn btn-danger" data-a="del" data-id="${x.id}"><i class="fa-solid fa-trash"></i></button>` : ""}</div></div>`).join("")
+   : '<div class="status-box"><i class="fa-regular fa-folder-open"></i>موردی وجود ندارد.</div>';
+  $("list").querySelectorAll("[data-a]").forEach(b => b.onclick = () => act(b.dataset.a, b.dataset.id));
+}
+$("search").oninput = render; $("catFilter").onchange = render;
+
+async function act(a, id) {
+  try {
+    if (a === "open") return openQ(id);
+    if (a === "del") { if (!confirm("این سوال و تمام پاسخ‌هایش حذف شود؟")) return; await api("/questions/" + encodeURIComponent(id), "DELETE"); showToast("حذف شد."); }
+    else { await api("/questions/" + encodeURIComponent(id), "PUT", { status: a }); showToast("وضعیت تغییر کرد."); }
+    load(); loadSettings();
+  } catch (e) { showToast(friendlyError(e), "error"); }
+}
+
+async function openQ(id) {
+  const r = await api("/questions/" + encodeURIComponent(id)); S.cur = r.question;
+  const q = S.cur; $("mTitle").textContent = "بررسی سوال";
+  $("mMeta").textContent = `${q.authorName || "کاربر"} (${q.uid || ""}) · ${formatDate(q.createdAt)}${q.anonymous ? " · ناشناس" : ""}`;
+  $("eTitle").value = q.title || ""; $("eBody").value = q.body || ""; $("eCat").value = q.category || "";
+  $("ePin").checked = !!q.pinned; $("eClosed").checked = !!q.closed; $("newAns").value = "";
+  drawAnswers(r.answers || []); $("ov").hidden = false;
+}
+function drawAnswers(list) {
+  $("answers").innerHTML = list.length ? list.map(a => `<div class="ans ${a.isDoctor ? "doc" : ""}"><div class="q-meta">${a.isDoctor ? "👨‍⚕️ پزشک" : escapeHtml(a.authorName || "کاربر")} · ${formatDate(a.createdAt)}
+   ${can("delete") ? `<a href="#" data-d="${a.id}" style="color:#fecaca;margin-right:8px">حذف</a>` : ""}</div>${escapeHtml(a.body)}</div>`).join("") : '<div class="q-meta">هنوز پاسخی ثبت نشده.</div>';
+  $("answers").querySelectorAll("[data-d]").forEach(l => l.onclick = async ev => {
+    ev.preventDefault(); if (!confirm("پاسخ حذف شود؟")) return;
+    try { await api(`/questions/${encodeURIComponent(S.cur.id)}/answers/${encodeURIComponent(l.dataset.d)}`, "DELETE"); openQ(S.cur.id); load(); } catch (e) { showToast(friendlyError(e), "error"); }
+  });
+}
+$("mClose").onclick = () => $("ov").hidden = true;
+$("saveQ").onclick = async () => {
+  try { await api("/questions/" + encodeURIComponent(S.cur.id), "PUT", { title: $("eTitle").value.trim(), body: $("eBody").value.trim(), category: $("eCat").value, pinned: $("ePin").checked, closed: $("eClosed").checked }); showToast("ذخیره شد."); load(); }
+  catch (e) { showToast(friendlyError(e), "error"); }
+};
+$("sendAns").onclick = async () => {
+  const body = $("newAns").value.trim(); if (!body) return;
+  try { await api(`/questions/${encodeURIComponent(S.cur.id)}/answers`, "POST", { body }); showToast("پاسخ ثبت شد."); openQ(S.cur.id); load(); loadSettings(); }
+  catch (e) { showToast(friendlyError(e), "error"); }
+};
+
+async function loadReports() {
+  try {
+    const rs = (await api("/reports")).reports || [];
+    $("reports").innerHTML = rs.length ? rs.map(r => `<div class="q-row"><div><h4>${r.targetType === "answer" ? "پاسخ" : "سوال"}: ${escapeHtml(r.preview || r.targetId)}</h4>
+     <div class="q-meta">دلیل: ${escapeHtml(r.reason || "—")} · ${formatDate(r.createdAt)}</div></div>
+     <div class="q-actions"><button class="icon-btn" data-o="${r.questionId}">مشاهده</button>
+     <button class="icon-btn btn-primary" data-r="${r.id}">بسته شد</button></div></div>`).join("") : '<div class="status-box"><i class="fa-regular fa-flag"></i>گزارشی وجود ندارد.</div>';
+    $("reports").querySelectorAll("[data-o]").forEach(b => b.onclick = () => openQ(b.dataset.o));
+    $("reports").querySelectorAll("[data-r]").forEach(b => b.onclick = async () => { try { await api("/reports/" + encodeURIComponent(b.dataset.r), "PUT", { resolved: true }); loadReports(); loadSettings(); } catch (e) { showToast(friendlyError(e), "error"); } });
+  } catch (e) { $("reports").innerHTML = `<div class="status-box error">${escapeHtml(friendlyError(e))}</div>`; }
+}
+boot();
+</script>
+</body>
+</html>
