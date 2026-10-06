@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تالار گفتگو و پرسش پزشکی | دکتر محمدصادق تاج</title>
+<meta name="description" content="پرسش‌های پزشکی خود را مطرح کنید و پاسخ بگیرید.">
+<link rel="canonical" href="https://www.drmohammadsadeqtaj.ir/forum.html">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+ :root{--blue:#0284c7;--teal:#14b8a6;--muted:#94a3b8;--line:rgba(255,255,255,.12)}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Vazirmatn',Tahoma,sans-serif;background:#0b1324;color:#f8fafc;min-height:100vh;line-height:1.9}
+ a{color:inherit;text-decoration:none}
+ .wrap{width:min(860px,94%);margin:0 auto;padding:24px 0 60px}
+ .back{display:inline-flex;gap:8px;align-items:center;color:var(--muted);font-size:14px;margin-bottom:16px}
+ h1{font-size:24px;margin-bottom:6px}.sub{color:var(--muted);font-size:14px}
+ .card{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:12px}
+ .note{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35);color:#fde68a;font-size:13px;margin:16px 0}
+ .bar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+ input,select,textarea{font-family:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;width:100%}
+ input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+ option{color:#000}textarea{min-height:110px;resize:vertical}
+ .bar input{flex:1;min-width:180px}.bar select{width:auto}
+ .btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;padding:10px 18px;border-radius:12px;cursor:pointer;font:600 14px 'Vazirmatn';}
+ .btn.p{background:linear-gradient(135deg,var(--blue),var(--teal));border:none}
+ .btn:disabled{opacity:.5}
+ .q{display:block}.q:hover{border-color:var(--teal)}
+ .q h3{font-size:16px;margin-bottom:4px}.meta{color:var(--muted);font-size:12.5px}
+ .tag{background:rgba(20,184,166,.15);color:#5eead4;border-radius:20px;padding:2px 10px;font-size:12px}
+ .ok{background:rgba(34,197,94,.15);color:#86efac}
+ .body{white-space:pre-wrap;word-break:break-word;margin:10px 0}
+ .ans{border-right:3px solid var(--line)}.ans.doc{border-right-color:var(--teal);background:rgba(20,184,166,.08)}
+ .doc-badge{color:#5eead4;font-weight:700;font-size:13px}
+ .rep{background:none;border:none;color:var(--muted);cursor:pointer;font:12px 'Vazirmatn'}
+ .f{margin-bottom:12px}.f label{display:block;font-size:13px;color:var(--muted)}
+ .chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}.chk input{width:auto}
+ .msg{text-align:center;color:var(--muted);padding:40px 10px}
+ .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid var(--line);padding:12px 20px;border-radius:12px;font-size:14px;display:none;z-index:9}
+ [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <a class="back" href="index.html"><i class="fa-solid fa-arrow-right"></i> بازگشت به صفحه اصلی</a>
+
+ <!-- list view -->
+ <section id="vList">
+  <h1><i class="fa-solid fa-comments" style="color:var(--teal)"></i> تالار گفتگو و پرسش پزشکی</h1>
+  <p class="sub">سوال پزشکی خود را بپرسید؛ پاسخ‌ها توسط دکتر تاج و کاربران داده می‌شود.</p>
+  <div class="card note" id="disclaimer"><i class="fa-solid fa-triangle-exclamation"></i> پاسخ‌های این تالار جنبه‌ی آموزشی دارد و جایگزین ویزیت و تشخیص پزشک نیست. در شرایط اورژانسی با ۱۱۵ تماس بگیرید.</div>
+  <div class="bar">
+   <input id="q" type="search" placeholder="جستجو در سوالات...">
+   <select id="cat"><option value="">همه دسته‌ها</option></select>
+   <select id="flt"><option value="">همه</option><option value="answered">پاسخ داده‌شده</option><option value="open">بدون پاسخ</option></select>
+   <button class="btn p" id="askBtn"><i class="fa-solid fa-circle-plus"></i> پرسیدن سوال</button>
+  </div>
+  <div id="ask" class="card" hidden>
+   <div class="f"><label>عنوان سوال *</label><input id="aTitle" maxlength="150"></div>
+   <div class="f"><label>دسته‌بندی</label><select id="aCat"></select></div>
+   <div class="f"><label>شرح سوال * (سن، علائم، مدت و داروهای مصرفی را بنویسید)</label><textarea id="aBody" maxlength="3000"></textarea></div>
+   <label class="chk f"><input type="checkbox" id="aAnon"> نام من نمایش داده نشود</label>
+   <p class="meta f">از نوشتن شماره تلفن و اطلاعات هویتی خودداری کنید. سوال پس از بررسی منتشر می‌شود.</p>
+   <button class="btn p" id="aSend">ارسال سوال</button>
+  </div>
+  <div id="list"><div class="msg"><i class="fa-solid fa-spinner fa-spin"></i> در حال دریافت...</div></div>
+ </section>
+
+ <!-- detail view -->
+ <section id="vDetail" hidden>
+  <a class="back" href="forum.html" style="margin-bottom:10px"><i class="fa-solid fa-list"></i> همه سوالات</a>
+  <div id="detail"></div>
+  <div id="replyBox" class="card" hidden>
+   <div class="f"><label>پاسخ شما</label><textarea id="rBody" maxlength="3000"></textarea></div>
+   <button class="btn p" id="rSend">ثبت پاسخ</button>
+  </div>
+  <div id="loginHint" class="card msg" hidden>برای پرسیدن یا پاسخ دادن <a href="panel.html" style="color:var(--teal);text-decoration:underline">وارد شوید یا ثبت‌نام کنید</a>.</div>
+ </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var API = "/api", KEY = "taj_medical_proxy_auth_v1", $ = function (i) { return document.getElementById(i); };
+  var all = [], settings = {}, session = null;
+  try { session = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  var loggedIn = !!(session && session.idToken);
+
+  function esc(s) { var d = document.createElement("div"); d.textContent = String(s == null ? "" : s); return d.innerHTML; }
+  function fa(d) { try { return new Date(d).toLocaleDateString("fa-IR"); } catch (e) { return ""; } }
+  function toast(m) { var t = $("toast"); t.textContent = m; t.style.display = "block"; clearTimeout(toast.t); toast.t = setTimeout(function () { t.style.display = "none"; }, 3500); }
+  var ERR = { UNAUTHENTICATED: "ابتدا وارد حساب خود شوید.", BANNED: "امکان ثبت مطلب برای حساب شما محدود شده است.", FORUM_CLOSED: "تالار موقتاً بسته است.",
+    RATE_LIMIT: "تعداد سوالات امروز شما به حداکثر رسیده است.", MISSING_FIELDS: "لطفاً عنوان و متن را کامل کنید.", QUESTION_CLOSED: "این سوال بسته شده است." };
+
+  function call(path, opt) {
+    opt = opt || {}; var h = { "Content-Type": "application/json" };
+    if (loggedIn) h.Authorization = "Bearer " + session.idToken;
+    return fetch(API + path, { method: opt.method || "GET", headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (r.status === 401 && loggedIn && session.refreshToken && !opt.retried) {
+          return fetch(API + "/auth/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refreshToken: session.refreshToken }) })
+            .then(function (x) { return x.ok ? x.json() : Promise.reject(); })
+            .then(function (n) { session.idToken = n.idToken; session.refreshToken = n.refreshToken || session.refreshToken; localStorage.setItem(KEY, JSON.stringify(session)); opt.retried = true; return call(path, opt); });
+        }
+        if (!r.ok) { var e = new Error(ERR[j.error] || j.message || "خطایی رخ داد."); throw e; }
+        return j;
+      });
+    });
+  }
+
+  function loadSettings() {
+    return call("/public/forum/settings").then(function (r) {
+      settings = r.settings || {};
+      if (settings.disclaimer) $("disclaimer").textContent = settings.disclaimer;
+      var opts = (settings.categories || []).map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("");
+      $("cat").innerHTML = '<option value="">همه دسته‌ها</option>' + opts;
+      $("aCat").innerHTML = '<option value="">انتخاب دسته‌بندی</option>' + opts;
+    }).catch(function () {});
+  }
+
+  function renderList() {
+    var q = $("q").value.trim().toLowerCase(), c = $("cat").value, f = $("flt").value;
+    var rows = all.filter(function (x) {
+      return (!c || x.category === c) && (!q || (x.title || "").toLowerCase().indexOf(q) > -1) &&
+        (!f || (f === "answered" ? x.answerCount > 0 : !x.answerCount));
+    });
+    $("list").innerHTML = rows.length ? rows.map(function (x) {
+      return '<a class="card q" href="forum.html?id=' + encodeURIComponent(x.id) + '"><h3>' + (x.pinned ? "📌 " : "") + esc(x.title) + '</h3><div class="meta">' +
+        (x.category ? '<span class="tag">' + esc(x.category) + "</span> " : "") + (x.doctorAnswered ? '<span class="tag ok">پاسخ پزشک</span> ' : "") +
+        esc(x.authorName || "کاربر") + " · " + fa(x.createdAt) + " · " + (x.answerCount || 0).toLocaleString("fa-IR") + " پاسخ</div></a>";
+    }).join("") : '<div class="msg">سوالی یافت نشد.</div>';
+  }
+
+  function loadList() {
+    call("/public/forum").then(function (r) { all = r.questions || []; renderList(); })
+      .catch(function () { $("list").innerHTML = '<div class="msg">دریافت سوالات ممکن نشد.</div>'; });
+  }
+
+  function loadDetail(id) {
+    $("vList").hidden = true; $("vDetail").hidden = false;
+    call("/public/forum/" + encodeURIComponent(id)).then(function (r) {
+      var q = r.question; document.title = q.title + " | تالار گفتگو";
+      var html = '<div class="card"><h1 style="font-size:20px">' + esc(q.title) + '</h1><div class="meta">' + (q.category ? '<span class="tag">' + esc(q.category) + "</span> " : "") +
+        esc(q.authorName || "کاربر") + " · " + fa(q.createdAt) + '</div><div class="body">' + esc(q.body) + '</div><button class="rep" data-rt="question" data-id="' + esc(q.id) + '"><i class="fa-regular fa-flag"></i> گزارش</button></div>';
+      html += "<h3 style='margin:18px 0 10px'>" + (r.answers || []).length.toLocaleString("fa-IR") + " پاسخ</h3>";
+      html += (r.answers || []).map(function (a) {
+        return '<div class="card ans ' + (a.isDoctor ? "doc" : "") + '"><div class="meta">' + (a.isDoctor ? '<span class="doc-badge"><i class="fa-solid fa-user-doctor"></i> پاسخ دکتر محمدصادق تاج</span>' : esc(a.authorName || "کاربر")) +
+          " · " + fa(a.createdAt) + '</div><div class="body">' + esc(a.body) + '</div><button class="rep" data-rt="answer" data-id="' + esc(a.id) + '"><i class="fa-regular fa-flag"></i> گزارش</button></div>';
+      }).join("");
+      $("detail").innerHTML = html;
+      var canReply = !q.closed && settings.userReplies !== false;
+      $("replyBox").hidden = !(loggedIn && canReply); $("loginHint").hidden = loggedIn || !canReply;
+      $("rSend").onclick = function () {
+        var b = $("rBody").value.trim(); if (!b) return; $("rSend").disabled = true;
+        call("/forum/questions/" + encodeURIComponent(id) + "/answers", { method: "POST", body: { body: b } })
+          .then(function (x) { $("rBody").value = ""; toast(x.pending ? "پاسخ پس از بررسی نمایش داده می‌شود." : "پاسخ ثبت شد."); loadDetail(id); })
+          .catch(function (e) { toast(e.message); }).then(function () { $("rSend").disabled = false; });
+      };
+      $("detail").querySelectorAll(".rep").forEach(function (b) {
+        b.onclick = function () {
+          if (!loggedIn) return toast(ERR.UNAUTHENTICATED);
+          var reason = prompt("دلیل گزارش را بنویسید:"); if (!reason) return;
+          call("/forum/reports", { method: "POST", body: { questionId: id, targetType: b.dataset.rt, targetId: b.dataset.id, reason: reason.slice(0, 300) } })
+            .then(function () { toast("گزارش شما ثبت شد."); }).catch(function (e) { toast(e.message); });
+        };
+      });
+    }).catch(function () { $("detail").innerHTML = '<div class="card msg">این سوال پیدا نشد یا حذف شده است.</div>'; });
+  }
+
+  $("q").oninput = renderList; $("cat").onchange = renderList; $("flt").onchange = renderList;
+  $("askBtn").onclick = function () { if (!loggedIn) return toast(ERR.UNAUTHENTICATED); $("ask").hidden = !$("ask").hidden; };
+  $("aSend").onclick = function () {
+    var t = $("aTitle").value.trim(), b = $("aBody").value.trim();
+    if (t.length < 5 || b.length < 15) return toast("عنوان و شرح سوال را کامل‌تر بنویسید.");
+    $("aSend").disabled = true;
+    call("/forum/questions", { method: "POST", body: { title: t, body: b, category: $("aCat").value, anonymous: $("aAnon").checked } })
+      .then(function (x) { $("aTitle").value = $("aBody").value = ""; $("ask").hidden = true; toast(x.pending === false ? "سوال شما منتشر شد." : "سوال ثبت شد و پس از تأیید نمایش داده می‌شود."); loadList(); })
+      .catch(function (e) { toast(e.message); }).then(function () { $("aSend").disabled = false; });
+  };
+
+  var id = new URLSearchParams(location.search).get("id");
+  loadSettings().then(function () { id ? loadDetail(id) : loadList(); });
+})();
+</script>
+</body>
+</html>
