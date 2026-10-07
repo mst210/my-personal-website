@@ -151,6 +151,7 @@ export const SECTION_LABELS = {
     users: "کاربران",
     media: "رسانه",
     pages: "صفحات",
+    forum: "تالار گفتگو",
     appearance: "ظاهر سایت",
     stats: "آمار",
     settings: "تنظیمات",
@@ -178,6 +179,7 @@ const NAV_ITEMS = [
     { href: "content.html", icon: "fa-newspaper", label: "مدیریت محتوا", key: "content" },
     { href: "products.html", icon: "fa-boxes-stacked", label: "محصولات", key: "products" },
     { href: "pages.html", icon: "fa-file-pen", label: "متن‌های سایت", key: "pages" },
+    { href: "forum.html", icon: "fa-comments", label: "تالار گفتگو", key: "forum" },
     { href: "admins.html", icon: "fa-user-shield", label: "مدیریت ادمین‌ها", key: "admins", superOnly: true },
 ];
 
