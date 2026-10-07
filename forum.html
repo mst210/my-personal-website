@@ -38,6 +38,13 @@
  .chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}.chk input{width:auto}
  .msg{text-align:center;color:var(--muted);padding:40px 10px}
  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid var(--line);padding:12px 20px;border-radius:12px;font-size:14px;display:none;z-index:9}
+ .lg-back{position:fixed;inset:0;background:rgba(5,10,22,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+ .lg{width:min(420px,100%);background:#111c33;border:1px solid var(--line);border-radius:20px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+ .lg h2{font-size:19px;margin-bottom:4px}.lg .sub{margin-bottom:16px}
+ .lg .err{color:#fca5a5;font-size:13px;min-height:20px;margin:4px 0 8px}
+ .lg .btn{width:100%}
+ .lg .links{display:flex;justify-content:space-between;gap:10px;margin-top:14px;font-size:13px}
+ .lg .links a,.lg .links button{color:var(--teal);background:none;border:none;cursor:pointer;font:13px 'Vazirmatn';text-decoration:underline}
  [hidden]{display:none!important}
 </style>
 </head>
@@ -78,6 +85,22 @@
   <div id="loginHint" class="card msg" hidden>برای پرسیدن یا پاسخ دادن <a href="panel.html" style="color:var(--teal);text-decoration:underline">وارد شوید یا ثبت‌نام کنید</a>.</div>
  </section>
 </div>
+<!-- login gate -->
+<div class="lg-back" id="lgBox" hidden>
+ <div class="lg" role="dialog" aria-modal="true" aria-labelledby="lgTitle">
+  <h2 id="lgTitle"><i class="fa-solid fa-lock" style="color:var(--teal)"></i> ورود به حساب کاربری</h2>
+  <p class="sub">برای ورود به تالار گفتگو ابتدا وارد حساب خود شوید.</p>
+  <div class="f"><label>ایمیل یا شماره موبایل</label><input id="lgId" type="text" dir="ltr" autocomplete="username" style="text-align:left"></div>
+  <div class="f"><label>رمز عبور</label><input id="lgPw" type="password" dir="ltr" autocomplete="current-password" style="text-align:left"></div>
+  <div class="err" id="lgErr"></div>
+  <button class="btn p" id="lgSend">ورود</button>
+  <div class="links">
+   <a href="panel.html" target="_blank" rel="noopener">ثبت‌نام</a>
+   <button type="button" id="lgForgot">فراموشی رمز عبور</button>
+   <a href="index.html">بازگشت به صفحه اصلی</a>
+  </div>
+ </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -100,7 +123,7 @@
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (r.status === 401 && loggedIn && session.refreshToken && !opt.retried) {
           return fetch(API + "/auth/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refreshToken: session.refreshToken }) })
-            .then(function (x) { return x.ok ? x.json() : Promise.reject(); })
+            .then(function (x) { if (x.ok) return x.json(); forceLogin(); return Promise.reject(new Error(ERR.UNAUTHENTICATED)); })
             .then(function (n) { session.idToken = n.idToken; session.refreshToken = n.refreshToken || session.refreshToken; localStorage.setItem(KEY, JSON.stringify(session)); opt.retried = true; return call(path, opt); });
         }
         if (!r.ok) { var e = new Error(ERR[j.error] || j.message || "خطایی رخ داد."); throw e; }
@@ -180,7 +203,75 @@
   };
 
   var id = new URLSearchParams(location.search).get("id");
-  loadSettings().then(function () { id ? loadDetail(id) : loadList(); });
+
+  /* ---------- login gate ---------- */
+  function setSession(s) { session = s; loggedIn = !!(s && s.idToken); }
+  function showLogin(msg) {
+    $("lgBox").hidden = false; document.body.style.overflow = "hidden";
+    $("lgErr").textContent = msg || "";
+    setTimeout(function () { $("lgId").focus(); }, 50);
+  }
+  function hideLogin() { $("lgBox").hidden = true; document.body.style.overflow = ""; $("lgPw").value = ""; }
+  function forceLogin() {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    setSession(null); showLogin("نشست شما منقضی شده است. دوباره وارد شوید.");
+  }
+  function checkSession() {
+    if (!loggedIn) return Promise.resolve(false);
+    return fetch(API + "/auth/session", { headers: { Authorization: "Bearer " + session.idToken } }).then(function (r) {
+      if (r.ok) return true;
+      if (r.status === 401 && session.refreshToken) {
+        return fetch(API + "/auth/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refreshToken: session.refreshToken }) })
+          .then(function (x) { return x.ok ? x.json() : null; })
+          .then(function (n) {
+            if (!n || !n.idToken) return false;
+            session.idToken = n.idToken; session.refreshToken = n.refreshToken || session.refreshToken;
+            localStorage.setItem(KEY, JSON.stringify(session)); return true;
+          });
+      }
+      return false;
+    }).catch(function () { return true; });
+  }
+  function start() { loadSettings().then(function () { id ? loadDetail(id) : loadList(); }); }
+
+  function doLogin() {
+    var u = $("lgId").value.trim(), pw = $("lgPw").value;
+    if (!u || !pw) { $("lgErr").textContent = "ایمیل یا موبایل و رمز عبور را وارد کنید."; return; }
+    $("lgSend").disabled = true; $("lgErr").textContent = "";
+    fetch(API + "/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: u, password: pw }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { r: r, j: j }; }); })
+      .then(function (x) {
+        if (!x.r.ok || !x.j.idToken) {
+          $("lgErr").textContent = x.j.error === "INVALID_LOGIN_CREDENTIALS" ? "ایمیل/موبایل یا رمز عبور اشتباه است." : (x.j.message || "ورود ناموفق بود.");
+          return;
+        }
+        localStorage.setItem(KEY, JSON.stringify(x.j)); setSession(x.j); hideLogin(); start();
+      })
+      .catch(function () { $("lgErr").textContent = "ارتباط با سرور برقرار نشد."; })
+      .then(function () { $("lgSend").disabled = false; });
+  }
+  $("lgSend").onclick = doLogin;
+  $("lgId").onkeydown = $("lgPw").onkeydown = function (e) { if (e.key === "Enter") doLogin(); };
+  $("lgForgot").onclick = function () {
+    var u = $("lgId").value.trim();
+    if (!u) { $("lgErr").textContent = "ابتدا ایمیل یا موبایل خود را بنویسید."; return; }
+    fetch(API + "/auth/forgot-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: u }) })
+      .then(function () { $("lgErr").style.color = "#86efac"; $("lgErr").textContent = "اگر حسابی با این مشخصات باشد، لینک بازیابی ارسال می‌شود."; })
+      .catch(function () { $("lgErr").textContent = "ارتباط با سرور برقرار نشد."; });
+  };
+
+  /* ثبت‌نام/ورود در تب دیگر -> همین‌جا ادامه بده */
+  window.addEventListener("storage", function (e) {
+    if (e.key !== KEY || !e.newValue || $("lgBox").hidden) return;
+    try { setSession(JSON.parse(e.newValue)); } catch (x) { return; }
+    if (loggedIn) { hideLogin(); start(); }
+  });
+
+  checkSession().then(function (ok) {
+    if (ok) return start();
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    setSession(null); showLogin();
+  });
 })();
 </script>
 </body>
