@@ -95,6 +95,16 @@ button{cursor:pointer}
 .pane{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden}
 .pane.act{display:flex}
 .scroll{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+.m .rq{border-right:3px solid var(--teal);padding:2px 8px;margin-bottom:4px;font-size:.74rem;opacity:.85;background:rgba(0,0,0,.2);border-radius:6px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m .ed{opacity:.6;font-size:.66rem;margin-right:6px}
+.m .ma{display:none;gap:12px;margin-top:3px}
+.m .ma button{background:none;border:0;font-size:.7rem;color:inherit;opacity:.8;text-decoration:underline;padding:0}
+.m:hover .ma,.m.sel .ma{display:flex}
+.m.flash{animation:fl2 1.2s}
+@keyframes fl2{from{box-shadow:0 0 0 3px var(--warn)}to{box-shadow:none}}
+#replyBar{display:none;align-items:center;gap:8px;margin:0 10px 4px;padding:4px 10px;border-radius:8px;background:var(--card2);border-right:3px solid var(--teal);font-size:.78rem}
+#replyBar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#replyBar button{background:none;border:0;font-size:1rem;color:var(--muted)}
 #typing{min-height:1.3em;padding:0 12px 2px;font-size:.76rem;color:var(--muted)}
 #typing .dts i{display:inline-block;width:4px;height:4px;margin:0 1px;border-radius:50%;background:var(--muted);animation:tdot 1s infinite}
 #typing .dts i:nth-child(2){animation-delay:.2s}#typing .dts i:nth-child(3){animation-delay:.4s}
@@ -244,6 +254,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 
    <div class="pane act" id="pChat">
     <div id="log"></div>
+    <div id="replyBar"><span id="replyTxt"></span><button id="replyX" aria-label="لغو">✕</button></div>
     <div id="typing" aria-live="polite"></div>
     <div class="send">
      <select id="chatTo" class="field"><option value="">گفتگو با همه</option></select>
@@ -325,7 +336,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     tStart: 0, unread: 0, rejoins: 0, myTile: null, settings: { locked: false, waiting: false, chatOn: true, micOn: true, camOn: true, shareOn: true },
     layout: "grid", pinned: null, activeId: null, activeSince: 0, srvPing: 0, openRow: null, rec: null, polls: new Map(),
     strokes: new Map(), note: { t: "", v: 0 }, files: [], view: "video", waitingList: [], timers: [], ac: null, myLevel: 0, mirror: true, sound: true,
-    chatTo: ""
+    chatTo: "", msgs: new Map(), reply: null, editing: null
   };
   const priv = () => S.isHost || S.role === "presenter";
   const peerPriv = (P) => P.host || P.role === "presenter";
@@ -667,7 +678,8 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     let o; try { o = JSON.parse(data); } catch (x) { return; }
     switch (o.k) {
       case "st": { const hadHand = P.st.hand; P.st = o; paintBadges(P.tile, o); if (o.hand && !hadHand) beep(990); applyLayout(); break; }
-      case "chat": P.typAt = 0; renderTyping(); if (S.settings.chatOn || peerPriv(P) || o.pv) { addLog(P.name + (o.pv ? " (خصوصی)" : ""), String(o.t).slice(0, 2000), "them" + (o.pv ? " pv" : "")); notify("ndChat", "pChat"); } break;
+      case "chat": P.typAt = 0; renderTyping(); if (S.settings.chatOn || peerPriv(P) || o.pv) onChatIn(P, o); break;
+      case "edit": { const m = S.msgs.get(String(o.id)); if (m && m.from === P.pid) { m.t = String(o.t || "").slice(0, 2000); m.edited = 1; updateMsgNode(m); } break; }
       case "typ": if (o.on && (S.settings.chatOn || peerPriv(P) || o.pv)) { P.typAt = Date.now(); P.typPv = !!o.pv; } else P.typAt = 0; renderTyping(); break;
       case "ping": sendTo(P, { k: "pong", t: o.t }); break;
       case "pong": P.rtt = Math.max(1, Math.round(performance.now() - o.t)); paintPing(P); break;
@@ -732,12 +744,76 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     box.appendChild(document.createTextNode((names.length > 2 ? "چند نفر" : names.join(" و ")) + " در حال نوشتن "));
     const d = el("span", "dts"); d.innerHTML = "<i></i><i></i><i></i>"; box.appendChild(d);
   }
+  /* ---------- پیام‌ها: پاسخ، ویرایش، تاریخچه ---------- */
+  const MSG_ID = /^[A-Za-z0-9_-]{6,40}$/;
+  const fmtT = (ts) => { try { return new Date(ts).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } };
+  const cleanRp = (r) => (r && typeof r === "object" && MSG_ID.test(String(r.id || "")) ? { id: String(r.id), n: String(r.n || "").slice(0, 60), t: String(r.t || "").slice(0, 120) } : null);
+  function buildMsg(m) {
+    const d = el("div", "m " + (m.own ? "me" : "them") + (m.pv || m.to ? " pv" : "")); d.dataset.id = m.id; d.dataset.ts = m.ts;
+    const sm = el("small", "", (m.own ? (m.to ? "شما ← " + (m.toName || "") : "شما") : m.who + (m.pv ? " (خصوصی)" : "")) + " · " + fmtT(m.ts));
+    if (m.edited) sm.appendChild(el("span", "ed", "(ویرایش‌شده)"));
+    d.appendChild(sm);
+    if (m.rp) { const q = el("div", "rq", (m.rp.n ? m.rp.n + ": " : "") + m.rp.t); q.onclick = (e) => { e.stopPropagation(); jumpTo(m.rp.id); }; d.appendChild(q); }
+    d.appendChild(el("span", "mt", m.t));
+    const a = el("div", "ma"), rb = el("button", "", "پاسخ"); rb.onclick = (e) => { e.stopPropagation(); startReply(m); }; a.appendChild(rb);
+    if (m.own) { const eb = el("button", "", "ویرایش"); eb.onclick = (e) => { e.stopPropagation(); startEdit(m); }; a.appendChild(eb); }
+    d.appendChild(a); d.onclick = () => d.classList.toggle("sel");
+    return d;
+  }
+  function updateMsgNode(m) { const old = $("log").querySelector('[data-id="' + m.id + '"]'); if (old) old.replaceWith(buildMsg(m)); }
+  function jumpTo(id) { const n = MSG_ID.test(id) && $("log").querySelector('[data-id="' + id + '"]'); if (n) { n.scrollIntoView({ block: "center" }); n.classList.remove("flash"); void n.offsetWidth; n.classList.add("flash"); } }
+  function addMsgLocal(m) { S.msgs.set(m.id, m); $("log").appendChild(buildMsg(m)); $("log").scrollTop = $("log").scrollHeight; }
+  function insertMsg(node, ts) {
+    const kids = Array.from($("log").children).filter((c) => c.dataset.ts), nxt = kids.find((c) => Number(c.dataset.ts) > ts);
+    if (nxt) $("log").insertBefore(node, nxt); else if (kids.length) kids[kids.length - 1].after(node); else $("log").prepend(node);
+  }
+  function onChatIn(P, o) {
+    const id = MSG_ID.test(String(o.id || "")) ? String(o.id) : rand(8); if (S.msgs.has(id)) return;
+    addMsgLocal({ id, from: P.pid, who: P.name, t: String(o.t || "").slice(0, 2000), ts: Date.now(), pv: !!o.pv, to: o.pv ? S.pid : "", own: 0, rp: cleanRp(o.rp) });
+    notify("ndChat", "pChat");
+  }
+  function loadHistory() {
+    call("/conference/history", {}).then((r) => {
+      (r.messages || []).forEach((h) => {
+        const ex = S.msgs.get(h.id);
+        if (ex) { if (h.edited && !ex.edited) { ex.t = h.t; ex.edited = 1; updateMsgNode(ex); } return; }
+        const m = { id: h.id, from: h.from, who: h.name, t: h.t, ts: h.ts, to: h.to || "", toName: h.toName || "", pv: !!h.to, own: h.from === S.pid ? 1 : 0, rp: cleanRp(h.rp), edited: h.edited ? 1 : 0 };
+        S.msgs.set(m.id, m); insertMsg(buildMsg(m), m.ts);
+      });
+      $("log").scrollTop = $("log").scrollHeight;
+    }).catch(() => {});
+  }
+  function updateBar() {
+    const b = $("replyBar"), on = !!(S.reply || S.editing); b.style.display = on ? "flex" : "none";
+    $("replyTxt").textContent = S.editing ? "ویرایش پیام" : S.reply ? "پاسخ به " + S.reply.n + ": " + S.reply.t : "";
+  }
+  function cancelCompose(clear) { if (S.editing && clear) $("chatInput").value = ""; S.reply = null; S.editing = null; updateBar(); }
+  function startReply(m) {
+    S.editing = null; S.reply = { id: m.id, n: m.own ? "شما" : m.who, t: m.t.slice(0, 80) };
+    if (m.pv && !m.own && S.peers.has(m.from)) { S.chatTo = m.from; refreshTargets(); }
+    updateBar(); $("chatInput").focus();
+  }
+  function startEdit(m) { S.reply = null; S.editing = m.id; $("chatInput").value = m.t; updateBar(); $("chatInput").focus(); }
   function sendChat() {
     if (typOn) sendTyping(false);
     const v = $("chatInput").value.trim(); if (!v) return;
-    if (S.chatTo) { const P = S.peers.get(S.chatTo); if (P) { sendTo(P, { k: "chat", t: v, pv: 1 }); addLog("شما ← " + P.name, v, "me pv"); } }
-    else { broadcast({ k: "chat", t: v }); addLog("شما", v, "me"); }
-    $("chatInput").value = "";
+    if (S.editing) {
+      const m = S.msgs.get(S.editing); cancelCompose(false); $("chatInput").value = "";
+      if (m) {
+        m.t = v.slice(0, 2000); m.edited = 1; updateMsgNode(m);
+        const o = { k: "edit", id: m.id, t: m.t };
+        if (m.to) { const P = S.peers.get(m.to); if (P) sendTo(P, o); } else broadcast(o);
+        call("/conference/chat", { op: "edit", id: m.id, t: m.t }).catch(() => {});
+      }
+      return;
+    }
+    const to = S.chatTo || "", P = to ? S.peers.get(to) : null; if (to && !P) return;
+    const m = { id: rand(8), from: S.pid, who: S.name, t: v.slice(0, 2000), ts: Date.now(), to, toName: P ? P.name : "", pv: !!to, own: 1, rp: S.reply || null };
+    const o = { k: "chat", id: m.id, t: m.t, rp: m.rp };
+    if (to) { o.pv = 1; sendTo(P, o); } else broadcast(o);
+    addMsgLocal(m);
+    call("/conference/chat", { op: "send", id: m.id, t: m.t, to, toName: m.toName, rp: m.rp }).catch(() => {});
+    cancelCompose(false); $("chatInput").value = "";
   }
 
   /* ---------- پینگ زنده ---------- */
@@ -1077,7 +1153,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     S.tStart = Date.now(); $("title").textContent = S.title; syncMediaBtns();
     S.timers.push(setInterval(() => { $("timer").textContent = timerText(); }, 1000));
     S.timers.push(setInterval(renderTyping, 1000)); S.timers.push(setInterval(statsTick, 2000)); S.timers.push(setInterval(speakerTick, 250)); S.timers.push(setInterval(srvPing, 3000)); srvPing();
-    watchLevel(S, S.mic || { kind: "none" }); renderPolls(); renderFiles(); fillDevices(); applyLayout();
+    loadHistory(); watchLevel(S, S.mic || { kind: "none" }); renderPolls(); renderFiles(); fillDevices(); applyLayout();
   }
   function poll() {
     if (!S.joined) return;
@@ -1157,6 +1233,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     try { navigator.clipboard.writeText(url); $("linkBtn").querySelector("span").textContent = "کپی شد ✓"; setTimeout(() => ($("linkBtn").querySelector("span").textContent = "لینک دعوت"), 2000); } catch (e) { prompt("لینک دعوت:", url); }
   };
   $("chatInput").addEventListener("input", onTypingInput); $("chatInput").addEventListener("blur", () => { if (typOn) sendTyping(false); });
+  $("replyX").onclick = () => cancelCompose(true); $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Escape") cancelCompose(true); });
   $("sendBtn").onclick = sendChat; $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter") sendChat(); });
   $("chatBtn").onclick = () => { $("panel").classList.toggle("open"); if ($("panel").classList.contains("open")) { S.unread = 0; $("bdgBtn").style.display = "none"; } };
   document.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
