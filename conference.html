@@ -160,6 +160,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></symbol>
 <symbol id="i-lay" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="12" rx="2"/><path d="M3 19h4M10 19h4M17 19h4"/></symbol>
 <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></symbol>
+<symbol id="i-flip" viewBox="0 0 24 24"><path d="M4 8V5h3M20 16v3h-3M5 5a9 9 0 0 1 14 2M19 19a9 9 0 0 1-14-2"/><circle cx="12" cy="12" r="3"/></symbol>
 <symbol id="i-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
 </svg>
 
@@ -212,6 +213,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
    <div class="dock">
     <button class="dk" id="micBtn" disabled><svg class="ic"><use href="#i-mic"/></svg><span>میکروفن</span></button>
     <button class="dk" id="camBtn" disabled><svg class="ic"><use href="#i-cam"/></svg><span>دوربین</span></button>
+    <button class="dk" id="flipBtn" disabled style="display:none"><svg class="ic"><use href="#i-flip"/></svg><span>تعویض دوربین</span></button>
     <button class="dk" id="shareBtn" disabled><svg class="ic"><use href="#i-scr"/></svg><span>اشتراک صفحه</span></button>
     <button class="dk" id="reactBtn" disabled><svg class="ic"><use href="#i-smile"/></svg><span>وضعیت و واکنش</span></button>
     <button class="dk" id="layBtn"><svg class="ic"><use href="#i-lay"/></svg><span>چیدمان: شبکه‌ای</span></button>
@@ -368,6 +370,30 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   }
   const outVideo = () => (S.sharing ? S.screen : S.cam);
 
+  /* دوربین پشت: بدون آینه؛ دوربین جلو و وب‌کم: آینه‌ای */
+  function isBackCam(t) {
+    if (!t) return false;
+    const st = t.getSettings ? t.getSettings() : {};
+    if (st.facingMode) return st.facingMode === "environment";
+    return /back|rear|environment|world|پشت/i.test(t.label || "");
+  }
+  function updateMirror() {
+    const flip = S.mirror && !isBackCam(S.cam);
+    if (S.myTile) S.myTile.classList.toggle("nomirror", !flip);
+    $("preview").style.transform = flip ? "" : "none";
+  }
+  function updateFlipBtn() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    navigator.mediaDevices.enumerateDevices().then((ds) => { $("flipBtn").style.display = ds.filter((d) => d.kind === "videoinput").length > 1 && S.cam ? "" : "none"; }).catch(() => {});
+  }
+  function flipCamera() {
+    const cur = S.cam && S.cam.getSettings().deviceId;
+    navigator.mediaDevices.enumerateDevices().then((ds) => {
+      const cams = ds.filter((d) => d.kind === "videoinput"); if (cams.length < 2) return;
+      const i = cams.findIndex((d) => d.deviceId === cur);
+      swapDevice("video", cams[(i + 1) % cams.length].deviceId);
+    });
+  }
   function fillDevices() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
     navigator.mediaDevices.enumerateDevices().then((ds) => {
@@ -387,28 +413,39 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     }).catch(() => {});
   }
   function swapDevice(kind, id) {
-    const c = kind === "video" ? { video: { deviceId: { exact: id } } } : { audio: { echoCancellation: true, noiseSuppression: true, deviceId: { exact: id } } };
-    navigator.mediaDevices.getUserMedia(c).then((st) => {
-      const nt = st.getTracks()[0], old = kind === "video" ? S.cam : S.mic;
-      if (old) { nt.enabled = old.enabled; S.local.removeTrack(old); }
+    const isV = kind === "video";
+    const mk = (devId) => (isV ? { video: { deviceId: { exact: devId }, width: 960, height: 540 } } : { audio: { echoCancellation: true, noiseSuppression: true, deviceId: { exact: devId } } });
+    const old = isV ? S.cam : S.mic;
+    const oldId = old && old.getSettings().deviceId, wasOn = old ? old.enabled : true;
+    const install = (nt) => {
+      nt.enabled = wasOn;
+      if (old) S.local.removeTrack(old);
       S.local.addTrack(nt);
-      if (kind === "video") S.cam = nt; else { S.mic = nt; watchLevel(S, nt); }
+      if (isV) S.cam = nt; else { S.mic = nt; watchLevel(S, nt); }
       S.peers.forEach((P) => {
         if (!P.pc) return;
         const sd = P.pc.getSenders().find((s) => s.track && old && s.track.id === old.id);
-        if (sd && !(kind === "video" && S.sharing)) sd.replaceTrack(nt).catch(() => {});
+        if (sd && !(isV && S.sharing)) sd.replaceTrack(nt).catch(() => {});
       });
       if (old) old.stop();
       $("preview").srcObject = S.local;
-      document.querySelectorAll(kind === "video" ? ".devcam" : ".devmic").forEach((s) => (s.value = id));
-    }).catch(() => setMsg("تعویض دستگاه انجام نشد."));
+      document.querySelectorAll(isV ? ".devcam" : ".devmic").forEach((x) => (x.value = nt.getSettings().deviceId || id));
+      if (isV) { if (S.myTile) S.myTile.querySelector("video").srcObject = S.local; updateMirror(); updateFlipBtn(); }
+      fillDevices(); if (S.inRoom) sendState();
+    };
+    /* در موبایل تا دوربین قبلی آزاد نشود، دوربین دیگر باز نمی‌شود */
+    if (isV && old) old.stop();
+    navigator.mediaDevices.getUserMedia(mk(id)).then((st) => install(st.getTracks()[0])).catch(() => {
+      setMsg("تعویض دستگاه انجام نشد.");
+      if (isV && oldId) navigator.mediaDevices.getUserMedia(mk(oldId)).then((st) => install(st.getTracks()[0])).catch(() => {});
+    });
   }
   document.addEventListener("change", (e) => {
     const t = e.target;
     if (t.classList.contains("devcam")) swapDevice("video", t.value);
     else if (t.classList.contains("devmic")) swapDevice("audio", t.value);
     else if (t.id === "spkSel") S.peers.forEach((P) => { const v = P.tile.querySelector("video"); if (v.setSinkId) v.setSinkId(t.value).catch(() => {}); });
-    else if (t.id === "mirrorChk") { S.mirror = t.checked; if (S.myTile) S.myTile.classList.toggle("nomirror", !t.checked); }
+    else if (t.id === "mirrorChk") { S.mirror = t.checked; updateMirror(); }
     else if (t.id === "soundChk") S.sound = t.checked;
   });
 
@@ -999,7 +1036,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   }
   function over(title, msg) {
     cleanup(); setStatus("پایان", ""); $("overTitle").textContent = title; $("overMsg").textContent = msg || ""; $("over").style.display = "flex";
-    ["micBtn", "camBtn", "shareBtn", "reactBtn", "hangBtn", "sendBtn", "chatInput"].forEach((i) => ($(i).disabled = true)); $("endBtn").style.display = "none";
+    ["micBtn", "camBtn", "flipBtn", "shareBtn", "reactBtn", "hangBtn", "sendBtn", "chatInput"].forEach((i) => ($(i).disabled = true)); $("endBtn").style.display = "none";
   }
   function leave(end) { const p = call(end ? "/conference/end" : "/conference/leave", {}).catch(() => {}); over(end ? "کنفرانس برای همه پایان یافت" : "از کنفرانس خارج شدید", ""); return p; }
 
@@ -1007,7 +1044,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   function enterRoom() {
     if (S.inRoom) return; S.inRoom = true;
     $("lobby").style.display = "none"; $("latSrv").style.display = ""; $("latPeer").style.display = "";
-    S.myTile = makeTile("me", S.name + " (شما)", true); S.myTile.querySelector("video").srcObject = S.local; paintBadges(S.myTile, myState());
+    S.myTile = makeTile("me", S.name + " (شما)", true); S.myTile.querySelector("video").srcObject = S.local; paintBadges(S.myTile, myState()); updateMirror(); $("flipBtn").disabled = !S.cam; updateFlipBtn();
     ["hangBtn", "reactBtn"].forEach((i) => ($(i).disabled = false));
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) $("shareBtn").style.display = "none";
     setStatus("در انتظار سایر شرکت‌کنندگان...", "wait");
@@ -1081,7 +1118,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   };
   $("hangBtn").onclick = () => leave(false);
   $("endBtn").onclick = () => { if (confirm("کنفرانس برای همهٔ شرکت‌کنندگان بسته شود؟")) leave(true); };
-  $("micBtn").onclick = () => toggle("audio"); $("camBtn").onclick = () => toggle("video");
+  $("micBtn").onclick = () => toggle("audio"); $("camBtn").onclick = () => toggle("video"); $("flipBtn").onclick = flipCamera;
   $("shareBtn").onclick = toggleShare; $("fullBtn").onclick = fullscreen; $("layBtn").onclick = setLayout;
   $("recBtn").onclick = () => (S.rec ? stopRec() : startRec());
   $("reactBtn").onclick = (e) => { e.stopPropagation(); const r = $("reacts"); r.style.display = r.style.display === "flex" ? "none" : "flex"; };
@@ -1120,7 +1157,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     } else $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید.";
     getMedia().then((st) => {
       S.local = st; S.cam = st.getVideoTracks()[0] || null; S.mic = st.getAudioTracks()[0] || null;
-      $("preview").srcObject = st; $("joinBtn").disabled = false; fillDevices();
+      $("preview").srcObject = st; $("joinBtn").disabled = false; fillDevices(); updateMirror();
       if (!S.cam && !S.mic) setMsg("دسترسی به دوربین و میکروفن داده نشد؛ فقط می‌توانید تماشا کنید و گفتگو بنویسید.");
       else if (!S.cam) setMsg("دوربین در دسترس نیست؛ فقط با صدا شرکت می‌کنید.");
     });
