@@ -109,6 +109,13 @@ button{cursor:pointer}
 #typing .dts i{display:inline-block;width:4px;height:4px;margin:0 1px;border-radius:50%;background:var(--muted);animation:tdot 1s infinite}
 #typing .dts i:nth-child(2){animation-delay:.2s}#typing .dts i:nth-child(3){animation-delay:.4s}
 @keyframes tdot{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.chead{display:none;direction:ltr;justify-content:flex-end;padding:6px 8px 0;position:relative;flex:none}
+.chead .more{width:32px;height:32px;border-radius:8px;border:0;background:none;color:var(--muted);font-size:1.3rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.chead .more:hover{background:var(--card2);color:var(--ink)}
+.cmenu{display:none;position:absolute;top:40px;right:8px;z-index:5;min-width:170px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.4);direction:rtl}
+.cmenu.open{display:block}
+.cmenu button{width:100%;background:none;border:0;color:var(--danger);text-align:right;padding:9px 12px;border-radius:8px;font-size:.84rem}
+.cmenu button:hover{background:rgba(239,68,68,.12)}
 #log{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
 .m{max-width:92%;padding:6px 11px;border-radius:12px;word-break:break-word;white-space:pre-wrap;font-size:.88rem}
 .m small{display:block;opacity:.65;font-size:.68rem}
@@ -253,6 +260,10 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
    </div>
 
    <div class="pane act" id="pChat">
+    <div class="chead" id="chead">
+     <button class="more" id="chatMore" aria-label="گزینه‌ها" aria-haspopup="true">&#8942;</button>
+     <div class="cmenu" id="chatMenu"><button id="clearChatBtn">پاک کردن تاریخچه گفتگو</button></div>
+    </div>
     <div id="log"></div>
     <div id="replyBar"><span id="replyTxt"></span><button id="replyX" aria-label="لغو">✕</button></div>
     <div id="typing" aria-live="polite"></div>
@@ -772,6 +783,15 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     addMsgLocal({ id, from: P.pid, who: P.name, t: String(o.t || "").slice(0, 2000), ts: Date.now(), pv: !!o.pv, to: o.pv ? S.pid : "", own: 0, rp: cleanRp(o.rp) });
     notify("ndChat", "pChat");
   }
+  function closeChatMenu() { $("chatMenu").classList.remove("open"); }
+  function clearChatRemote() {
+    closeChatMenu();
+    if (!priv() || !confirm("تاریخچهٔ گفتگو برای همه پاک شود؟ این کار برگشت‌پذیر نیست.")) return;
+    call("/conference/clear-chat", {}).then((r) => {
+      if (r && r.at) S.chatClearedAt = Number(r.at);
+      clearChatLocal();
+    }).catch((e) => alert("انجام نشد: " + (e.code || e.message)));
+  }
   function clearChatLocal() {
     S.msgs.clear(); $("log").textContent = ""; cancelCompose(true);
     addLog("", "تاریخچهٔ گفتگو توسط مدیر پاک شد.", "sys");
@@ -1128,6 +1148,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   function applyRole() {
     const p = priv();
     $("hostBox").style.display = S.isHost ? "flex" : "none"; $("endBtn").style.display = S.isHost ? "" : "none"; $("linkBtn").style.display = S.isHost && S.inviteToken ? "" : "none";
+    $("chead").style.display = p ? "flex" : "none"; if (!p) closeChatMenu();
     $("recBtn").style.display = p ? "" : "none"; $("pollForm").style.display = p ? "" : "none";
     $("noteArea").readOnly = !p; $("wbBar").querySelectorAll("button,select,input").forEach((x) => (x.disabled = !p));
     $("wbHint").textContent = p ? "" : "فقط میزبان و ارائه‌دهنده‌ها می‌توانند روی تخته بنویسند."; wbc.style.cursor = p ? "crosshair" : "default";
@@ -1241,6 +1262,9 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   };
   $("chatInput").addEventListener("input", onTypingInput); $("chatInput").addEventListener("blur", () => { if (typOn) sendTyping(false); });
   $("replyX").onclick = () => cancelCompose(true); $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Escape") cancelCompose(true); });
+  $("chatMore").onclick = (e) => { e.stopPropagation(); $("chatMenu").classList.toggle("open"); };
+  $("clearChatBtn").onclick = clearChatRemote;
+  document.addEventListener("click", (e) => { if (!$("chatMenu").contains(e.target)) closeChatMenu(); });
   $("sendBtn").onclick = sendChat; $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter") sendChat(); });
   $("chatBtn").onclick = () => { $("panel").classList.toggle("open"); if ($("panel").classList.contains("open")) { S.unread = 0; $("bdgBtn").style.display = "none"; } };
   document.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
