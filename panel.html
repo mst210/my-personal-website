@@ -2192,6 +2192,8 @@
 
                 <div
                     class="menu-item"
+                    id="visit-menu-item"
+                    style="display:none"
                     onclick="location.href='visit.html'">
 
                     <i class="fa-solid fa-video"></i>
@@ -4334,6 +4336,11 @@
             renderCart();
             renderNotifications();
             startNotificationsRealtime();
+
+            // فقط کاربرانی که پزشک دسترسی ویزیت داده است، گزینهٔ ورود به اتاق را می‌بینند
+            apiFetch("/visit/me").then(r => {
+                if (r && r.allowed !== false) document.getElementById("visit-menu-item").style.display = "";
+            }).catch(() => {});
 
             const activeCount = await loadActiveOrders();
             await loadPastOrders();
