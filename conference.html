@@ -131,6 +131,8 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
  .panel.open{transform:none}
  .dk{min-width:52px;padding:5px 4px}
 }
+#admitBox{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:12;display:flex;flex-direction:column;gap:6px;max-width:94%}
+.adm{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--warn);border-radius:12px;padding:8px 12px;box-shadow:0 6px 20px rgba(0,0,0,.5);font-size:.88rem}
 @media(min-width:861px){#chatBtn{display:none}}
 @media(min-width:861px){
  .main{grid-template-columns:1fr 450px}
@@ -179,6 +181,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
    <div class="vtabs"><button class="act" id="vtVideo">ویدیو</button><button id="vtWb">تخته سفید<i class="nd" id="wbDot"></i></button></div>
    <div class="stage" id="stage">
     <div class="grid" id="grid"></div>
+    <div id="admitBox" aria-live="polite"></div>
     <div id="wbWrap">
      <div id="wbBar">
       <input type="color" id="wbColor" value="#ef4444" title="رنگ">
@@ -952,6 +955,13 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   $("lowerAll").onclick = () => { broadcast({ k: "cmd", a: "lowerhand" }); if (S.hand) { S.hand = 0; syncReacts(); sendState(); } };
   function renderHost(list) {
     const box = $("waitList"); box.textContent = ""; $("waitTitle").style.display = list.length ? "" : "none";
+    const pop = $("admitBox"); pop.textContent = "";
+    list.forEach((w) => {
+      const q = el("div", "adm"); q.appendChild(el("span", "", w.name + (w.kind === "guest" ? " (مهمان)" : "") + " درخواست ورود دارد"));
+      const qa = el("button", "btn sm primary", "پذیرش"); qa.onclick = () => control("admit", w.pid);
+      const qd = el("button", "btn sm danger", "رد"); qd.onclick = () => control("deny", w.pid);
+      q.append(qa, qd); pop.appendChild(q);
+    });
     list.forEach((w) => {
       const r = el("div", "row2"); r.appendChild(el("span", "", w.name + (w.kind === "guest" ? " (مهمان)" : "")));
       const a = el("button", "btn sm primary", "پذیرش"); a.onclick = () => control("admit", w.pid);
@@ -1012,7 +1022,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     call("/conference/poll", { since: S.since }).then((r) => {
       if (r.ended) { over("کنفرانس پایان یافت", "برگزارکننده کنفرانس را بسته است."); return; }
       S.rejoins = 0; S.isHost = r.isHost || false; S.role = r.role || "participant";
-      if (r.waiting) { $("lobby").style.display = "flex"; $("lobbyTitle").textContent = "در انتظار تأیید میزبان..."; $("lobbyMsg").textContent = "به محض پذیرش وارد می‌شوید. این صفحه را باز نگه دارید."; $("joinBtn").style.display = "none"; return; }
+      if (r.waiting) { $("lobby").style.display = "flex"; $("lobbyTitle").textContent = "در انتظار تأیید میزبان..."; $("lobbyMsg").textContent = "به محض پذیرش میزبان وارد می‌شوید. میزبان باید خودش داخل اتاق باشد؛ این صفحه را باز نگه دارید."; $("joinBtn").style.display = "none"; return; }
       if (!S.inRoom) enterRoom();
       S.settings = r.settings || S.settings; S.waitingList = r.waitingList || [];
       applyRole(); applySettings(); renderHost(S.waitingList);
