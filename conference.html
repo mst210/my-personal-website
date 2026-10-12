@@ -336,7 +336,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     tStart: 0, unread: 0, rejoins: 0, myTile: null, settings: { locked: false, waiting: false, chatOn: true, micOn: true, camOn: true, shareOn: true },
     layout: "grid", pinned: null, activeId: null, activeSince: 0, srvPing: 0, openRow: null, rec: null, polls: new Map(),
     strokes: new Map(), note: { t: "", v: 0 }, files: [], view: "video", waitingList: [], timers: [], ac: null, myLevel: 0, mirror: true, sound: true,
-    chatTo: "", msgs: new Map(), reply: null, editing: null
+    chatTo: "", msgs: new Map(), reply: null, editing: null, chatClearedAt: null
   };
   const priv = () => S.isHost || S.role === "presenter";
   const peerPriv = (P) => P.host || P.role === "presenter";
@@ -772,6 +772,10 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     addMsgLocal({ id, from: P.pid, who: P.name, t: String(o.t || "").slice(0, 2000), ts: Date.now(), pv: !!o.pv, to: o.pv ? S.pid : "", own: 0, rp: cleanRp(o.rp) });
     notify("ndChat", "pChat");
   }
+  function clearChatLocal() {
+    S.msgs.clear(); $("log").textContent = ""; cancelCompose(true);
+    addLog("", "تاریخچهٔ گفتگو توسط مدیر پاک شد.", "sys");
+  }
   function loadHistory() {
     call("/conference/history", {}).then((r) => {
       (r.messages || []).forEach((h) => {
@@ -1164,6 +1168,9 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
       if (r.waiting) { $("lobby").style.display = "flex"; $("lobbyTitle").textContent = "در انتظار تأیید میزبان..."; $("lobbyMsg").textContent = "به محض پذیرش میزبان وارد می‌شوید. میزبان باید خودش داخل اتاق باشد؛ این صفحه را باز نگه دارید."; $("joinBtn").style.display = "none"; return; }
       if (!S.inRoom) enterRoom();
       S.settings = r.settings || S.settings; S.waitingList = r.waitingList || [];
+      const cc = Number(r.chatClearedAt) || 0;
+      if (S.chatClearedAt === null) S.chatClearedAt = cc;
+      else if (cc > S.chatClearedAt) { S.chatClearedAt = cc; clearChatLocal(); }
       applyRole(); applySettings(); renderHost(S.waitingList);
       if (S.waitingList.length > lastWaitN) { beep(520); addLog("", S.waitingList[S.waitingList.length - 1].name + " منتظر ورود است (تب تنظیمات).", "sys"); }
       lastWaitN = S.waitingList.length;
