@@ -152,6 +152,7 @@ export const SECTION_LABELS = {
     media: "رسانه",
     pages: "صفحات",
     forum: "تالار گفتگو",
+    visit: "ویزیت آنلاین",
     appearance: "ظاهر سایت",
     stats: "آمار",
     settings: "تنظیمات",
