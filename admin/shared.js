@@ -109,6 +109,8 @@ export const ERROR_MESSAGES = {
     CANNOT_DELETE_SELF: "حساب خودتان را نمی‌توانید حذف کنید.",
     CANNOT_DELETE_ADMIN: "ابتدا این کاربر را از «مدیریت ادمین‌ها» حذف کنید.",
     INVALID_PAGE: "این بخش از سایت شناخته‌شده نیست.",
+    ROOM_NOT_FOUND: "این کنفرانس پایان یافته یا وجود ندارد.",
+    INVALID_ROOM: "شناسهٔ اتاق نامعتبر است.",
 };
 
 export function friendlyError(error) {
@@ -162,6 +164,7 @@ export const SECTION_LABELS = {
     pages: "صفحات",
     forum: "تالار گفتگو",
     visit: "ویزیت آنلاین",
+    conference: "اتاق کنفرانس",
     appearance: "ظاهر سایت",
     stats: "آمار",
     settings: "تنظیمات",
@@ -192,6 +195,7 @@ const NAV_ITEMS = [
     { href: "pages.html", icon: "fa-file-pen", label: "متن‌های سایت", key: "pages" },
     { href: "forum.html", icon: "fa-comments", label: "تالار گفتگو", key: "forum" },
     { href: "visit.html", icon: "fa-video", label: "ویزیت آنلاین", key: "visit" },
+    { href: "conference.html", icon: "fa-users-rectangle", label: "اتاق کنفرانس", key: "conference" },
     { href: "admins.html", icon: "fa-user-shield", label: "مدیریت ادمین‌ها", key: "admins", superOnly: true },
 ];
 
@@ -228,3 +232,13 @@ export function renderNav(activeKey, isSuper) {
         </a>
     `;
 }
+
+/* ---------- پنجرهٔ چشمک‌زن دعوت به کنفرانس (در همهٔ صفحه‌های پنل ادمین) ---------- */
+(function () {
+    if (window.__confAlertLoaded || document.querySelector("script[data-conf-alert]")) return;
+    const s = document.createElement("script");
+    s.src = new URL("../conference-alert.js", import.meta.url).href;
+    s.defer = true;
+    s.dataset.confAlert = "1";
+    document.head.appendChild(s);
+})();
