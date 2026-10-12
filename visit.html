@@ -201,7 +201,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   var session = null, role = null, room = null, since = 0, pc, dc, localStream, screenStream;
   var pollTimer, queueTimer, connectTimer, tickTimer, statTimer, meterTimer, audioCtx;
   var connected = false, pendingIce = [], sendChain = Promise.resolve(), seen = {}, cand = { host: 0, srflx: 0, relay: 0 };
-  var inflight = false, reconTimer = null, reconStart = 0, offerAt = 0, RECON_MAX = 120000;
+  var myName = "", inflight = false, reconTimer = null, reconStart = 0, offerAt = 0, RECON_MAX = 120000;
   var sharing = false, handUp = false, lastHand = false, rx = null, unread = 0, tStart = 0, swapped = false;
   try { session = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
 
@@ -346,6 +346,10 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   }
 
   /* ---------- کانال داده: گفتگو، فایل، وضعیت ---------- */
+  function setPeer(n) {
+    n = String(n || "").trim().slice(0, 80); if (!n) return;
+    $("peer").textContent = role === "doctor" ? "بیمار: " + n : (/^(دکتر|دکتـر|Dr)/i.test(n) ? n : "دکتر " + n); $("peer").style.display = "";
+  }
   function sendDC(o) { if (dc && dc.readyState === "open") dc.send(JSON.stringify(o)); }
   function sendState() {
     var a = localStream && localStream.getAudioTracks()[0], v = localStream && localStream.getVideoTracks()[0];
@@ -361,7 +365,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   }
   function setupChannel(ch) {
     dc = ch; dc.binaryType = "arraybuffer";
-    dc.onopen = function () { $("chatInput").disabled = false; $("sendBtn").disabled = false; addLog("گفتگوی متنی فعال شد", "sys"); sendState(); };
+    dc.onopen = function () { $("chatInput").disabled = false; $("sendBtn").disabled = false; addLog("گفتگوی متنی فعال شد", "sys"); sendState(); if (myName) sendDC({ k: "hi", n: myName }); };
     dc.onclose = function () { $("chatInput").disabled = true; $("sendBtn").disabled = true; };
     dc.onmessage = function (e) {
       if (typeof e.data !== "string") {
@@ -372,6 +376,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       var o; try { o = JSON.parse(e.data); } catch (x) { return; }
       if (o.k === "chat") { addLog(String(o.t).slice(0, 2000), "them"); notify(); }
       else if (o.k === "st") showRemote(o);
+      else if (o.k === "hi") setPeer(o.n);
       else if (o.k === "fm" && o.s <= 10485760) rx = { n: String(o.n).slice(0, 100), s: o.s, y: o.y, parts: [], got: 0 };
     };
   }
@@ -594,7 +599,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     $("lobbyMsg").appendChild(a); setStatus("ابتدا وارد حساب خود شوید", "bad");
   } else {
     api("/visit/me").then(function (r) {
-      role = r.role;
+      role = r.role; myName = String(r.name || "");
       if (role === "doctor") { $("noteTab").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
       else { $("lobbyTitle").textContent = "آماده ورود به اتاق ویزیت"; $("joinBtn").style.display = ""; $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید."; }
       return startMedia().catch(function () { $("joinBtn").disabled = true; });
