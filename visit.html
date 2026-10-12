@@ -136,6 +136,7 @@
     }
   ];
   var cand = { host: 0, srflx: 0, relay: 0 }, connectTimer;
+  var seen = {};
 
   var $ = function (i) { return document.getElementById(i); };
   var session = null, role = null, room = null, since = 0, side = null;
@@ -253,6 +254,8 @@
     if (!room || connected) return;
     api("/visit/signal?room=" + encodeURIComponent(room) + "&since=" + since).then(function (r) {
       var chain = (r.signals || []).reduce(function (p, s) {
+        if (s.t && seen[s.t + s.type]) return p;
+        if (s.t) seen[s.t + s.type] = 1;
         return p.then(function () { return handleSignal(s); }).catch(function (e) { console.error("handleSignal failed:", s && s.type, e); });
       }, Promise.resolve());
       return chain.then(function () { if (r.last > since) since = r.last; });
