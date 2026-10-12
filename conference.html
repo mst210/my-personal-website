@@ -95,6 +95,10 @@ button{cursor:pointer}
 .pane{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden}
 .pane.act{display:flex}
 .scroll{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+#typing{min-height:1.3em;padding:0 12px 2px;font-size:.76rem;color:var(--muted)}
+#typing .dts i{display:inline-block;width:4px;height:4px;margin:0 1px;border-radius:50%;background:var(--muted);animation:tdot 1s infinite}
+#typing .dts i:nth-child(2){animation-delay:.2s}#typing .dts i:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{opacity:.25}30%{opacity:1}}
 #log{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
 .m{max-width:92%;padding:6px 11px;border-radius:12px;word-break:break-word;white-space:pre-wrap;font-size:.88rem}
 .m small{display:block;opacity:.65;font-size:.68rem}
@@ -240,6 +244,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 
    <div class="pane act" id="pChat">
     <div id="log"></div>
+    <div id="typing" aria-live="polite"></div>
     <div class="send">
      <select id="chatTo" class="field"><option value="">گفتگو با همه</option></select>
      <input type="text" id="chatInput" placeholder="پیام خود را بنویسید" disabled autocomplete="off">
@@ -662,7 +667,8 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     let o; try { o = JSON.parse(data); } catch (x) { return; }
     switch (o.k) {
       case "st": { const hadHand = P.st.hand; P.st = o; paintBadges(P.tile, o); if (o.hand && !hadHand) beep(990); applyLayout(); break; }
-      case "chat": if (S.settings.chatOn || peerPriv(P) || o.pv) { addLog(P.name + (o.pv ? " (خصوصی)" : ""), String(o.t).slice(0, 2000), "them" + (o.pv ? " pv" : "")); notify("ndChat", "pChat"); } break;
+      case "chat": P.typAt = 0; renderTyping(); if (S.settings.chatOn || peerPriv(P) || o.pv) { addLog(P.name + (o.pv ? " (خصوصی)" : ""), String(o.t).slice(0, 2000), "them" + (o.pv ? " pv" : "")); notify("ndChat", "pChat"); } break;
+      case "typ": if (o.on && (S.settings.chatOn || peerPriv(P) || o.pv)) { P.typAt = Date.now(); P.typPv = !!o.pv; } else P.typAt = 0; renderTyping(); break;
       case "ping": sendTo(P, { k: "pong", t: o.t }); break;
       case "pong": P.rtt = Math.max(1, Math.round(performance.now() - o.t)); paintPing(P); break;
       case "react": floatEmoji(P.tile, String(o.e).slice(0, 4)); break;
@@ -707,7 +713,27 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     if (id === "pNet") renderNet();
     if (!$("panel").classList.contains("open") && window.innerWidth <= 860) $("panel").classList.add("open");
   }
+  /* ---------- در حال نوشتن ---------- */
+  let typSentAt = 0, typOn = false;
+  function sendTyping(on) {
+    const o = { k: "typ", on: on ? 1 : 0 };
+    if (S.chatTo) { const P = S.peers.get(S.chatTo); if (!P) return; o.pv = 1; sendTo(P, o); } else broadcast(o);
+    typOn = on; typSentAt = Date.now();
+  }
+  function onTypingInput() {
+    if (!$("chatInput").value.trim()) { if (typOn) sendTyping(false); return; }
+    if (!typOn || Date.now() - typSentAt > 2500) sendTyping(true);
+  }
+  function renderTyping() {
+    const now = Date.now(), names = [];
+    S.peers.forEach((P) => { if (P.typAt && now - P.typAt < 4500) names.push(P.name + (P.typPv ? " (خصوصی)" : "")); });
+    const box = $("typing"); box.textContent = "";
+    if (!names.length) return;
+    box.appendChild(document.createTextNode((names.length > 2 ? "چند نفر" : names.join(" و ")) + " در حال نوشتن "));
+    const d = el("span", "dts"); d.innerHTML = "<i></i><i></i><i></i>"; box.appendChild(d);
+  }
   function sendChat() {
+    if (typOn) sendTyping(false);
     const v = $("chatInput").value.trim(); if (!v) return;
     if (S.chatTo) { const P = S.peers.get(S.chatTo); if (P) { sendTo(P, { k: "chat", t: v, pv: 1 }); addLog("شما ← " + P.name, v, "me pv"); } }
     else { broadcast({ k: "chat", t: v }); addLog("شما", v, "me"); }
@@ -1050,7 +1076,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     setStatus("در انتظار سایر شرکت‌کنندگان...", "wait");
     S.tStart = Date.now(); $("title").textContent = S.title; syncMediaBtns();
     S.timers.push(setInterval(() => { $("timer").textContent = timerText(); }, 1000));
-    S.timers.push(setInterval(statsTick, 2000)); S.timers.push(setInterval(speakerTick, 250)); S.timers.push(setInterval(srvPing, 3000)); srvPing();
+    S.timers.push(setInterval(renderTyping, 1000)); S.timers.push(setInterval(statsTick, 2000)); S.timers.push(setInterval(speakerTick, 250)); S.timers.push(setInterval(srvPing, 3000)); srvPing();
     watchLevel(S, S.mic || { kind: "none" }); renderPolls(); renderFiles(); fillDevices(); applyLayout();
   }
   function poll() {
@@ -1130,6 +1156,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     const url = location.origin + location.pathname + "?room=" + encodeURIComponent(ROOM) + "&t=" + encodeURIComponent(S.inviteToken);
     try { navigator.clipboard.writeText(url); $("linkBtn").querySelector("span").textContent = "کپی شد ✓"; setTimeout(() => ($("linkBtn").querySelector("span").textContent = "لینک دعوت"), 2000); } catch (e) { prompt("لینک دعوت:", url); }
   };
+  $("chatInput").addEventListener("input", onTypingInput); $("chatInput").addEventListener("blur", () => { if (typOn) sendTyping(false); });
   $("sendBtn").onclick = sendChat; $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter") sendChat(); });
   $("chatBtn").onclick = () => { $("panel").classList.toggle("open"); if ($("panel").classList.contains("open")) { S.unread = 0; $("bdgBtn").style.display = "none"; } };
   document.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
