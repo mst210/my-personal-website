@@ -191,12 +191,12 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 <script>
 (function () {
   var KEY = "taj_medical_proxy_auth_v1";
-  // ⚠️ این بخش را با همان تنظیمات TURN که قبلاً در فایل قبلی گذاشته‌اید جایگزین کنید.
-  var ICE = [
-    { urls: "stun:stun.l.google.com:19302" },
-    { urls: "stun:stun1.l.google.com:19302" },
-    { urls: ["turn:TURN_HOST:3478?transport=udp", "turn:TURN_HOST:3478?transport=tcp", "turns:TURN_HOST:443?transport=tcp"], username: "TURN_USER", credential: "TURN_PASS" }
-  ];
+  // لیست سرورهای ICE از Worker (/api/visit/ice) خوانده می‌شود؛ این مقدار فقط جایگزین اضطراری است.
+  var ICE = [{ urls: "stun:stun.l.google.com:19302" }], iceReady = null;
+  function loadIce() {
+    iceReady = api("/visit/ice").then(function (r) { if (r && r.iceServers && r.iceServers.length) ICE = r.iceServers; }).catch(function (e) { console.error("ice:", e); });
+    return iceReady;
+  }
   var $ = function (i) { return document.getElementById(i); };
   var session = null, role = null, room = null, since = 0, pc, dc, localStream, screenStream;
   var pollTimer, queueTimer, connectTimer, tickTimer, statTimer, meterTimer, audioCtx;
@@ -569,7 +569,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   }
   function doctorPick(x) {
     setMsg(""); clearInterval(queueTimer); $("queue").style.display = "none";
-    api("/visit/pick", { method: "POST", body: JSON.stringify({ room: x.room }) })
+    (iceReady || Promise.resolve()).then(function () { return api("/visit/pick", { method: "POST", body: JSON.stringify({ room: x.room }) }); })
       .then(function (r) {
         room = r.room; since = r.since; enableCall(); $("lobbyTitle").textContent = "در حال برقراری اتصال...";
         $("peer").textContent = "بیمار: " + x.name; $("peer").style.display = "";
@@ -632,7 +632,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       if (!r) return;
       if (role === "doctor") { $("backLink").href = "admin/visit.html"; $("backLink").textContent = "بازگشت به پنل ادمین"; $("noteTab").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
       else { $("lobbyTitle").textContent = "آماده ورود به اتاق ویزیت"; $("joinBtn").style.display = ""; $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید."; }
-      return startMedia().catch(function () { $("joinBtn").disabled = true; });
+      loadIce(); return startMedia().catch(function () { $("joinBtn").disabled = true; });
     }).catch(function (e) {
       if (e && (e.code === "VISIT_NOT_ALLOWED" || e.code === "FORBIDDEN")) { denyAccess(); return; }
       setMsg("نشست شما منقضی شده است. دوباره وارد پنل شوید."); $("joinBtn").disabled = true;
