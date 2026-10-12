@@ -185,7 +185,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
       <h2 id="lobbyTitle">ورود به اتاق کنفرانس</h2>
       <video id="preview" autoplay playsinline muted></video>
       <label id="nameWrap" style="display:none">نام شما (برای نمایش به سایر شرکت‌کنندگان)<input class="field" id="nameIn" maxlength="60" autocomplete="name" placeholder="مثلاً: علی رضایی"></label>
-      <div style="display:flex;gap:8px"><label style="flex:1">دوربین<select class="field devcam"></select></label><label style="flex:1">میکروفن<select class="field devmic"></select></label></div>
+      <div id="devRow" style="display:flex;gap:8px"><label style="flex:1">دوربین<select class="field devcam"></select></label><label style="flex:1">میکروفن<select class="field devmic"></select></label></div>
       <button class="btn primary" id="joinBtn" disabled>ورود به کنفرانس</button>
       <div id="lobbyMsg" style="color:var(--muted);font-size:.85rem"></div>
       <div id="msg" role="alert"></div>
@@ -1078,7 +1078,14 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   document.addEventListener("visibilitychange", () => { if (!document.hidden && S.joined) { clearTimeout(S.pollTimer); poll(); } });
 
   /* ---------- شروع ---------- */
-  if (!ROOM) { $("lobbyTitle").textContent = "لینک کنفرانس نامعتبر است"; $("joinBtn").style.display = "none"; $("preview").style.display = "none"; }
+  if (!ROOM) {
+    $("lobbyTitle").textContent = "برای ورود به کنفرانس لینک دعوت لازم است";
+    $("joinBtn").style.display = "none"; $("preview").style.display = "none"; $("devRow").style.display = "none";
+    $("lobbyMsg").textContent = "این صفحه باید با لینک دعوت یا از طریق پنجرهٔ دعوت داخل پنل باز شود. آدرس بدون کد اتاق قابل استفاده نیست.";
+    ["micBtn", "camBtn", "shareBtn", "reactBtn", "hangBtn"].forEach((i) => ($(i).disabled = true));
+    const box = $("lobbyMsg"), a1 = el("a", "btn primary", loggedIn ? "بازگشت به پنل" : "صفحهٔ اصلی"); a1.href = loggedIn ? "panel.html" : "index.html"; a1.style.marginTop = "10px"; box.appendChild(a1);
+    if (loggedIn) { const a2 = el("a", "btn", "ساخت اتاق (مخصوص ادمین)"); a2.href = "admin/conference.html"; a2.style.marginTop = "8px"; box.appendChild(a2); }
+  }
   else {
     if (!loggedIn) {
       $("nameWrap").style.display = ""; $("lobbyMsg").textContent = "برای ورود نیازی به ساخت حساب نیست. نام خود را وارد کنید.";
