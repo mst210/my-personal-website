@@ -120,8 +120,22 @@
 <script>
 (function () {
   var KEY = "taj_medical_proxy_auth_v1";
-  var ICE = [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }];
-  // برای اتصال مطمئن‌تر یک TURN اضافه کنید: { urls: "turn:HOST:3478", username: "...", credential: "..." }
+  // ⚠️ بدون سرور TURN، اتصال بین دو شبکه‌ی مختلف (به‌خصوص موبایل/اینترنت ایران) معمولاً برقرار نمی‌شود.
+  // مقادیر TURN_HOST / USER / PASS را با اطلاعات سرور TURN خودتان عوض کنید.
+  var ICE = [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
+    {
+      urls: [
+        "turn:TURN_HOST:3478?transport=udp",
+        "turn:TURN_HOST:3478?transport=tcp",
+        "turns:TURN_HOST:443?transport=tcp"
+      ],
+      username: "TURN_USER",
+      credential: "TURN_PASS"
+    }
+  ];
+  var cand = { host: 0, srflx: 0, relay: 0 }, connectTimer;
 
   var $ = function (i) { return document.getElementById(i); };
   var session = null, role = null, room = null, since = 0, side = null;
@@ -165,19 +179,43 @@
 
   function sendSignal(type, data) {
     sendChain = sendChain.then(function () {
-      return api("/visit/signal", { method: "POST", body: JSON.stringify({ room: room, type: type, data: JSON.stringify(data) }) });
-    }).catch(function () {});
+      var body = JSON.stringify({ room: room, type: type, data: JSON.stringify(data) });
+      var tryOnce = function (n) {
+        return api("/visit/signal", { method: "POST", body: body }).catch(function (e) {
+          console.error("signal send failed:", type, e);
+          if (n < 3) return new Promise(function (r) { setTimeout(r, 700); }).then(function () { return tryOnce(n + 1); });
+          setMsg("ارسال پیام اتصال به سرور ناموفق بود (" + (e.code || e.message) + "). اینترنت یا بک‌اند را بررسی کنید.");
+        });
+      };
+      return tryOnce(0);
+    });
     return sendChain;
   }
 
   function makePeer() {
     pc = new RTCPeerConnection({ iceServers: ICE });
     localStream.getTracks().forEach(function (t) { pc.addTrack(t, localStream); });
-    pc.ontrack = function (e) { $("remoteVideo").srcObject = e.streams[0]; };
-    pc.onicecandidate = function (e) { if (e.candidate) sendSignal("candidate", e.candidate.toJSON()); };
+    pc.ontrack = function (e) {
+      var v = $("remoteVideo"); v.srcObject = e.streams[0];
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    };
+    pc.onicecandidate = function (e) {
+      if (!e.candidate) return;
+      var t = e.candidate.type; if (cand[t] !== undefined) cand[t]++;
+      sendSignal("candidate", e.candidate.toJSON());
+    };
+    pc.oniceconnectionstatechange = function () { console.log("ICE:", pc.iceConnectionState, JSON.stringify(cand)); };
+    pc.onicecandidateerror = function (e) { console.warn("ICE candidate error", e.errorCode, e.url, e.errorText); };
+    clearTimeout(connectTimer);
+    connectTimer = setTimeout(function () {
+      if (pc && pc.connectionState !== "connected") {
+        setMsg("اتصال برقرار نشد. (candidates: host=" + cand.host + " srflx=" + cand.srflx + " relay=" + cand.relay + ") " +
+          (cand.relay === 0 ? "هیچ candidate از نوع relay نیست؛ سرور TURN تنظیم نشده یا در دسترس نیست." : "اینترنت یکی از طرفین را عوض کنید یا بازخوانی کنید."));
+      }
+    }, 20000);
     pc.onconnectionstatechange = function () {
       var st = pc.connectionState;
-      if (st === "connected") { connected = true; clearTimeout(pollTimer); setStatus("جلسه برقرار است"); setMsg(""); }
+      if (st === "connected") { connected = true; clearTimeout(pollTimer); clearTimeout(connectTimer); setStatus("جلسه برقرار است"); setMsg(""); }
       else if (st === "connecting") setStatus("در حال اتصال...");
       else if (st === "disconnected") setStatus("اتصال قطع شد");
       else if (st === "failed") { setStatus("اتصال برقرار نشد"); setMsg("اتصال مستقیم ممکن نشد. اینترنت را عوض کنید یا از تماس تلفنی استفاده کنید."); }
@@ -214,9 +252,11 @@
   function poll() {
     if (!room || connected) return;
     api("/visit/signal?room=" + encodeURIComponent(room) + "&since=" + since).then(function (r) {
-      if (r.last > since) since = r.last;
-      return r.signals.reduce(function (p, s) { return p.then(function () { return handleSignal(s); }); }, Promise.resolve());
-    }).catch(function () {}).then(function () {
+      var chain = (r.signals || []).reduce(function (p, s) {
+        return p.then(function () { return handleSignal(s); }).catch(function (e) { console.error("handleSignal failed:", s && s.type, e); });
+      }, Promise.resolve());
+      return chain.then(function () { if (r.last > since) since = r.last; });
+    }).catch(function (e) { console.error("poll failed:", e); }).then(function () {
       if (room && !connected) pollTimer = setTimeout(poll, pc ? 1000 : 3000);
     });
   }
