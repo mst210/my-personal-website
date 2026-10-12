@@ -148,7 +148,7 @@
         </div>
 
         <!-- Messages Thread -->
-        <div id="adminChatMessages" style="display:flex; flex-direction:column; gap:12px; max-height:320px; overflow-y:auto; padding:10px; background:rgba(15,23,42,0.4); border-radius:12px; border:1px solid var(--border-color); margin-bottom:15px;"></div>
+        <div id="adminChatMessages" style="display:flex; flex-direction:column; gap:12px; max-height:320px; overflow-y:auto; padding:10px; background:var(--surface-2); border-radius:12px; border:1px solid var(--border-color); margin-bottom:15px;"></div>
 
         <!-- Reply Form -->
         <form id="adminReplyForm" style="display:flex; gap:10px;">
@@ -687,11 +687,11 @@ function renderAdminChatMessages() {
 
     container.innerHTML = messages.map(msg => {
         const isAdmin = msg.sender === "admin";
-        const bg = isAdmin ? "rgba(20, 184, 166, 0.15)" : "rgba(2, 132, 199, 0.2)";
-        const border = isAdmin ? "rgba(20, 184, 166, 0.3)" : "rgba(56, 189, 248, 0.3)";
+        const bg = isAdmin ? "var(--teal-soft)" : "var(--surface-2)";
+        const border = isAdmin ? "var(--teal)" : "var(--line)";
         const align = isAdmin ? "margin-left:auto;" : "margin-right:auto;";
         const senderLabel = isAdmin ? "پشتیبانی (شما)" : "کاربر";
-        const color = isAdmin ? "#5eead4" : "#38bdf8";
+        const color = isAdmin ? "var(--teal)" : "var(--muted)";
 
         return `
             <div style="background:${bg}; border:1px solid ${border}; border-radius:12px; padding:10px 14px; max-width:80%; ${align}">
