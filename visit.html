@@ -59,6 +59,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 .dk.off{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.5);color:#fca5a5}
 .dk.on{background:rgba(20,184,166,.18);border-color:var(--teal);color:#5eead4}
 .dk.end{background:var(--danger);border-color:var(--danger);color:#fff}
+.dk.leave{background:rgba(245,158,11,.16);border-color:rgba(245,158,11,.55);color:#fcd34d}
 .dk[disabled]{opacity:.35;cursor:not-allowed}
 .bdg{position:absolute;top:2px;left:6px;background:var(--danger);color:#fff;border-radius:99px;font-size:.7rem;min-width:18px;padding:0 5px;display:none;text-align:center}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
@@ -105,6 +106,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
 <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 7h12l-3-3M17 17H5l3 3"/></symbol>
 <symbol id="i-end" viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2 3-3-2v-3c-3-1-7-1-10 0v3l-3 2z"/></symbol>
+<symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></symbol>
 <symbol id="i-clip" viewBox="0 0 24 24"><path d="M20 11l-8 8a5 5 0 0 1-7-7l8-8a3.5 3.5 0 0 1 5 5l-8 8a2 2 0 0 1-3-3l7-7"/></symbol>
 <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></symbol>
 </svg>
@@ -150,7 +152,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     <button class="dk" id="swapBtn"><svg class="ic"><use href="#i-swap"/></svg><span>جابجایی تصاویر</span></button>
     <button class="dk" id="fullBtn"><svg class="ic"><use href="#i-full"/></svg><span>تمام‌صفحه</span></button>
     <button class="dk" id="chatBtn"><svg class="ic"><use href="#i-chat"/></svg><span>گفتگو</span><i class="bdg" id="bdgBtn"></i></button>
-    <button class="dk end" id="hangBtn" disabled><svg class="ic"><use href="#i-end"/></svg><span>پایان</span></button>
+    <button class="dk leave" id="leaveBtn" disabled title="خروج موقت؛ تا ۵ دقیقه می‌توانید برگردید"><svg class="ic"><use href="#i-exit"/></svg><span>خروج</span></button>
+    <button class="dk end" id="endBtn" disabled style="display:none" title="پایان کامل جلسه برای هر دو طرف"><svg class="ic"><use href="#i-end"/></svg><span>پایان</span></button>
    </div>
   </section>
 
@@ -199,9 +202,9 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   }
   var $ = function (i) { return document.getElementById(i); };
   var session = null, role = null, room = null, since = 0, pc, dc, localStream, screenStream;
-  var pollTimer, queueTimer, connectTimer, tickTimer, statTimer, meterTimer, audioCtx;
+  var pollTimer, pingTimer, queueTimer, connectTimer, tickTimer, statTimer, meterTimer, audioCtx;
   var connected = false, pendingIce = [], sendChain = Promise.resolve(), seen = {}, cand = { host: 0, srflx: 0, relay: 0 };
-  var myName = "", inflight = false, reconTimer = null, reconStart = 0, offerAt = 0, RECON_MAX = 120000;
+  var myName = "", inflight = false, reconTimer = null, reconStart = 0, offerAt = 0, RECON_MAX = 300000;
   var sharing = false, handUp = false, lastHand = false, rx = null, unread = 0, tStart = 0, swapped = false;
   try { session = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
 
@@ -399,6 +402,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       if (o.k === "chat") { addLog(String(o.t).slice(0, 2000), "them"); notify(); }
       else if (o.k === "st") showRemote(o);
       else if (o.k === "hi") setPeer(o.n);
+      else if (o.k === "end" && role === "patient") remoteEnded("DOCTOR_ENDED");
+      else if (o.k === "bye") addLog((role === "doctor" ? "بیمار" : "پزشک") + " از جلسه خارج شد؛ تا ۵ دقیقه می‌تواند برگردد.", "sys");
       else if (o.k === "fm" && o.s <= 10485760) rx = { n: String(o.n).slice(0, 100), s: o.s, y: o.y, parts: [], got: 0 };
     };
   }
@@ -454,7 +459,6 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   }
   function onConnected() {
     var wasRecon = !!reconTimer; connected = true; clearTimeout(connectTimer); stopMeter(); stopRecon();
-    if (role !== "patient") clearTimeout(pollTimer);
     if (wasRecon) addLog("اتصال دوباره برقرار شد", "sys");
     setStatus("جلسه برقرار است", "live"); setMsg(""); $("lobby").style.display = "none";
     if (!tStart) {
@@ -462,7 +466,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       tickTimer = setInterval(function () { var s = Math.floor((Date.now() - tStart) / 1000), t = pad2(Math.floor(s / 60)) + ":" + pad2(s % 60); $("timer").textContent = t; $("iTime").textContent = t; }, 1000);
       statTimer = setInterval(pollStats, 3000); pollStats();
     }
-    sendState();
+    sendState(); doPing();
   }
   function pollStats() {
     if (!pc) return;
@@ -500,21 +504,30 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     pc.createOffer({ iceRestart: true }).then(function (o) { return pc.setLocalDescription(o).then(function () { return sendSignal("offer", { type: o.type, sdp: o.sdp }); }); }).catch(function (e) { console.error("restartIce:", e); });
   }
   function giveUp() {
-    stopRecon(); clearInterval(tickTimer); setStatus("اتصال برقرار نشد", "bad");
+    stopRecon(); clearInterval(tickTimer); clearInterval(pingTimer); setStatus("اتصال برقرار نشد", "bad");
     var lb = $("lobby"); lb.style.display = "flex"; lb.className = "joined"; $("lobbyTitle").textContent = "اتصال قطع شد";
     $("lobbyMsg").textContent = "تلاش‌های اتصال مجدد ناموفق بود. "; var b = document.createElement("button"); b.className = "btn primary"; b.textContent = "ورود دوباره"; b.onclick = function () { location.reload(); }; $("lobbyMsg").appendChild(b);
   }
   function flushIce() { pendingIce.splice(0).forEach(function (c) { pc.addIceCandidate(c).catch(function () {}); }); }
+  function dropPeer() {
+    if (dc) { dc.onopen = dc.onclose = dc.onmessage = null; try { dc.close(); } catch (e) {} dc = null; }
+    if (pc) { pc.onconnectionstatechange = pc.onicecandidate = pc.ontrack = pc.ondatachannel = null; try { pc.close(); } catch (e) {} pc = null; }
+    connected = false; pendingIce = []; $("chatInput").disabled = true; $("sendBtn").disabled = true;
+  }
+  /* دکتر: ساخت اتصال کاملاً تازه (شروع ویزیت، یا بازگشت بیمار/دکتر به جلسه‌ی باز) */
+  function freshOffer() {
+    if (!room || role !== "doctor" || !localStream) return;
+    dropPeer(); offerAt = Date.now();
+    makePeer(); setupChannel(pc.createDataChannel("chat")); setStatus("در حال اتصال...", "wait");
+    return pc.createOffer().then(function (o) { return pc.setLocalDescription(o).then(function () { return sendSignal("offer", { type: o.type, sdp: o.sdp, fresh: true }); }); });
+  }
   function handleSignal(s) {
     var d = JSON.parse(s.data);
-    if (s.type === "offer" && role === "patient" && !pc) {
-      makePeer(); pc.ondatachannel = function (e) { setupChannel(e.channel); };
-      return pc.setRemoteDescription(d).then(function () { return pc.createAnswer(); })
-        .then(function (a) { return pc.setLocalDescription(a).then(function () { return sendSignal("answer", { type: a.type, sdp: a.sdp }); }); })
-        .then(flushIce);
-    }
-    if (s.type === "offer" && role === "patient" && pc) {
-      return pc.setRemoteDescription(d).then(function () { return pc.createAnswer(); })
+    if (s.type === "rejoin") return role === "doctor" ? freshOffer() : undefined;
+    if (s.type === "offer" && role === "patient") {
+      if (pc && d.fresh) dropPeer();
+      if (!pc) { makePeer(); pc.ondatachannel = function (e) { setupChannel(e.channel); }; }
+      return pc.setRemoteDescription({ type: d.type, sdp: d.sdp }).then(function () { return pc.createAnswer(); })
         .then(function (a) { return pc.setLocalDescription(a).then(function () { return sendSignal("answer", { type: a.type, sdp: a.sdp }); }); })
         .then(flushIce);
     }
@@ -522,9 +535,10 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     if (s.type === "candidate") { if (pc && pc.remoteDescription) pc.addIceCandidate(d).catch(function () { pendingIce.push(d); }); else pendingIce.push(d); }
   }
   function poll() {
-    if (!room || inflight || (connected && role !== "patient" && !reconTimer)) return;
+    if (!room || inflight) return;
     inflight = true;
     api("/visit/signal?room=" + encodeURIComponent(room) + "&since=" + since).then(function (r) {
+      if (r.ended) { remoteEnded(r.reason); return; }
       var chain = (r.signals || []).reduce(function (p, s) {
         if (s.t && seen[s.t + s.type]) return p; if (s.t) seen[s.t + s.type] = 1;
         return p.then(function () { return handleSignal(s); }).catch(function (e) { console.error("signal:", e); });
@@ -532,20 +546,35 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       return chain.then(function () { if (r.last > since) since = r.last; });
     }).catch(function (e) { console.error("poll:", e); }).then(function () {
       inflight = false; if (!room) return;
-      var gap = !connected || reconTimer ? (pc ? 1000 : 3000) : (role === "patient" ? 6000 : 0);
-      if (gap) pollTimer = setTimeout(poll, gap);
+      var gap = !connected || reconTimer ? (pc ? 1000 : 3000) : 6000;
+      pollTimer = setTimeout(poll, gap);
     });
   }
-  function enableCall() { $("hangBtn").disabled = false; $("handBtn").disabled = false; $("lobby").className = "joined"; }
+  function startPing() { clearInterval(pingTimer); pingTimer = setInterval(doPing, 20000); }
+  /* حضور من در جلسه را به سرور اطلاع می‌دهد (فقط وقتی منتظر هستم یا اتصال برقرار است) */
+  function doPing() {
+    if (!room || (pc && !connected)) return;
+    api("/visit/ping", { method: "POST", body: JSON.stringify({ room: room }) })
+      .then(function (r) { if (r && r.ended) remoteEnded(r.reason); }).catch(function () {});
+  }
+  function enableCall() { $("leaveBtn").disabled = false; if (role === "doctor") $("endBtn").disabled = false; $("handBtn").disabled = false; $("lobby").className = "joined"; }
 
   /* ---------- بیمار ---------- */
   function patientJoin() {
     setMsg(""); $("joinBtn").style.display = "none";
     api("/visit/join", { method: "POST", body: JSON.stringify({ name: myName }) })
       .then(function (r) {
-        room = r.room; since = r.since; setStatus("در انتظار ورود دکتر...", "wait"); enableCall();
+        room = r.room; since = r.since; enableCall(); startPing();
+        $("peer").textContent = "دکتر"; $("peer").style.display = "";
+        if (r.rejoin) {
+          setStatus("در حال بازگشت به جلسه...", "wait");
+          $("lobbyTitle").textContent = "بازگشت به جلسه"; $("lobbyMsg").textContent = "منتظر اتصال مجدد هستیم؛ این صفحه را باز نگه دارید.";
+          (iceReady || Promise.resolve()).then(function () { return sendSignal("rejoin", {}); });
+          poll(); return;
+        }
+        setStatus("در انتظار ورود دکتر...", "wait");
         $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا ورود دکتر این صفحه را باز نگه دارید.";
-        $("peer").textContent = "دکتر"; $("peer").style.display = ""; poll();
+        poll();
       })
       .catch(function (e) {
         if (e && (e.code === "VISIT_NOT_ALLOWED" || e.code === "FORBIDDEN")) { denyAccess(); return; }
@@ -561,8 +590,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       if (!r.rooms.length) { box.textContent = "فعلاً کسی منتظر نیست."; box.style.color = "var(--muted)"; return; }
       r.rooms.forEach(function (x) {
         var row = document.createElement("div"); row.className = "qrow";
-        var nm = document.createElement("span"); nm.textContent = x.name;
-        var b = document.createElement("button"); b.className = "btn primary"; b.textContent = "شروع ویزیت";
+        var nm = document.createElement("span"); nm.textContent = x.name + (x.status === "active" ? " (جلسه در جریان)" : "");
+        var b = document.createElement("button"); b.className = "btn primary"; b.textContent = x.status === "active" ? "بازگشت به جلسه" : "شروع ویزیت";
         b.onclick = function () { doctorPick(x); }; row.appendChild(nm); row.appendChild(b); box.appendChild(row);
       });
     }).catch(function () {});
@@ -571,31 +600,49 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     setMsg(""); clearInterval(queueTimer); $("queue").style.display = "none";
     (iceReady || Promise.resolve()).then(function () { return api("/visit/pick", { method: "POST", body: JSON.stringify({ room: x.room }) }); })
       .then(function (r) {
-        room = r.room; since = r.since; enableCall(); $("lobbyTitle").textContent = "در حال برقراری اتصال...";
+        room = r.room; since = r.since; enableCall(); startPing(); $("lobbyTitle").textContent = "در حال برقراری اتصال...";
         $("peer").textContent = "بیمار: " + x.name; $("peer").style.display = "";
-        makePeer(); setupChannel(pc.createDataChannel("chat")); setStatus("در حال اتصال...", "wait");
         try { $("note").value = localStorage.getItem("visit_note_" + room) || ""; } catch (e) {}
-        return pc.createOffer().then(function (o) { return pc.setLocalDescription(o).then(function () { return sendSignal("offer", { type: o.type, sdp: o.sdp }); }); });
+        return freshOffer();
       }).then(function () { if (room) poll(); })
       .catch(function () { setMsg("این بیمار دیگر در انتظار نیست."); queueTimer = setInterval(loadQueue, 5000); $("queue").style.display = "block"; loadQueue(); });
   }
 
-  /* ---------- پایان ---------- */
-  function hangUp() {
-    clearTimeout(pollTimer); clearInterval(queueTimer); clearInterval(tickTimer); clearInterval(statTimer); stopRecon(); stopMeter(); stopShare();
-    var r = room; room = null;
-    if (r) api("/visit/leave", { method: "POST", body: JSON.stringify({ room: r }) }).catch(function () {});
-    if (dc) dc.close(); if (pc) pc.close();
+  /* ---------- خروج / پایان ---------- */
+  function shutdown(title, msg, btnLabel) {
+    clearTimeout(pollTimer); clearInterval(queueTimer); clearInterval(tickTimer); clearInterval(statTimer); clearInterval(pingTimer); stopRecon(); stopMeter(); stopShare();
+    room = null; dropPeer();
     if (localStream) localStream.getTracks().forEach(function (t) { t.stop(); });
-    $("remoteVideo").srcObject = null; $("localVideo").srcObject = null; $("rbadges").textContent = "";
-    setStatus("جلسه پایان یافت", "");
-    ["micBtn", "camBtn", "shareBtn", "handBtn", "hangBtn", "sendBtn", "chatInput"].forEach(function (i) { $(i).disabled = true; });
-    var lb = $("lobby"); lb.style.display = "flex"; lb.className = "joined"; $("lobbyTitle").textContent = "جلسه پایان یافت";
-    $("lobbyMsg").textContent = ""; var b = document.createElement("button"); b.className = "btn primary"; b.textContent = "شروع جلسه جدید"; b.onclick = function () { location.reload(); }; $("lobbyMsg").appendChild(b);
+    $("remoteVideo").srcObject = null; $("localVideo").srcObject = null; $("rbadges").textContent = ""; setMsg("");
+    setStatus(title, "");
+    ["micBtn", "camBtn", "shareBtn", "handBtn", "leaveBtn", "endBtn", "sendBtn", "chatInput"].forEach(function (i) { $(i).disabled = true; });
+    var lb = $("lobby"); lb.style.display = "flex"; lb.className = "joined"; $("queue").style.display = "none"; $("joinBtn").style.display = "none";
+    $("lobbyTitle").textContent = title; $("lobbyMsg").textContent = msg || "";
+    var b = document.createElement("button"); b.className = "btn primary"; b.style.display = "block"; b.style.marginTop = "10px"; b.textContent = btnLabel || "شروع جلسه جدید"; b.onclick = function () { location.reload(); }; $("lobbyMsg").appendChild(b);
+  }
+  /* end=false: خروج موقت (جلسه تا ۵ دقیقه باز می‌ماند)  |  end=true: پایان کامل (فقط پزشک) */
+  function leaveSession(end) {
+    if (!room) return;
+    if (end && !confirm("با زدن «پایان»، جلسه برای هر دو طرف کاملاً بسته می‌شود و امکان بازگشت نیست. ادامه می‌دهید؟")) return;
+    var r = room, wasLive = !!tStart || connected;
+    $("leaveBtn").disabled = true; $("endBtn").disabled = true;
+    sendDC({ k: end ? "end" : "bye" });
+    api("/visit/leave", { method: "POST", body: JSON.stringify({ room: r, end: !!end }) }).catch(function () {});
+    setTimeout(function () {
+      if (end) shutdown("جلسه پایان یافت", "", "شروع جلسه جدید");
+      else if (role === "doctor") shutdown("از جلسه خارج شدید", "جلسه تا ۵ دقیقه باز می‌ماند و از فهرست بیماران می‌توانید به آن برگردید.", "بازگشت");
+      else shutdown("از جلسه خارج شدید", wasLive ? "جلسه تا ۵ دقیقه باز می‌ماند و می‌توانید به آن برگردید." : "", wasLive ? "بازگشت به جلسه" : "ورود دوباره");
+    }, 250);
+  }
+  /* پایان جلسه از طرف سرور یا طرف مقابل */
+  function remoteEnded(reason) {
+    if (!room) return;
+    var m = reason === "EXPIRED" ? "ارتباط بیش از ۵ دقیقه قطع بود و جلسه به‌طور خودکار پایان یافت." : (role === "patient" ? "پزشک جلسه را به پایان رساند." : "");
+    shutdown("جلسه پایان یافت", m, "شروع جلسه جدید");
   }
 
   /* ---------- رویدادها ---------- */
-  $("joinBtn").onclick = patientJoin; $("hangBtn").onclick = hangUp;
+  $("joinBtn").onclick = patientJoin; $("leaveBtn").onclick = function () { leaveSession(false); }; $("endBtn").onclick = function () { leaveSession(true); };
   $("micBtn").onclick = function () { toggle("audio"); }; $("camBtn").onclick = function () { toggle("video"); };
   $("shareBtn").onclick = toggleShare; $("handBtn").onclick = toggleHand; $("swapBtn").onclick = swapViews; $("fullBtn").onclick = fullscreen;
   $("sendBtn").onclick = sendChat; $("chatInput").addEventListener("keydown", function (e) { if (e.key === "Enter") sendChat(); });
@@ -630,8 +677,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       return resolveName(r.name).then(function (n) { myName = n || (role === "doctor" ? "" : "بیمار"); return r; });
     }).then(function (r) {
       if (!r) return;
-      if (role === "doctor") { $("backLink").href = "admin/visit.html"; $("backLink").textContent = "بازگشت به پنل ادمین"; $("noteTab").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
-      else { $("lobbyTitle").textContent = "آماده ورود به اتاق ویزیت"; $("joinBtn").style.display = ""; $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید."; }
+      if (role === "doctor") { $("backLink").href = "admin/visit.html"; $("backLink").textContent = "بازگشت به پنل ادمین"; $("noteTab").style.display = ""; $("endBtn").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
+      else { $("lobbyTitle").textContent = r.resume ? "جلسه‌ی شما هنوز باز است" : "آماده ورود به اتاق ویزیت"; $("joinBtn").style.display = ""; if (r.resume) $("joinBtn").textContent = "بازگشت به جلسه"; $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید."; }
       loadIce(); return startMedia().catch(function () { $("joinBtn").disabled = true; });
     }).catch(function (e) {
       if (e && (e.code === "VISIT_NOT_ALLOWED" || e.code === "FORBIDDEN")) { denyAccess(); return; }
