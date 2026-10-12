@@ -99,6 +99,8 @@ export const ERROR_MESSAGES = {
     INVALID_PRICE: "قیمت باید یک عدد معتبر و غیرمنفی باشد.",
     INVALID_ORDER: "ترتیب نمایش باید یک عدد باشد.",
     INVALID_TITLE: "عنوان نمی‌تواند خالی باشد.",
+    VISIT_NOT_ALLOWED: "دسترسی شما به ویزیت آنلاین فعال نشده است.",
+    VISIT_CLOSED: "ویزیت آنلاین در حال حاضر غیرفعال است.",
     INVALID_PAGE: "این بخش از سایت شناخته‌شده نیست.",
 };
 
@@ -181,6 +183,7 @@ const NAV_ITEMS = [
     { href: "products.html", icon: "fa-boxes-stacked", label: "محصولات", key: "products" },
     { href: "pages.html", icon: "fa-file-pen", label: "متن‌های سایت", key: "pages" },
     { href: "forum.html", icon: "fa-comments", label: "تالار گفتگو", key: "forum" },
+    { href: "visit.html", icon: "fa-video", label: "ویزیت آنلاین", key: "visit" },
     { href: "admins.html", icon: "fa-user-shield", label: "مدیریت ادمین‌ها", key: "admins", superOnly: true },
 ];
 
