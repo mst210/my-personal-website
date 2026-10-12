@@ -15,11 +15,8 @@ button,select,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--warn);outline-offset:2px}
 .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.app{height:100dvh;display:grid;grid-template-rows:1fr;padding-bottom:env(safe-area-inset-bottom,0)}
-.top{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:auto;min-width:0;min-height:0}
-.top h1{order:0;line-height:1.5}.top #timer{order:1}.top .chip{order:2}.top .back{order:3;margin-top:auto}.top .sp{display:none}
-.top .chip{white-space:normal;justify-content:flex-start;border-radius:10px;padding:6px 10px}
-.top #timer{font-size:1.6rem;font-weight:700;color:var(--text,#fff);text-align:center;background:rgba(255,255,255,.05);border-radius:12px;padding:8px 6px}
+.app{height:100dvh;display:grid;grid-template-rows:auto 1fr;padding-bottom:env(safe-area-inset-bottom,0)}
+.top{display:flex;align-items:center;gap:8px;padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
 .top h1{font-size:1rem;margin:0;font-weight:700}
 .back{color:var(--muted);text-decoration:none;font-size:.85rem}
 .sp{flex:1}
@@ -31,7 +28,7 @@ button{cursor:pointer}
 #recChip{background:rgba(239,68,68,.2);color:#fca5a5;display:none;animation:bl 1s linear infinite}
 @keyframes bl{50%{opacity:.35}}
 #timer{font-variant-numeric:tabular-nums;direction:ltr;color:var(--muted);font-size:.85rem}
-.main{display:grid;grid-template-columns:1fr 170px 350px;gap:10px;padding:10px;padding-top:calc(10px + env(safe-area-inset-top,0px));min-height:0}
+.main{display:grid;grid-template-columns:1fr 350px;gap:10px;padding:10px;min-height:0}
 .sw{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}
 .vtabs{display:flex;gap:6px;align-items:center}
 .vtabs button{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:4px 14px;font-size:.84rem;color:var(--muted)}
@@ -127,9 +124,7 @@ th,td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:right}
 th{color:var(--muted);font-weight:600}
 td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 @media(max-width:860px){
- .main{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:6px}
- .top{order:-1;flex-direction:row;flex-wrap:wrap;align-items:center;padding:8px 12px;overflow:visible}
- .top .back{margin-top:0;margin-right:auto}.top #timer{font-size:.95rem;padding:2px 10px;background:none}.top .chip{padding:3px 10px;border-radius:99px}
+ .main{grid-template-columns:1fr;padding:6px}
  .grid{grid-template-columns:repeat(min(var(--c,1),2),minmax(0,1fr))}
  .grid.spk{grid-template-columns:repeat(var(--c,1),minmax(0,1fr))}
  .panel{position:fixed;left:0;right:0;bottom:0;height:75dvh;z-index:20;border-radius:18px 18px 0 0;transform:translateY(105%);transition:transform .25s;padding-bottom:env(safe-area-inset-bottom,0)}
@@ -158,6 +153,18 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 </svg>
 
 <div class="app">
+ <header class="top">
+  <h1 id="title">اتاق کنفرانس</h1>
+  <span class="chip" id="chip"><i class="dot"></i><span id="status">آماده</span></span>
+  <span class="chip" id="count" style="display:none"></span>
+  <span class="chip lat" id="latSrv" title="تأخیر رفت‌وبرگشت تا سرور سایت" style="display:none">پینگ سرور <b>—</b></span>
+  <span class="chip lat" id="latPeer" title="میانگین تأخیر مستقیم شما تا شرکت‌کنندگان" style="display:none">پینگ شرکت‌کنندگان <b>—</b></span>
+  <span class="chip" id="recChip">● در حال ضبط</span>
+  <span class="sp"></span>
+  <span id="timer">00:00</span>
+  <a class="back" id="backLink" href="panel.html">بازگشت</a>
+ </header>
+
  <div class="main">
   <section class="sw">
    <div class="vtabs"><button class="act" id="vtVideo">ویدیو</button><button id="vtWb">تخته سفید<i class="nd" id="wbDot"></i></button></div>
@@ -205,18 +212,6 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     <div id="reacts"></div>
    </div>
   </section>
-
- <header class="top">
-  <h1 id="title">اتاق کنفرانس</h1>
-  <span class="chip" id="chip"><i class="dot"></i><span id="status">آماده</span></span>
-  <span class="chip" id="count" style="display:none"></span>
-  <span class="chip lat" id="latSrv" title="تأخیر رفت‌وبرگشت تا سرور سایت" style="display:none">پینگ سرور <b>—</b></span>
-  <span class="chip lat" id="latPeer" title="میانگین تأخیر مستقیم شما تا شرکت‌کنندگان" style="display:none">پینگ شرکت‌کنندگان <b>—</b></span>
-  <span class="chip" id="recChip">● در حال ضبط</span>
-  <span class="sp"></span>
-  <span id="timer">00:00</span>
-  <a class="back" id="backLink" href="panel.html">بازگشت</a>
- </header>
 
   <aside class="panel" id="panel">
    <div class="tabs" id="tabs">
@@ -693,7 +688,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
       body.appendChild(tr);
     });
     if (!S.peers.size) { const tr = document.createElement("tr"), td = el("td", "", "هنوز کسی متصل نیست."); td.colSpan = 5; tr.appendChild(td); body.appendChild(tr); }
-    tickTimer();
+    $("nTime").textContent = S.tStart ? timerText() : "00:00";
   }
   function statsTick() {
     S.peers.forEach((P) => {
@@ -725,11 +720,6 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   }
 
   /* ---------- دکمه‌ها ---------- */
-  function syncMediaBtns() {
-    [["audio", S.mic, "micBtn", "میکروفن", "بی‌صدا"], ["video", S.cam, "camBtn", "دوربین", "خاموش"]].forEach((k) => {
-      const b = $(k[2]), on = !!k[1] && k[1].enabled; b.classList.toggle("off", !on); b.querySelector("span").textContent = on ? k[3] : k[4];
-    });
-  }
   function toggle(kind) {
     const tr = kind === "audio" ? S.mic : S.cam; if (!tr) return;
     tr.enabled = !tr.enabled;
@@ -760,7 +750,6 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     $("shareBtn").classList.remove("on"); sendState(); applyLayout();
   }
   function fullscreen() { const e = $("stage"); if (document.fullscreenElement) document.exitFullscreen(); else if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); }
-  function tickTimer() { const t = S.tStart ? timerText() : "00:00"; $("timer").textContent = t; $("nTime").textContent = t; }
   function timerText() { const s = Math.floor((Date.now() - S.tStart) / 1000); return (s >= 3600 ? pad2(Math.floor(s / 3600)) + ":" : "") + pad2(Math.floor(s / 60) % 60) + ":" + pad2(s % 60); }
 
   /* وضعیت‌ها و واکنش‌ها */
@@ -998,8 +987,8 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     ["hangBtn", "reactBtn"].forEach((i) => ($(i).disabled = false));
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) $("shareBtn").style.display = "none";
     setStatus("در انتظار سایر شرکت‌کنندگان...", "wait");
-    if (!S.tStart) S.tStart = Date.now(); $("title").textContent = S.title; syncMediaBtns(); tickTimer();
-    S.timers.push(setInterval(tickTimer, 1000));
+    S.tStart = Date.now(); $("title").textContent = S.title;
+    S.timers.push(setInterval(() => { $("timer").textContent = timerText(); }, 1000));
     S.timers.push(setInterval(statsTick, 2000)); S.timers.push(setInterval(speakerTick, 250)); S.timers.push(setInterval(srvPing, 3000)); srvPing();
     watchLevel(S, S.mic || { kind: "none" }); renderPolls(); renderFiles(); fillDevices(); applyLayout();
   }
@@ -1042,8 +1031,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     const body = { room: ROOM, token: TOKEN, name: loggedIn ? "" : $("nameIn").value.trim() };
     if (!loggedIn) { try { const g = JSON.parse(sessionStorage.getItem(GKEY)); if (g) { body.pid = g.pid; body.key = g.key; } } catch (e) {} }
     return api("/conference/join", body).then((r) => {
-      S.pid = r.pid; S.key = r.key || null; S.sid = r.sid; S.joinedAt = r.joinedAt; S.since = r.since;
-      if (r.createdAt && r.serverNow) { const c = Date.parse(r.createdAt); if (c) S.tStart = Date.now() - Math.max(0, r.serverNow - c); } S.name = r.name; S.title = r.title;
+      S.pid = r.pid; S.key = r.key || null; S.sid = r.sid; S.joinedAt = r.joinedAt; S.since = r.since; S.name = r.name; S.title = r.title;
       S.isHost = r.isHost; S.role = r.role; S.settings = r.settings || S.settings; S.inviteToken = r.inviteToken || "";
       if (r.iceServers && r.iceServers.length) S.ice = r.iceServers;
       if (!loggedIn) { try { sessionStorage.setItem(GKEY, JSON.stringify({ pid: r.pid, key: r.key })); } catch (e) {} }
@@ -1063,9 +1051,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
   /* ---------- رویدادها ---------- */
   $("joinBtn").onclick = () => {
     if (!loggedIn && !$("nameIn").value.trim()) { setMsg("لطفاً نام خود را وارد کنید."); $("nameIn").focus(); return; }
-    ac(); setMsg(""); $("joinBtn").disabled = true;
-    if (S.mic) S.mic.enabled = false; if (S.cam) S.cam.enabled = false; /* ورود با دوربین و میکروفن خاموش */
-    doJoin(false);
+    ac(); setMsg(""); $("joinBtn").disabled = true; doJoin(false);
   };
   $("hangBtn").onclick = () => leave(false);
   $("endBtn").onclick = () => { if (confirm("کنفرانس برای همهٔ شرکت‌کنندگان بسته شود؟")) leave(true); };
