@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اتاق کنفرانس | پنل ادمین</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+ .u-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);margin-bottom:8px}
+ .u-row h4{margin:0 0 3px;font-size:14.5px}.u-meta{color:var(--text-muted);font-size:12px}
+ .chk{display:flex;gap:8px;align-items:center;font-size:13.5px}
+ .hint{color:var(--text-muted);font-size:12px;margin-bottom:10px;line-height:1.9}
+ .pick{max-height:300px;overflow:auto;margin-top:8px}
+ .pick .u-row{cursor:pointer;margin-bottom:6px;padding:8px 12px}
+ .room{border:1px solid var(--accent-teal);border-radius:16px;padding:14px 16px;margin-bottom:12px;background:var(--card-bg)}
+ .room-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+ .room h3{margin:0;font-size:16px}
+ .live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--success);margin-left:6px;animation:bl 1s linear infinite}
+ @keyframes bl{50%{opacity:.25}}
+ .linkbox{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+ .linkbox input{flex:1;min-width:200px;direction:ltr;font-size:12px}
+ .acts{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="page-container">
+ <div class="top-header">
+  <div class="header-title"><h1>اتاق کنفرانس</h1><p>تشکیل کنفرانس گروهی، دعوت اعضا و ساخت لینک دعوت برای مهمان‌ها</p></div>
+  <div class="header-actions"><button class="icon-btn" id="logoutBtn" hidden><i class="fa-solid fa-right-from-bracket"></i> خروج</button></div>
+ </div>
+ <div class="nav-bar" id="navBar" hidden></div>
+ <section id="loading" class="status-box"><i class="fa-solid fa-spinner fa-spin"></i> در حال بررسی دسترسی...</section>
+ <section id="denied" class="status-box error" hidden><i class="fa-solid fa-lock"></i><div id="deniedText">برای ورود ابتدا از <a href="index.html" style="text-decoration:underline">داشبورد</a> وارد شوید.</div></section>
+
+ <section id="app" hidden>
+  <div class="section-card">
+   <h2><i class="fa-solid fa-circle-play"></i> کنفرانس‌های در جریان</h2>
+   <div id="rooms"></div>
+  </div>
+
+  <div class="section-card" id="formCard" hidden>
+   <h2><i class="fa-solid fa-users-rectangle"></i> <span id="formTitle">تشکیل اتاق کنفرانس جدید</span></h2>
+   <input class="field" id="title" maxlength="100" placeholder="عنوان کنفرانس (مثلاً: جلسهٔ هفتگی)">
+   <div class="hint" style="margin-top:10px">اعضای انتخاب‌شده وقتی وارد پنل خود شوند، پنجرهٔ چشمک‌زن ورود به کنفرانس را می‌بینند. بقیه با لینک دعوت (بدون نیاز به حساب) وارد می‌شوند. ظرفیت اتاق ۸ نفر است.</div>
+   <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="waitRoom"> اتاق انتظار: ورود مهمان‌ها (و کاربران دعوت‌نشده) پس از تأیید من انجام شود</label>
+   <div class="toolbar">
+    <input class="search-input" id="search" type="search" placeholder="جستجو با نام، ایمیل یا تلفن...">
+    <button class="icon-btn" id="selAll" type="button">انتخاب همهٔ نتایج</button>
+    <button class="icon-btn" id="selNone" type="button">پاک کردن انتخاب</button>
+   </div>
+   <div class="pick" id="pick"></div>
+   <div class="u-meta" style="margin:8px 0" id="selCount"></div>
+   <div class="acts">
+    <button class="icon-btn btn-primary" id="saveBtn"><i class="fa-solid fa-video"></i> <span id="saveLabel">تشکیل کنفرانس</span></button>
+    <button class="icon-btn" id="cancelEdit" hidden>انصراف از ویرایش</button>
+   </div>
+  </div>
+ </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { apiFetch, friendlyError, showToast, escapeHtml, renderNav, readSession, saveSession } from "./shared.js";
+const $ = id => document.getElementById(id);
+const S = { perms: [], isSuper: false, users: [], rooms: [], sel: new Set(), editId: null };
+const can = a => S.isSuper || S.perms.includes("conference." + a);
+const api = (p, m, b) => apiFetch("/admin/conference" + p, m ? { method: m, body: b ? JSON.stringify(b) : undefined } : {});
+const ROOT = location.origin + location.pathname.replace(/admin\/[^/]*$/, "");
+const link = r => `${ROOT}conference.html?room=${encodeURIComponent(r.id)}&t=${encodeURIComponent(r.inviteToken)}`;
+
+async function boot() {
+  if (!readSession()?.idToken) { $("loading").hidden = true; $("denied").hidden = false; return; }
+  try {
+    const me = await apiFetch("/admin/me");
+    S.perms = me.permissions || []; S.isSuper = !!me.isSuper;
+    $("navBar").hidden = false; renderNav("conference", S.isSuper); $("logoutBtn").hidden = false;
+    if (!can("view")) throw Object.assign(new Error(), { code: "FORBIDDEN" });
+    $("loading").hidden = true; $("app").hidden = false;
+    if (can("add")) { $("formCard").hidden = false; loadUsers(); }
+    await loadRooms();
+    setInterval(() => { if (!document.hidden) loadRooms(); }, 15000);
+  } catch (e) {
+    $("loading").hidden = true;
+    if (e.status === 401) { saveSession(null); $("denied").hidden = false; return; }
+    $("deniedText").textContent = friendlyError(e); $("denied").hidden = false;
+  }
+}
+$("logoutBtn").onclick = () => { saveSession(null); location.reload(); };
+
+async function loadUsers() {
+  try { S.users = (await api("/users")).users || []; renderPick(); }
+  catch (e) { $("pick").innerHTML = `<div class="status-box error">${escapeHtml(friendlyError(e))}</div>`; }
+}
+function filtered() {
+  const q = $("search").value.trim().toLowerCase();
+  return S.users.filter(u => !q || [u.name, u.email, u.phone].join(" ").toLowerCase().includes(q));
+}
+function renderPick() {
+  const rows = filtered();
+  $("pick").innerHTML = rows.length ? rows.map(u => `
+    <label class="u-row"><div><h4>${escapeHtml(u.name || "بدون نام")}</h4>
+    <div class="u-meta" style="direction:ltr;text-align:right">${escapeHtml(u.email || u.id)}${u.phone ? " · " + escapeHtml(u.phone) : ""}</div></div>
+    <input type="checkbox" data-u="${escapeHtml(u.id)}" ${S.sel.has(u.id) ? "checked" : ""}></label>`).join("")
+    : '<div class="status-box"><i class="fa-regular fa-folder-open"></i>کاربری پیدا نشد.</div>';
+  $("pick").querySelectorAll("[data-u]").forEach(c => c.onchange = () => { c.checked ? S.sel.add(c.dataset.u) : S.sel.delete(c.dataset.u); count(); });
+  count();
+}
+function count() { $("selCount").textContent = `${S.sel.size.toLocaleString("fa-IR")} نفر برای دعوت انتخاب شده‌اند`; }
+$("search").oninput = renderPick;
+$("selAll").onclick = () => { filtered().forEach(u => S.sel.add(u.id)); renderPick(); };
+$("selNone").onclick = () => { S.sel.clear(); renderPick(); };
+
+async function loadRooms() {
+  try { S.rooms = (await api("/rooms")).rooms || []; renderRooms(); }
+  catch (e) { $("rooms").innerHTML = `<div class="status-box error"><i class="fa-solid fa-circle-exclamation"></i>${escapeHtml(friendlyError(e))}</div>`; }
+}
+function renderRooms() {
+  if (!S.rooms.length) { $("rooms").innerHTML = '<div class="hint" style="margin:0">در حال حاضر کنفرانسی باز نیست.</div>'; return; }
+  $("rooms").innerHTML = S.rooms.map(r => `
+   <div class="room"><div class="room-top">
+     <h3><span class="live-dot"></span>${escapeHtml(r.title)}</h3>
+     <span class="u-meta">برگزارکننده: ${escapeHtml(r.hostName || "—")} · ${r.invitedUids.length.toLocaleString("fa-IR")} نفر دعوت‌شده</span></div>
+    <div class="linkbox"><input class="field" readonly value="${escapeHtml(link(r))}" onfocus="this.select()">
+     <button class="icon-btn" data-copy="${escapeHtml(r.id)}"><i class="fa-regular fa-copy"></i> کپی لینک دعوت</button></div>
+    <div class="acts">
+     <a class="icon-btn btn-primary" href="${escapeHtml(link(r)).replace(/&amp;/g, "&amp;")}"><i class="fa-solid fa-video"></i> ورود به اتاق</a>
+     ${can("add") ? `<button class="icon-btn" data-edit="${escapeHtml(r.id)}"><i class="fa-solid fa-user-pen"></i> ویرایش دعوت‌شدگان</button>` : ""}
+     ${can("delete") ? `<button class="icon-btn" style="color:var(--danger)" data-end="${escapeHtml(r.id)}"><i class="fa-solid fa-circle-stop"></i> پایان کنفرانس</button>` : ""}
+    </div></div>`).join("");
+  $("rooms").querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => {
+    const r = S.rooms.find(x => x.id === b.dataset.copy);
+    try { await navigator.clipboard.writeText(link(r)); showToast("لینک دعوت کپی شد."); }
+    catch { b.closest(".room").querySelector("input").select(); showToast("لینک را دستی کپی کنید.", "error"); }
+  });
+  $("rooms").querySelectorAll("[data-edit]").forEach(b => b.onclick = () => startEdit(b.dataset.edit));
+  $("rooms").querySelectorAll("[data-end]").forEach(b => b.onclick = () => endRoom(b.dataset.end));
+}
+function startEdit(id) {
+  const r = S.rooms.find(x => x.id === id); if (!r) return;
+  S.editId = id; S.sel = new Set(r.invitedUids); $("title").value = r.title;
+  $("waitRoom").parentElement.hidden = true; $("formTitle").textContent = "ویرایش دعوت‌شدگان: " + r.title; $("saveLabel").textContent = "ذخیره تغییرات"; $("cancelEdit").hidden = false;
+  renderPick(); $("formCard").scrollIntoView({ behavior: "smooth" });
+}
+function resetForm() {
+  S.editId = null; S.sel.clear(); $("waitRoom").checked = false; $("title").value = ""; $("formTitle").textContent = "تشکیل اتاق کنفرانس جدید";
+  $("saveLabel").textContent = "تشکیل کنفرانس"; $("cancelEdit").hidden = true; $("waitRoom").parentElement.hidden = false; renderPick();
+}
+$("cancelEdit").onclick = resetForm;
+$("saveBtn").onclick = async () => {
+  const btn = $("saveBtn"); btn.disabled = true;
+  const body = { title: $("title").value.trim(), invitedUids: [...S.sel] };
+  if (!S.editId) body.waitingRoom = $("waitRoom").checked;
+  try {
+    if (S.editId) { await api("/rooms/" + encodeURIComponent(S.editId), "PUT", body); showToast("تغییرات ذخیره شد."); }
+    else {
+      const res = await api("/rooms", "POST", body);
+      showToast("کنفرانس تشکیل شد. لینک دعوت را از کارت بالا کپی کنید.");
+      try { await navigator.clipboard.writeText(link(res.room)); } catch {}
+    }
+    resetForm(); await loadRooms();
+    if (!S.editId) window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (e) { showToast(friendlyError(e), "error"); }
+  btn.disabled = false;
+};
+async function endRoom(id) {
+  if (!confirm("کنفرانس برای همهٔ شرکت‌کنندگان بسته شود؟")) return;
+  try { await api("/rooms/" + encodeURIComponent(id), "DELETE"); showToast("کنفرانس بسته شد."); if (S.editId === id) resetForm(); await loadRooms(); }
+  catch (e) { showToast(friendlyError(e), "error"); }
+}
+boot();
+</script>
+</body>
+</html>
