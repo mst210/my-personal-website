@@ -104,6 +104,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v5m0-6a1.5 1.5 0 0 1 3 0v6m0-4a1.5 1.5 0 0 1 3 0v6c0 4-2 7-6 7-3 0-4-1-6-4l-2-3a1.5 1.5 0 0 1 2.5-1.5L8 14"/></symbol>
 <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
 <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+<symbol id="i-flip" viewBox="0 0 24 24"><path d="M4 8V5h3M20 16v3h-3M5 5a9 9 0 0 1 14 2M19 19a9 9 0 0 1-14-2"/><circle cx="12" cy="12" r="3"/></symbol>
 <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 7h12l-3-3M17 17H5l3 3"/></symbol>
 <symbol id="i-end" viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2 3-3-2v-3c-3-1-7-1-10 0v3l-3 2z"/></symbol>
 <symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></symbol>
@@ -147,6 +148,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
    <div class="dock">
     <button class="dk" id="micBtn" disabled><svg class="ic"><use href="#i-mic"/></svg><span>میکروفن</span></button>
     <button class="dk" id="camBtn" disabled><svg class="ic"><use href="#i-cam"/></svg><span>دوربین</span></button>
+    <button class="dk" id="flipBtn" disabled style="display:none"><svg class="ic"><use href="#i-flip"/></svg><span>تعویض دوربین</span></button>
     <button class="dk" id="shareBtn" disabled><svg class="ic"><use href="#i-scr"/></svg><span>اشتراک صفحه</span></button>
     <button class="dk" id="handBtn" disabled><svg class="ic"><use href="#i-hand"/></svg><span>بالا بردن دست</span></button>
     <button class="dk" id="swapBtn"><svg class="ic"><use href="#i-swap"/></svg><span>جابجایی تصاویر</span></button>
@@ -284,9 +286,35 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
         localStream = st; $("localVideo").srcObject = st;
         ["micBtn", "camBtn"].forEach(function (i) { $(i).disabled = false; });
         if (navigator.mediaDevices.getDisplayMedia) $("shareBtn").disabled = false; else $("shareBtn").style.display = "none";
-        fillDevices(); startMeter();
+        fillDevices(); startMeter(); updateMirror(); updateFlipBtn(); $("flipBtn").disabled = false;
       })
       .catch(function (e) { setMsg("دسترسی به دوربین یا میکروفن داده نشد. در تنظیمات مرورگر اجازه دهید و صفحه را دوباره باز کنید."); throw e; });
+  }
+  /* دوربین پشت: بدون آینه؛ دوربین جلو (و وب‌کم): آینه‌ای */
+  function isBackCam(t) {
+    if (!t) return false;
+    var st = t.getSettings ? t.getSettings() : {};
+    if (st.facingMode) return st.facingMode === "environment";
+    return /back|rear|environment|world|پشت/i.test(t.label || "");
+  }
+  function updateMirror() {
+    var v = $("localVideo"), cam = localStream && localStream.getVideoTracks()[0];
+    v.classList.toggle("noflip", !!sharing || isBackCam(cam));
+  }
+  function updateFlipBtn() {
+    navigator.mediaDevices.enumerateDevices().then(function (ds) {
+      var n = ds.filter(function (d) { return d.kind === "videoinput"; }).length;
+      $("flipBtn").style.display = n > 1 ? "" : "none";
+    }).catch(function () {});
+  }
+  function flipCamera() {
+    var cam = localStream.getVideoTracks()[0], cur = cam && cam.getSettings().deviceId;
+    navigator.mediaDevices.enumerateDevices().then(function (ds) {
+      var cams = ds.filter(function (d) { return d.kind === "videoinput"; });
+      if (cams.length < 2) return;
+      var i = cams.findIndex(function (d) { return d.deviceId === cur; });
+      swapDevice("video", cams[(i + 1) % cams.length].deviceId);
+    });
   }
   function fillDevices() {
     navigator.mediaDevices.enumerateDevices().then(function (ds) {
@@ -302,18 +330,32 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     });
   }
   function swapDevice(kind, id) {
-    var c = kind === "video" ? { video: { deviceId: { exact: id } } } : { audio: { echoCancellation: true, noiseSuppression: true, deviceId: { exact: id } } };
-    navigator.mediaDevices.getUserMedia(c).then(function (st) {
-      var nt = st.getTracks()[0], old = (kind === "video" ? localStream.getVideoTracks() : localStream.getAudioTracks())[0];
-      if (old) { nt.enabled = old.enabled; localStream.removeTrack(old); }
+    var isV = kind === "video";
+    var mk = function (devId) { return isV ? { video: { deviceId: { exact: devId }, width: 1280, height: 720 } } : { audio: { echoCancellation: true, noiseSuppression: true, deviceId: { exact: devId } } }; };
+    var old = (isV ? localStream.getVideoTracks() : localStream.getAudioTracks())[0];
+    var oldId = old && old.getSettings().deviceId, wasOn = old ? old.enabled : true;
+    function install(nt) {
+      nt.enabled = wasOn;
+      if (old) localStream.removeTrack(old);
       localStream.addTrack(nt);
-      if (pc && !(sharing && kind === "video")) {
-        var sd = pc.getSenders().find(function (s) { return s.track && old && s.track.id === old.id; });
+      if (pc && !(sharing && isV)) {
+        var sd = pc.getSenders().find(function (s) { return s.track && old && s.track.id === old.id; }) ||
+                 pc.getSenders().find(function (s) { return (s.track ? s.track.kind : null) === kind || (!s.track && s.dtmf === undefined && isV); });
         if (sd) sd.replaceTrack(nt);
       }
       if (old) old.stop();
-      if (kind === "audio") startMeter();
-    }).catch(function () { setMsg("تعویض دستگاه انجام نشد."); });
+      old = nt;
+      if (isV) { $("localVideo").srcObject = localStream; updateMirror(); }
+      else startMeter();
+      fillDevices(); sendState();
+    }
+    /* در موبایل تا دوربین قبلی آزاد نشود، دوربین دیگر باز نمی‌شود */
+    var prevTrack = old; if (isV && old) old.stop();
+    navigator.mediaDevices.getUserMedia(mk(id)).then(function (st) { old = prevTrack; install(st.getTracks()[0]); })
+      .catch(function () {
+        setMsg("تعویض دستگاه انجام نشد.");
+        if (isV && prevTrack && oldId) navigator.mediaDevices.getUserMedia(mk(oldId)).then(function (st) { old = prevTrack; install(st.getTracks()[0]); }).catch(function () {});
+      });
   }
   function startMeter() {
     try {
@@ -346,8 +388,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       screenStream = st; var t = st.getVideoTracks()[0];
       var sd = pc && pc.getSenders().find(function (s) { return s.track && s.track.kind === "video"; });
       if (sd) sd.replaceTrack(t);
-      $("localVideo").srcObject = st; $("localVideo").classList.add("noflip");
-      sharing = true; $("shareBtn").classList.add("on"); t.onended = stopShare; sendState();
+      sharing = true; $("localVideo").srcObject = st; updateMirror();
+       $("shareBtn").classList.add("on"); t.onended = stopShare; sendState();
     }).catch(function () {});
   }
   function stopShare() {
@@ -356,13 +398,13 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     var cam = localStream.getVideoTracks()[0];
     var sd = pc && pc.getSenders().find(function (s) { return s.track && s.track.kind === "video"; });
     if (sd && cam) sd.replaceTrack(cam);
-    $("localVideo").srcObject = localStream; $("localVideo").classList.remove("noflip");
+    $("localVideo").srcObject = localStream; updateMirror();
     $("shareBtn").classList.remove("on"); sendState();
   }
   function toggleHand() { handUp = !handUp; $("handBtn").classList.toggle("on", handUp); sendState(); }
   function swapViews() {
     swapped = !swapped;
-    $("remoteVideo").className = swapped ? "vsmall" : "vbig"; $("localVideo").className = (swapped ? "vbig" : "vsmall") + (sharing ? " noflip" : "");
+    $("remoteVideo").className = swapped ? "vsmall" : "vbig"; $("localVideo").className = swapped ? "vbig" : "vsmall"; updateMirror();
   }
   function fullscreen() {
     var el = $("stage");
@@ -615,7 +657,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     if (localStream) localStream.getTracks().forEach(function (t) { t.stop(); });
     $("remoteVideo").srcObject = null; $("localVideo").srcObject = null; $("rbadges").textContent = ""; setMsg("");
     setStatus(title, "");
-    ["micBtn", "camBtn", "shareBtn", "handBtn", "leaveBtn", "endBtn", "sendBtn", "chatInput"].forEach(function (i) { $(i).disabled = true; });
+    ["micBtn", "camBtn", "flipBtn", "shareBtn", "handBtn", "leaveBtn", "endBtn", "sendBtn", "chatInput"].forEach(function (i) { $(i).disabled = true; });
     var lb = $("lobby"); lb.style.display = "flex"; lb.className = "joined"; $("queue").style.display = "none"; $("joinBtn").style.display = "none";
     $("lobbyTitle").textContent = title; $("lobbyMsg").textContent = msg || "";
     var b = document.createElement("button"); b.className = "btn primary"; b.style.display = "block"; b.style.marginTop = "10px"; b.textContent = btnLabel || "شروع جلسه جدید"; b.onclick = function () { location.reload(); }; $("lobbyMsg").appendChild(b);
@@ -643,7 +685,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 
   /* ---------- رویدادها ---------- */
   $("joinBtn").onclick = patientJoin; $("leaveBtn").onclick = function () { leaveSession(false); }; $("endBtn").onclick = function () { leaveSession(true); };
-  $("micBtn").onclick = function () { toggle("audio"); }; $("camBtn").onclick = function () { toggle("video"); };
+  $("micBtn").onclick = function () { toggle("audio"); }; $("camBtn").onclick = function () { toggle("video"); }; $("flipBtn").onclick = flipCamera;
+  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener("devicechange", function () { if (localStream) { fillDevices(); updateFlipBtn(); } });
   $("shareBtn").onclick = toggleShare; $("handBtn").onclick = toggleHand; $("swapBtn").onclick = swapViews; $("fullBtn").onclick = fullscreen;
   $("sendBtn").onclick = sendChat; $("chatInput").addEventListener("keydown", function (e) { if (e.key === "Enter") sendChat(); });
   $("fileIn").onchange = function () { sendFile(this.files[0]); this.value = ""; };
