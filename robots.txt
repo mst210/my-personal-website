@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /panel.html
 Disallow: /admin/
+Disallow: /conference.html
 
 Sitemap: https://www.drmohammadsadeqtaj.ir/api/sitemap.xml

@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اتاق کنفرانس | دکتر محمدصادق تاج</title>
+<meta name="robots" content="noindex">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+:root{--bg:#0b1220;--card:#131d30;--card2:#1c2940;--teal:#14b8a6;--blue:#0284c7;--ink:#e2e8f0;--muted:#94a3b8;--line:rgba(255,255,255,.1);--danger:#ef4444;--ok:#22c55e;--warn:#f59e0b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:"Vazirmatn",Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow:hidden}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{height:100dvh;display:grid;grid-template-rows:auto 1fr;padding-bottom:env(safe-area-inset-bottom,0)}
+.top{display:flex;align-items:center;gap:8px;padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+.top h1{font-size:1rem;margin:0;font-weight:700}
+.back{color:var(--muted);text-decoration:none;font-size:.85rem}
+.sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:99px;white-space:nowrap}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.chip.live .dot{background:var(--ok)}.chip.wait .dot{background:var(--warn)}.chip.bad .dot{background:var(--danger)}
+.lat b{font-variant-numeric:tabular-nums;direction:ltr;display:inline-block;min-width:34px;text-align:left}
+.g{color:var(--ok)}.y{color:var(--warn)}.r{color:#f87171}
+#recChip{background:rgba(239,68,68,.2);color:#fca5a5;display:none;animation:bl 1s linear infinite}
+@keyframes bl{50%{opacity:.35}}
+#timer{font-variant-numeric:tabular-nums;direction:ltr;color:var(--muted);font-size:.85rem}
+.main{display:grid;grid-template-columns:1fr 350px;gap:10px;padding:10px;min-height:0}
+.sw{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}
+.vtabs{display:flex;gap:6px;align-items:center}
+.vtabs button{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:4px 14px;font-size:.84rem;color:var(--muted)}
+.vtabs button.act{color:#fff;border-color:var(--teal);background:rgba(20,184,166,.18)}
+.vtabs .nd{display:none;width:8px;height:8px;border-radius:50%;background:var(--danger);margin-right:6px}
+.stage{position:relative;flex:1;min-height:180px;background:#020617;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.grid{position:absolute;inset:0;padding:8px;display:grid;gap:8px;grid-template-columns:repeat(var(--c,1),minmax(0,1fr));grid-auto-rows:minmax(0,1fr)}
+.grid.spk{grid-template-rows:minmax(0,1fr) 112px;grid-auto-rows:112px}
+.grid.spk .tile.big{grid-column:1/-1;grid-row:1}
+.grid.spk .tile:not(.big){grid-row:2}
+.tile{position:relative;background:#000;border-radius:12px;overflow:hidden;border:2px solid var(--line);min-height:0}
+.tile.speak{border-color:var(--ok)}
+.tile video{width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.tile.me video{transform:scaleX(-1)}.tile.me.nomirror video,.tile.me.scr video{transform:none}
+.tile.scr video{object-fit:contain}
+.tile .nm{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.65);padding:1px 10px;border-radius:99px;font-size:.78rem;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile .pg{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.65);padding:1px 8px;border-radius:99px;font-size:.72rem;direction:ltr;font-variant-numeric:tabular-nums}
+.tile .bd{position:absolute;top:6px;right:6px;display:flex;gap:4px;flex-wrap:wrap;max-width:75%}
+.tile .bd span{background:rgba(0,0,0,.7);padding:0 8px;border-radius:99px;font-size:.72rem}
+.tile .pin{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.6);border:0;border-radius:8px;padding:2px 8px;font-size:.72rem;opacity:0;transition:opacity .15s}
+.tile:hover .pin,.tile.pinned .pin{opacity:1}
+.tile.pinned .pin{background:var(--teal)}
+.tile .av{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:2.2rem;font-weight:700;background:var(--card2);color:var(--muted)}
+.tile.nocam .av{display:flex}
+.tile.wait::after{content:"در حال اتصال...";position:absolute;top:30px;left:6px;background:rgba(245,158,11,.9);color:#000;padding:0 10px;border-radius:99px;font-size:.72rem}
+.fl{position:absolute;bottom:34px;left:50%;font-size:2rem;animation:fly 2.2s ease-out forwards;pointer-events:none}
+@keyframes fly{to{transform:translateY(-120px);opacity:0}}
+#wbWrap{position:absolute;inset:0;display:none;flex-direction:column;background:#e2e8f0}
+#wbBar{display:flex;gap:8px;align-items:center;padding:6px 10px;background:var(--card);flex-wrap:wrap}
+#wbBar button,#wbBar select{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;font-size:.82rem}
+#wbBar button.on{border-color:var(--teal);color:#5eead4}
+#wbBar input[type=color]{width:34px;height:28px;border:0;background:none;padding:0}
+#wbBox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:6px}
+#wbCanvas{max-width:100%;max-height:100%;aspect-ratio:16/9;background:#fff;touch-action:none;border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+#lobby,#over{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(2,6,23,.82);backdrop-filter:blur(3px);overflow:auto}
+.lb{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;margin:auto}
+.lb h2{margin:0;font-size:1.1rem}
+.lb label,.lbl{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--muted)}
+.field,select.field,textarea.field{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}
+#preview{width:100%;aspect-ratio:4/3;background:#000;border-radius:12px;object-fit:cover;transform:scaleX(-1)}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:10px;padding:8px 14px;font-weight:600;font-size:.88rem;text-align:center;text-decoration:none;color:var(--ink);display:block}
+.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:linear-gradient(135deg,var(--blue),var(--teal));border-color:transparent;color:#fff}
+.btn.sm{padding:3px 10px;font-size:.78rem;display:inline-block}
+.btn.danger{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5);color:#fca5a5}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+#msg{color:#fca5a5;font-size:.85rem;min-height:1.1em}
+.dock{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;position:relative}
+.dk{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:60px;padding:6px 8px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-size:.7rem}
+.dk:hover{background:#26364f}
+.dk.off{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.5);color:#fca5a5}
+.dk.on{background:rgba(20,184,166,.18);border-color:var(--teal);color:#5eead4}
+.dk.end{background:var(--danger);border-color:var(--danger);color:#fff}
+.dk[disabled]{opacity:.35;cursor:not-allowed}
+.bdg{position:absolute;top:2px;left:6px;background:var(--danger);color:#fff;border-radius:99px;font-size:.7rem;min-width:18px;padding:0 5px;display:none;text-align:center}
+#reacts{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;display:none;gap:6px;flex-wrap:wrap;max-width:300px;justify-content:center;z-index:12;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+#reacts button{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:4px 10px;font-size:.84rem}
+#reacts button.on{border-color:var(--teal);color:#5eead4}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs button{flex:none;background:none;border:0;padding:9px 11px;color:var(--muted);font-size:.8rem;border-bottom:2px solid transparent;position:relative;white-space:nowrap}
+.tabs button.act{color:var(--ink);border-bottom-color:var(--teal)}
+.tabs .nd{display:none;position:absolute;top:6px;left:4px;width:7px;height:7px;border-radius:50%;background:var(--danger)}
+.pane{display:none;flex:1;min-height:0;flex-direction:column;overflow:hidden}
+.pane.act{display:flex}
+.scroll{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+#log{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:92%;padding:6px 11px;border-radius:12px;word-break:break-word;white-space:pre-wrap;font-size:.88rem}
+.m small{display:block;opacity:.65;font-size:.68rem}
+.m.me{align-self:flex-start;background:var(--blue);color:#fff}
+.m.them{align-self:flex-end;background:var(--card2)}
+.m.pv{outline:1px dashed var(--warn)}
+.m.sys{align-self:center;background:none;color:var(--muted);font-size:.78rem}
+.send{display:flex;gap:6px;padding:8px;border-top:1px solid var(--line);flex-wrap:wrap}
+.send select{flex:1 0 100%;padding:4px 8px;font-size:.8rem}
+.send input[type=text]{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px}
+.ib{width:40px;border-radius:10px;border:1px solid var(--line);background:var(--card2);display:flex;align-items:center;justify-content:center}
+.ib[disabled]{opacity:.4}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.85rem}
+.pi{background:var(--card2);border-radius:10px;padding:7px 10px;font-size:.85rem}
+.pi .h{display:flex;justify-content:space-between;gap:6px;align-items:center;cursor:pointer}
+.pi .ac{display:none;flex-wrap:wrap;gap:5px;margin-top:7px}
+.pi.open .ac{display:flex}
+.tag{background:rgba(20,184,166,.2);color:#5eead4;border-radius:99px;font-size:.68rem;padding:0 7px;margin-right:4px}
+.bar{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal)}
+.pcard{background:var(--card2);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
+.pcard .o{display:flex;flex-direction:column;gap:2px;border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:none;text-align:right}
+.pcard .o.mine{border-color:var(--teal)}
+.chk{display:flex;gap:8px;align-items:center;font-size:.85rem}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th,td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--muted);font-weight:600}
+td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
+@media(max-width:860px){
+ .main{grid-template-columns:1fr;padding:6px}
+ .grid{grid-template-columns:repeat(min(var(--c,1),2),minmax(0,1fr))}
+ .grid.spk{grid-template-columns:repeat(var(--c,1),minmax(0,1fr))}
+ .panel{position:fixed;left:0;right:0;bottom:0;height:75dvh;z-index:20;border-radius:18px 18px 0 0;transform:translateY(105%);transition:transform .25s;padding-bottom:env(safe-area-inset-bottom,0)}
+ .panel.open{transform:none}
+ .dk{min-width:52px;padding:5px 4px}
+}
+@media(min-width:861px){#chatBtn{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></symbol>
+<symbol id="i-scr" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+<symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v5m0-6a1.5 1.5 0 0 1 3 0v6m0-4a1.5 1.5 0 0 1 3 0v6c0 4-2 7-6 7-3 0-4-1-6-4l-2-3a1.5 1.5 0 0 1 2.5-1.5L8 14"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+<symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+<symbol id="i-end" viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2 3-3-2v-3c-3-1-7-1-10 0v3l-3 2z"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></symbol>
+<symbol id="i-lay" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="12" rx="2"/><path d="M3 19h4M10 19h4M17 19h4"/></symbol>
+<symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></symbol>
+<symbol id="i-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+</svg>
+
+<div class="app">
+ <header class="top">
+  <h1 id="title">اتاق کنفرانس</h1>
+  <span class="chip" id="chip"><i class="dot"></i><span id="status">آماده</span></span>
+  <span class="chip" id="count" style="display:none"></span>
+  <span class="chip lat" id="latSrv" title="تأخیر رفت‌وبرگشت تا سرور سایت" style="display:none">پینگ سرور <b>—</b></span>
+  <span class="chip lat" id="latPeer" title="میانگین تأخیر مستقیم شما تا شرکت‌کنندگان" style="display:none">پینگ شرکت‌کنندگان <b>—</b></span>
+  <span class="chip" id="recChip">● در حال ضبط</span>
+  <span class="sp"></span>
+  <span id="timer">00:00</span>
+  <a class="back" id="backLink" href="panel.html">بازگشت</a>
+ </header>
+
+ <div class="main">
+  <section class="sw">
+   <div class="vtabs"><button class="act" id="vtVideo">ویدیو</button><button id="vtWb">تخته سفید<i class="nd" id="wbDot"></i></button></div>
+   <div class="stage" id="stage">
+    <div class="grid" id="grid"></div>
+    <div id="wbWrap">
+     <div id="wbBar">
+      <input type="color" id="wbColor" value="#ef4444" title="رنگ">
+      <select id="wbSize"><option value="3">نازک</option><option value="6" selected>متوسط</option><option value="12">ضخیم</option></select>
+      <button id="wbEraser">پاک‌کن</button><button id="wbClear">پاک کردن همه</button><button id="wbSave">ذخیره تصویر</button>
+      <span id="wbHint" style="color:var(--muted);font-size:.78rem"></span>
+     </div>
+     <div id="wbBox"><canvas id="wbCanvas" width="1280" height="720"></canvas></div>
+    </div>
+
+    <div id="lobby">
+     <div class="lb">
+      <h2 id="lobbyTitle">ورود به اتاق کنفرانس</h2>
+      <video id="preview" autoplay playsinline muted></video>
+      <label id="nameWrap" style="display:none">نام شما (برای نمایش به سایر شرکت‌کنندگان)<input class="field" id="nameIn" maxlength="60" autocomplete="name" placeholder="مثلاً: علی رضایی"></label>
+      <div style="display:flex;gap:8px"><label style="flex:1">دوربین<select class="field devcam"></select></label><label style="flex:1">میکروفن<select class="field devmic"></select></label></div>
+      <button class="btn primary" id="joinBtn" disabled>ورود به کنفرانس</button>
+      <div id="lobbyMsg" style="color:var(--muted);font-size:.85rem"></div>
+      <div id="msg" role="alert"></div>
+     </div>
+    </div>
+
+    <div id="over" style="display:none">
+     <div class="lb"><h2 id="overTitle">کنفرانس پایان یافت</h2><div id="overMsg" style="color:var(--muted)"></div><a class="btn primary" id="overBack" href="index.html">بازگشت</a></div>
+    </div>
+   </div>
+
+   <div class="dock">
+    <button class="dk" id="micBtn" disabled><svg class="ic"><use href="#i-mic"/></svg><span>میکروفن</span></button>
+    <button class="dk" id="camBtn" disabled><svg class="ic"><use href="#i-cam"/></svg><span>دوربین</span></button>
+    <button class="dk" id="shareBtn" disabled><svg class="ic"><use href="#i-scr"/></svg><span>اشتراک صفحه</span></button>
+    <button class="dk" id="reactBtn" disabled><svg class="ic"><use href="#i-smile"/></svg><span>وضعیت و واکنش</span></button>
+    <button class="dk" id="layBtn"><svg class="ic"><use href="#i-lay"/></svg><span>چیدمان: شبکه‌ای</span></button>
+    <button class="dk" id="recBtn" style="display:none"><svg class="ic"><use href="#i-rec"/></svg><span>ضبط</span></button>
+    <button class="dk" id="linkBtn" style="display:none"><svg class="ic"><use href="#i-link"/></svg><span>لینک دعوت</span></button>
+    <button class="dk" id="fullBtn"><svg class="ic"><use href="#i-full"/></svg><span>تمام‌صفحه</span></button>
+    <button class="dk" id="chatBtn"><svg class="ic"><use href="#i-chat"/></svg><span>پنل</span><i class="bdg" id="bdgBtn"></i></button>
+    <button class="dk end" id="hangBtn" disabled><svg class="ic"><use href="#i-end"/></svg><span>خروج</span></button>
+    <button class="dk end" id="endBtn" style="display:none"><svg class="ic"><use href="#i-stop"/></svg><span>پایان برای همه</span></button>
+    <div id="reacts"></div>
+   </div>
+  </section>
+
+  <aside class="panel" id="panel">
+   <div class="tabs" id="tabs">
+    <button class="act" data-tab="pChat">گفتگو<i class="nd" id="ndChat"></i></button>
+    <button data-tab="pPeople">شرکت‌کنندگان<i class="nd" id="ndPeople"></i></button>
+    <button data-tab="pPoll">نظرسنجی<i class="nd" id="ndPoll"></i></button>
+    <button data-tab="pFiles">فایل‌ها<i class="nd" id="ndFiles"></i></button>
+    <button data-tab="pNote">یادداشت</button>
+    <button data-tab="pNet">شبکه</button>
+    <button data-tab="pSet">تنظیمات</button>
+   </div>
+
+   <div class="pane act" id="pChat">
+    <div id="log"></div>
+    <div class="send">
+     <select id="chatTo" class="field"><option value="">گفتگو با همه</option></select>
+     <input type="text" id="chatInput" placeholder="پیام خود را بنویسید" disabled autocomplete="off">
+     <button class="ib" id="sendBtn" disabled aria-label="ارسال"><svg class="ic"><use href="#i-send"/></svg></button>
+    </div>
+   </div>
+
+   <div class="pane" id="pPeople"><div class="scroll" id="plist"></div></div>
+
+   <div class="pane" id="pPoll"><div class="scroll">
+    <div id="pollForm" style="display:none" class="pcard">
+     <b>نظرسنجی جدید</b>
+     <input class="field" id="pollQ" maxlength="150" placeholder="سؤال">
+     <textarea class="field" id="pollO" rows="4" placeholder="هر گزینه در یک خط (حداقل ۲ گزینه)"></textarea>
+     <button class="btn primary" id="pollGo">شروع نظرسنجی</button>
+    </div>
+    <div id="polls"></div>
+   </div></div>
+
+   <div class="pane" id="pFiles"><div class="scroll">
+    <label class="btn" id="fileLbl" style="cursor:pointer">ارسال فایل برای همه (حداکثر ۱۰ مگابایت)<input type="file" id="fileIn" hidden></label>
+    <div id="files"></div>
+   </div></div>
+
+   <div class="pane" id="pNote"><div class="scroll">
+    <div class="lbl" id="noteHint">یادداشت مشترک؛ فقط میزبان و ارائه‌دهنده‌ها می‌توانند ویرایش کنند.</div>
+    <textarea class="field" id="noteArea" style="flex:1;min-height:220px;resize:none" readonly></textarea>
+    <button class="btn" id="noteCopy">کپی یادداشت</button>
+   </div></div>
+
+   <div class="pane" id="pNet"><div class="scroll">
+    <div class="row2"><span>پینگ سرور سایت</span><b class="lat" id="nSrv">—</b></div>
+    <div class="row2"><span>مدت جلسه</span><b id="nTime">00:00</b></div>
+    <table><thead><tr><th>نفر</th><th>پینگ</th><th>افت بسته</th><th>سرعت</th><th>مسیر</th></tr></thead><tbody id="netBody"></tbody></table>
+    <div class="lbl">پینگ هر نفر، تأخیر رفت‌وبرگشت مستقیم بین دستگاه شما و دستگاه اوست و هر ۲ ثانیه تازه می‌شود. «مسیر: واسط» یعنی ارتباط از سرور TURN عبور می‌کند.</div>
+   </div></div>
+
+   <div class="pane" id="pSet"><div class="scroll">
+    <b>دستگاه‌ها</b>
+    <label class="lbl">دوربین<select class="field devcam"></select></label>
+    <label class="lbl">میکروفن<select class="field devmic"></select></label>
+    <label class="lbl" id="spkWrap">خروجی صدا<select class="field" id="spkSel"></select></label>
+    <label class="chk"><input type="checkbox" id="mirrorChk" checked> تصویر خودم مثل آینه نمایش داده شود</label>
+    <label class="chk"><input type="checkbox" id="soundChk" checked> صدای اعلان (ورود، خروج، پیام، دست)</label>
+    <div id="hostBox" style="display:none;flex-direction:column;gap:8px;margin-top:6px">
+     <b>کنترل میزبان</b>
+     <label class="chk"><input type="checkbox" data-set="locked"> قفل اتاق (ورود جدید ممنوع)</label>
+     <label class="chk"><input type="checkbox" data-set="waiting"> اتاق انتظار (تأیید ورود مهمان‌ها)</label>
+     <label class="chk"><input type="checkbox" data-set="chatOn"> گفتگو برای شرکت‌کنندگان فعال باشد</label>
+     <label class="chk"><input type="checkbox" data-set="micOn"> شرکت‌کنندگان بتوانند میکروفن را باز کنند</label>
+     <label class="chk"><input type="checkbox" data-set="camOn"> شرکت‌کنندگان بتوانند دوربین را باز کنند</label>
+     <label class="chk"><input type="checkbox" data-set="shareOn"> شرکت‌کنندگان بتوانند صفحه را به اشتراک بگذارند</label>
+     <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" id="muteAll">بی‌صدا کردن همه</button><button class="btn sm" id="lowerAll">پایین آوردن همهٔ دست‌ها</button></div>
+     <b id="waitTitle" style="display:none">در انتظار ورود</b>
+     <div id="waitList"></div>
+    </div>
+   </div></div>
+  </aside>
+ </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const KEY = "taj_medical_proxy_auth_v1";
+  const $ = (i) => document.getElementById(i);
+  const qs = new URLSearchParams(location.search);
+  const ROOM = qs.get("room") || "", TOKEN = qs.get("t") || "";
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const loggedIn = !!(session && session.idToken);
+  const GKEY = "conf_guest_" + ROOM;
+
+  const S = {
+    pid: null, key: null, sid: null, joinedAt: 0, since: 0, name: "", title: "", isHost: false, role: "participant", inviteToken: "",
+    ice: [{ urls: "stun:stun.l.google.com:19302" }], peers: new Map(), local: null, cam: null, mic: null, screen: null,
+    sharing: false, hand: 0, emo: "", joined: false, inRoom: false, pollTimer: null, chain: Promise.resolve(), seen: new Set(),
+    tStart: 0, unread: 0, rejoins: 0, myTile: null, settings: { locked: false, waiting: false, chatOn: true, micOn: true, camOn: true, shareOn: true },
+    layout: "grid", pinned: null, activeId: null, activeSince: 0, srvPing: 0, openRow: null, rec: null, polls: new Map(),
+    strokes: new Map(), note: { t: "", v: 0 }, files: [], view: "video", waitingList: [], timers: [], ac: null, myLevel: 0, mirror: true, sound: true,
+    chatTo: ""
+  };
+  const priv = () => S.isHost || S.role === "presenter";
+  const peerPriv = (P) => P.host || P.role === "presenter";
+
+  function setStatus(t, c) { $("status").textContent = t; $("chip").className = "chip " + (c || ""); }
+  function setMsg(t) { $("msg").textContent = t || ""; }
+  const pad2 = (n) => (n < 10 ? "0" : "") + n;
+  const hm = () => { const d = new Date(); return pad2(d.getHours()) + ":" + pad2(d.getMinutes()); };
+  const rand = (n) => { const a = new Uint8Array(n || 6); crypto.getRandomValues(a); return Array.from(a, (x) => x.toString(16).padStart(2, "0")).join(""); };
+  function beep(f) { if (!S.sound) return; try { const a = ac(), o = a.createOscillator(), g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = f || 880; g.gain.value = .05; o.start(); o.stop(a.currentTime + .12); } catch (e) {} }
+  function ac() { if (!S.ac) S.ac = new (window.AudioContext || window.webkitAudioContext)(); if (S.ac.state === "suspended") S.ac.resume().catch(() => {}); return S.ac; }
+  const cls = (ms) => (ms < 150 ? "g" : ms < 350 ? "y" : "r");
+  const el = (tag, c, txt) => { const e = document.createElement(tag); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
+
+  if (!loggedIn) { $("backLink").href = "index.html"; $("overBack").href = "index.html"; } else { $("overBack").href = "panel.html"; }
+
+  /* ---------- API ---------- */
+  function api(path, body, retry) {
+    const h = { "Content-Type": "application/json" };
+    if (session && session.idToken) h.Authorization = "Bearer " + session.idToken;
+    return fetch("/api" + path, { method: "POST", headers: h, body: JSON.stringify(body || {}) }).then((r) =>
+      r.json().catch(() => ({})).then((j) => {
+        if (r.status === 401 && retry !== false && session && session.refreshToken) {
+          return fetch("/api/auth/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refreshToken: session.refreshToken }) })
+            .then((x) => x.json()).then((n) => {
+              if (!n.idToken) throw Object.assign(new Error("UNAUTHENTICATED"), { code: "UNAUTHENTICATED" });
+              session.idToken = n.idToken; session.refreshToken = n.refreshToken || session.refreshToken;
+              try { localStorage.setItem(KEY, JSON.stringify(session)); } catch (e) {}
+              return api(path, body, false);
+            });
+        }
+        if (!r.ok) { const e = new Error(j.error || "ERROR"); e.code = j.error; e.status = r.status; throw e; }
+        return j;
+      }));
+  }
+  const call = (path, extra) => api(path, Object.assign({ room: ROOM, pid: S.pid, key: S.key, sid: S.sid }, extra));
+
+  /* ---------- رسانه و دستگاه‌ها ---------- */
+  function getMedia() {
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) return Promise.resolve(new MediaStream());
+    const A = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+    return md.getUserMedia({ video: { width: 960, height: 540 }, audio: A })
+      .catch(() => md.getUserMedia({ audio: A }))
+      .catch(() => md.getUserMedia({ video: true }))
+      .catch(() => new MediaStream());
+  }
+  const outVideo = () => (S.sharing ? S.screen : S.cam);
+
+  function fillDevices() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    navigator.mediaDevices.enumerateDevices().then((ds) => {
+      [["videoinput", ".devcam", "دوربین ", S.cam], ["audioinput", ".devmic", "میکروفن ", S.mic]].forEach((k) => {
+        const cur = k[3] && k[3].getSettings().deviceId;
+        document.querySelectorAll(k[1]).forEach((sel) => {
+          sel.textContent = "";
+          ds.filter((d) => d.kind === k[0]).forEach((d, i) => {
+            const o = el("option", "", d.label || k[2] + (i + 1)); o.value = d.deviceId; if (d.deviceId === cur) o.selected = true; sel.appendChild(o);
+          });
+        });
+      });
+      const sp = $("spkSel"); sp.textContent = "";
+      const outs = ds.filter((d) => d.kind === "audiooutput");
+      if (!outs.length || !HTMLMediaElement.prototype.setSinkId) $("spkWrap").style.display = "none";
+      outs.forEach((d, i) => { const o = el("option", "", d.label || "خروجی " + (i + 1)); o.value = d.deviceId; sp.appendChild(o); });
+    }).catch(() => {});
+  }
+  function swapDevice(kind, id) {
+    const c = kind === "video" ? { video: { deviceId: { exact: id } } } : { audio: { echoCancellation: true, noiseSuppression: true, deviceId: { exact: id } } };
+    navigator.mediaDevices.getUserMedia(c).then((st) => {
+      const nt = st.getTracks()[0], old = kind === "video" ? S.cam : S.mic;
+      if (old) { nt.enabled = old.enabled; S.local.removeTrack(old); }
+      S.local.addTrack(nt);
+      if (kind === "video") S.cam = nt; else { S.mic = nt; watchLevel(S, nt); }
+      S.peers.forEach((P) => {
+        if (!P.pc) return;
+        const sd = P.pc.getSenders().find((s) => s.track && old && s.track.id === old.id);
+        if (sd && !(kind === "video" && S.sharing)) sd.replaceTrack(nt).catch(() => {});
+      });
+      if (old) old.stop();
+      $("preview").srcObject = S.local;
+      document.querySelectorAll(kind === "video" ? ".devcam" : ".devmic").forEach((s) => (s.value = id));
+    }).catch(() => setMsg("تعویض دستگاه انجام نشد."));
+  }
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.classList.contains("devcam")) swapDevice("video", t.value);
+    else if (t.classList.contains("devmic")) swapDevice("audio", t.value);
+    else if (t.id === "spkSel") S.peers.forEach((P) => { const v = P.tile.querySelector("video"); if (v.setSinkId) v.setSinkId(t.value).catch(() => {}); });
+    else if (t.id === "mirrorChk") { S.mirror = t.checked; if (S.myTile) S.myTile.classList.toggle("nomirror", !t.checked); }
+    else if (t.id === "soundChk") S.sound = t.checked;
+  });
+
+  /* ---------- تشخیص گوینده ---------- */
+  function watchLevel(o, track) {
+    try { const a = ac().createAnalyser(); a.fftSize = 256; ac().createMediaStreamSource(new MediaStream([track])).connect(a); o.an = a; o.buf = new Uint8Array(a.fftSize); } catch (e) {}
+  }
+  function levelOf(o) { if (!o.an) return 0; o.an.getByteTimeDomainData(o.buf); let m = 0; for (let i = 0; i < o.buf.length; i++) m = Math.max(m, Math.abs(o.buf[i] - 128)); return m; }
+  function speakerTick() {
+    if (!S.inRoom) return;
+    let best = null, bestL = 10;
+    const mine = S.mic && S.mic.enabled ? levelOf(S) : 0;
+    S.myTile.classList.toggle("speak", mine > 10);
+    S.peers.forEach((P) => {
+      const l = levelOf(P); P.tile.classList.toggle("speak", l > 10);
+      if (l > bestL) { bestL = l; best = P.pid; }
+    });
+    if (best && best !== S.activeId) {
+      if (!S.cand || S.cand.id !== best) S.cand = { id: best, n: 1 }; else S.cand.n++;
+      if (S.cand.n >= 4) { S.activeId = best; S.cand = null; applyLayout(); }
+    } else if (best) S.cand = null;
+  }
+
+  /* ---------- تایل‌ها و چیدمان ---------- */
+  function makeTile(id, name, me) {
+    const d = el("div", "tile" + (me ? " me" : " wait")); d.dataset.id = id;
+    const v = document.createElement("video"); v.autoplay = true; v.playsInline = true; if (me) v.muted = true;
+    const av = el("div", "av", (name || "?").trim().charAt(0));
+    const nm = el("div", "nm", name), bd = el("div", "bd"), pg = el("div", "pg"), pin = el("button", "pin", "📌 سنجاق");
+    pin.onclick = (e) => { e.stopPropagation(); S.pinned = S.pinned === id ? null : id; document.querySelectorAll(".tile").forEach((t) => t.classList.toggle("pinned", t.dataset.id === S.pinned)); applyLayout(); };
+    d.append(v, av, nm, bd, pg, pin);
+    $("grid").appendChild(d); applyLayout(); return d;
+  }
+  function applyLayout() {
+    const g = $("grid"), tiles = Array.from(g.children), n = tiles.length;
+    let sharer = null;
+    S.peers.forEach((P) => { if (P.st && P.st.scr) sharer = P.pid; });
+    if (S.sharing) sharer = "me";
+    if (S.pinned && !tiles.some((t) => t.dataset.id === S.pinned)) S.pinned = null;
+    const spk = n > 1 && (S.layout === "speaker" || sharer || S.pinned);
+    let big = null;
+    if (spk) {
+      big = S.pinned || sharer || (S.peers.has(S.activeId) ? S.activeId : null) || (S.peers.size ? S.peers.keys().next().value : "me");
+    }
+    g.classList.toggle("spk", !!spk);
+    tiles.forEach((t) => t.classList.toggle("big", t.dataset.id === big));
+    g.style.setProperty("--c", spk ? Math.max(1, n - 1) : n <= 1 ? 1 : n <= 4 ? 2 : 3);
+    $("count").style.display = ""; $("count").textContent = (S.peers.size + (S.inRoom ? 1 : 0)).toLocaleString("fa-IR") + " نفر";
+    renderPeople(); refreshTargets();
+  }
+  function paintBadges(tile, st, nameOnly) {
+    const bd = tile.querySelector(".bd"); bd.textContent = "";
+    const emo = { agree: "✅ موافق", disagree: "❌ مخالف", away: "⏳ دور از میز" }[st.emo];
+    [[st.mic === false, "🔇"], [st.hand, "✋ دست بالا"], [emo, emo], [st.scr, "اشتراک صفحه"]].forEach((x) => { if (x[0]) bd.appendChild(el("span", "", x[1])); });
+    tile.classList.toggle("nocam", st.cam === false && !st.scr);
+    tile.classList.toggle("scr", !!st.scr);
+  }
+  function floatEmoji(tile, e) { const f = el("div", "fl", e); f.style.marginLeft = (Math.random() * 60 - 30) + "px"; tile.appendChild(f); setTimeout(() => f.remove(), 2300); }
+  function setLayout() {
+    S.layout = S.layout === "grid" ? "speaker" : "grid";
+    $("layBtn").querySelector("span").textContent = "چیدمان: " + (S.layout === "grid" ? "شبکه‌ای" : "گوینده");
+    applyLayout();
+  }
+
+  /* ---------- شرکت‌کنندگان ---------- */
+  const roleLabel = (r, host) => (host ? "میزبان" : r === "presenter" ? "ارائه‌دهنده" : "");
+  function pingText(P) { return P.rtt != null ? P.rtt + "ms" : "—"; }
+  function renderPeople() {
+    const box = $("plist"); if (!box) return; box.textContent = "";
+    const rows = [{ me: true, name: S.name + " (شما)", host: S.isHost, role: S.role, st: myState(), pid: "me" }];
+    S.peers.forEach((P) => rows.push(P));
+    const hands = rows.filter((r) => r.st && r.st.hand).sort((a, b) => a.st.hand - b.st.hand).map((r) => r.pid);
+    rows.sort((a, b) => (b.host ? 1 : 0) - (a.host ? 1 : 0) || 0);
+    rows.forEach((P) => {
+      const r = el("div", "pi" + (S.openRow === P.pid ? " open" : "")), h = el("div", "h");
+      const nm = el("span", "", P.name); const lab = roleLabel(P.role, P.host); if (lab) nm.appendChild(el("span", "tag", lab));
+      if (P.kind === "guest") nm.appendChild(el("span", "tag", "مهمان"));
+      const ic = el("small", "", [P.st.mic === false ? "🔇" : "🎙", P.st.cam === false ? "📷✖" : "", P.st.hand ? "✋" + (hands.indexOf(P.pid) + 1).toLocaleString("fa-IR") : "", ({ agree: "✅", disagree: "❌", away: "⏳" })[P.st.emo] || ""].filter(Boolean).join(" "));
+      const pg = el("small", "lat", P.me ? "" : pingText(P)); if (!P.me && P.rtt != null) pg.className = "lat " + cls(P.rtt);
+      pg.style.direction = "ltr";
+      h.append(nm, ic, pg); h.onclick = () => { S.openRow = S.openRow === P.pid ? null : P.pid; renderPeople(); };
+      r.appendChild(h);
+      const ac2 = el("div", "ac");
+      if (!P.me) {
+        const b = (t, f, c) => { const x = el("button", "btn sm " + (c || ""), t); x.onclick = (e) => { e.stopPropagation(); f(); }; ac2.appendChild(x); };
+        b("گفتگوی خصوصی", () => { S.chatTo = P.pid; refreshTargets(); showTab("pChat"); $("chatInput").focus(); });
+        b("سنجاق", () => { S.pinned = S.pinned === P.pid ? null : P.pid; document.querySelectorAll(".tile").forEach((t) => t.classList.toggle("pinned", t.dataset.id === S.pinned)); applyLayout(); });
+        if (S.isHost) {
+          b(P.role === "presenter" ? "تنزل به شرکت‌کننده" : "ارتقا به ارائه‌دهنده", () => control("role", P.pid, P.role === "presenter" ? "participant" : "presenter"));
+          b("بستن میکروفن", () => sendTo(P, { k: "cmd", a: "mute" }));
+          b("خاموش کردن دوربین", () => sendTo(P, { k: "cmd", a: "camoff" }));
+          if (P.st.hand) b("پایین آوردن دست", () => sendTo(P, { k: "cmd", a: "lowerhand" }));
+          b("حذف از کنفرانس", () => { if (confirm("«" + P.name + "» از کنفرانس حذف شود؟")) control("kick", P.pid); }, "danger");
+        }
+      } else ac2.appendChild(el("small", "", "این شما هستید."));
+      r.appendChild(ac2); box.appendChild(r);
+    });
+  }
+  function refreshTargets() {
+    const sel = $("chatTo"), cur = S.chatTo; sel.textContent = "";
+    const all = el("option", "", "گفتگو با همه"); all.value = ""; sel.appendChild(all);
+    S.peers.forEach((P) => { const o = el("option", "", "خصوصی به: " + P.name); o.value = P.pid; sel.appendChild(o); });
+    sel.value = S.peers.has(cur) ? cur : ""; S.chatTo = sel.value;
+  }
+  $("chatTo").onchange = function () { S.chatTo = this.value; };
+
+  /* ---------- سیگنال و اتصال ---------- */
+  function sig(P, type, data) {
+    S.chain = S.chain.then(() => {
+      const body = { to: P.pid, toSid: P.sid, type: type, data: JSON.stringify(data) };
+      const once = (n) => call("/conference/signal", body).catch(() => { if (n < 3) return new Promise((r) => setTimeout(r, 700)).then(() => once(n + 1)); });
+      return once(0);
+    });
+    return S.chain;
+  }
+  function newPC(P) {
+    const pc = new RTCPeerConnection({ iceServers: S.ice }); P.pc = pc; P.pend = [];
+    const a = S.mic, v = outVideo();
+    if (a) pc.addTrack(a, S.local); else pc.addTransceiver("audio", { direction: "recvonly" });
+    if (v) pc.addTrack(v, S.local); else pc.addTransceiver("video", { direction: "recvonly" });
+    pc.ontrack = (e) => {
+      if (P.stream.getTracks().indexOf(e.track) < 0) P.stream.addTrack(e.track);
+      if (e.track.kind === "audio") { watchLevel(P, e.track); recHook(P.stream); }
+      const p = P.tile.querySelector("video").play(); if (p && p.catch) p.catch(() => {});
+    };
+    pc.onicecandidate = (e) => { if (e.candidate) sig(P, "candidate", { cid: P.cid, c: e.candidate.toJSON() }); };
+    pc.ondatachannel = (e) => setupDC(P, e.channel);
+    pc.onconnectionstatechange = () => {
+      const st = pc.connectionState; clearTimeout(P.failT);
+      if (st === "connected") { P.tile.classList.remove("wait"); setStatus("کنفرانس برقرار است", "live"); }
+      else if (st === "failed") fail(P, pc);
+      else if (st === "disconnected") P.failT = setTimeout(() => { if (P.pc === pc && pc.connectionState !== "connected") { if (P.initiator) restartIce(P); P.failT = setTimeout(() => { if (P.pc === pc && pc.connectionState !== "connected") fail(P, pc); }, 12000); } }, 5000);
+    };
+  }
+  function fail(P, pc) { if (S.peers.get(P.pid) === P && P.pc === pc) closePeer(P.pid); }
+  function closePC(P) { clearTimeout(P.failT); try { if (P.dc) P.dc.close(); } catch (e) {} try { if (P.pc) P.pc.close(); } catch (e) {} P.pc = null; P.dc = null; }
+  function closePeer(pid) {
+    const P = S.peers.get(pid); if (!P) return;
+    closePC(P); P.tile.remove(); S.peers.delete(pid);
+    if (S.pinned === pid) S.pinned = null; if (S.chatTo === pid) S.chatTo = "";
+    applyLayout(); renderNet(); updateAvg();
+  }
+  function startOffer(P) {
+    P.cid = rand(5); newPC(P); setupDC(P, P.pc.createDataChannel("c"));
+    return P.pc.createOffer().then((o) => P.pc.setLocalDescription(o).then(() => sig(P, "offer", { cid: P.cid, sdp: { type: o.type, sdp: o.sdp } }))).catch((e) => console.error("offer:", e));
+  }
+  function restartIce(P) {
+    if (!P.pc || P.pc.signalingState !== "stable") return;
+    try { P.pc.restartIce && P.pc.restartIce(); } catch (e) {}
+    P.pc.createOffer({ iceRestart: true }).then((o) => P.pc.setLocalDescription(o).then(() => sig(P, "offer", { cid: P.cid, sdp: { type: o.type, sdp: o.sdp } }))).catch(() => {});
+  }
+  const flush = (P) => P.pend.splice(0).forEach((c) => P.pc.addIceCandidate(c).catch(() => {}));
+
+  function ensurePeer(info) {
+    let P = S.peers.get(info.pid);
+    if (P && P.sid !== info.sid) { closePeer(info.pid); P = null; }
+    if (P) { P.name = info.name; P.role = info.role; P.host = info.host; return P; }
+    const initiator = S.joinedAt > info.joinedAt || (S.joinedAt === info.joinedAt && S.pid > info.pid);
+    P = { pid: info.pid, sid: info.sid, name: info.name, kind: info.kind, host: info.host, role: info.role, initiator, cid: null, pc: null, dc: null, pend: [], st: {}, stream: new MediaStream(), rtt: null };
+    P.tile = makeTile(info.pid, info.name, false);
+    P.tile.querySelector("video").srcObject = P.stream;
+    const sp = $("spkSel").value; if (sp && P.tile.querySelector("video").setSinkId) P.tile.querySelector("video").setSinkId(sp).catch(() => {});
+    S.peers.set(info.pid, P);
+    addLog("", info.name + " وارد کنفرانس شد", "sys"); beep(660);
+    if (initiator) startOffer(P);
+    return P;
+  }
+  function onSignal(s) {
+    const P = S.peers.get(s.from);
+    if (!P || P.sid !== s.fromSid) return Promise.resolve();
+    let d; try { d = JSON.parse(s.data); } catch (e) { return Promise.resolve(); }
+    if (s.type === "offer") {
+      if (P.initiator) return Promise.resolve();
+      if (!P.pc || (P.cid && P.cid !== d.cid)) { if (P.pc) closePC(P); P.cid = d.cid; newPC(P); } else P.cid = d.cid;
+      return P.pc.setRemoteDescription(d.sdp).then(() => P.pc.createAnswer())
+        .then((a) => P.pc.setLocalDescription(a).then(() => sig(P, "answer", { cid: P.cid, sdp: { type: a.type, sdp: a.sdp } })))
+        .then(() => flush(P));
+    }
+    if (s.type === "answer") {
+      if (!P.initiator || !P.pc || d.cid !== P.cid || P.pc.signalingState !== "have-local-offer") return Promise.resolve();
+      return P.pc.setRemoteDescription(d.sdp).then(() => flush(P));
+    }
+    if (s.type === "candidate") {
+      if (d.cid !== P.cid || !P.pc) return Promise.resolve();
+      if (P.pc.remoteDescription) P.pc.addIceCandidate(d.c).catch(() => {}); else P.pend.push(d.c);
+    }
+    return Promise.resolve();
+  }
+
+  /* ---------- کانال داده ---------- */
+  const myState = () => ({ k: "st", mic: !S.mic || S.mic.enabled, cam: !!S.cam && S.cam.enabled, hand: S.hand, scr: S.sharing, emo: S.emo });
+  function sendTo(P, o) { if (P.dc && P.dc.readyState === "open") P.dc.send(JSON.stringify(o)); }
+  function broadcast(o) { const s = JSON.stringify(o); S.peers.forEach((P) => { if (P.dc && P.dc.readyState === "open") P.dc.send(s); }); }
+  function sendState() { broadcast(myState()); if (S.myTile) paintBadges(S.myTile, myState()); renderPeople(); }
+
+  function setupDC(P, ch) {
+    P.dc = ch; ch.binaryType = "arraybuffer";
+    ch.onopen = () => {
+      ch.send(JSON.stringify(myState())); updateChatEnabled();
+      // همگام‌سازی برای تازه‌واردها
+      S.polls.forEach((p) => { if (p.bp === S.pid) { sendTo(P, { k: "poll", id: p.id, q: p.q, o: p.o, by: p.by, bp: p.bp }); if (!p.open) sendTo(P, { k: "pollend", id: p.id }); } if (p.votes[S.pid] != null) sendTo(P, { k: "vote", id: p.id, i: p.votes[S.pid] }); });
+      if (priv()) { wbHistoryTo(P); if (S.note.t) sendTo(P, { k: "note", t: S.note.t, v: S.note.v }); }
+      if (S.rec) sendTo(P, { k: "rec", on: true });
+    };
+    ch.onclose = updateChatEnabled;
+    ch.onmessage = (e) => onDC(P, e.data);
+  }
+  function onDC(P, data) {
+    if (typeof data !== "string") {
+      const rx = P.rx; if (!rx) return; rx.parts.push(data); rx.got += data.byteLength;
+      if (rx.got >= rx.s) { addFileItem(rx.n, rx.s, URL.createObjectURL(new Blob(rx.parts, { type: rx.y || "application/octet-stream" })), P.name); P.rx = null; }
+      return;
+    }
+    let o; try { o = JSON.parse(data); } catch (x) { return; }
+    switch (o.k) {
+      case "st": { const hadHand = P.st.hand; P.st = o; paintBadges(P.tile, o); if (o.hand && !hadHand) beep(990); applyLayout(); break; }
+      case "chat": if (S.settings.chatOn || peerPriv(P) || o.pv) { addLog(P.name + (o.pv ? " (خصوصی)" : ""), String(o.t).slice(0, 2000), "them" + (o.pv ? " pv" : "")); notify("ndChat", "pChat"); } break;
+      case "ping": sendTo(P, { k: "pong", t: o.t }); break;
+      case "pong": P.rtt = Math.max(1, Math.round(performance.now() - o.t)); paintPing(P); break;
+      case "react": floatEmoji(P.tile, String(o.e).slice(0, 4)); break;
+      case "cmd":
+        if (!P.host) break;
+        if (o.a === "mute" && S.mic && S.mic.enabled) { toggle("audio"); addLog("", "میزبان میکروفن شما را بست.", "sys"); }
+        else if (o.a === "camoff" && S.cam && S.cam.enabled) { toggle("video"); addLog("", "میزبان دوربین شما را خاموش کرد.", "sys"); }
+        else if (o.a === "lowerhand" && S.hand) { S.hand = 0; $("reactBtn").classList.remove("on"); sendState(); }
+        break;
+      case "rec": addLog("", o.on ? "🔴 ضبط کنفرانس آغاز شد." : "ضبط کنفرانس پایان یافت.", "sys"); P.rec = !!o.on; updateRecChip(); break;
+      case "poll": if (peerPriv(P) && !S.polls.has(o.id)) { S.polls.set(o.id, { id: o.id, q: String(o.q).slice(0, 150), o: (o.o || []).slice(0, 8).map((x) => String(x).slice(0, 80)), by: String(o.by).slice(0, 60), bp: P.pid, votes: {}, open: true }); renderPolls(); mark("ndPoll", "pPoll"); beep(); } break;
+      case "vote": { const p = S.polls.get(o.id); if (p && p.open && Number.isInteger(o.i) && o.i >= 0 && o.i < p.o.length) { p.votes[P.pid] = o.i; renderPolls(); } break; }
+      case "pollend": { const p = S.polls.get(o.id); if (p && p.bp === P.pid) { p.open = false; renderPolls(); } break; }
+      case "wbs": if (peerPriv(P)) { wbApply(o); if (S.view !== "wb") $("wbDot").style.display = "inline-block"; } break;
+      case "wbc": if (peerPriv(P)) { S.strokes.clear(); wbRedraw(); } break;
+      case "note": if (peerPriv(P) && o.v > S.note.v) { S.note = { t: String(o.t).slice(0, 20000), v: o.v }; $("noteArea").value = S.note.t; } break;
+      case "fm": if (o.s <= 10485760) P.rx = { n: String(o.n).slice(0, 100), s: o.s, y: String(o.y || ""), parts: [], got: 0 }; break;
+    }
+  }
+  function updateChatEnabled() {
+    let open = false; S.peers.forEach((P) => { if (P.dc && P.dc.readyState === "open") open = true; });
+    const ok = open && (priv() || S.settings.chatOn);
+    $("chatInput").disabled = !ok; $("sendBtn").disabled = !ok;
+    $("chatInput").placeholder = !priv() && !S.settings.chatOn ? "گفتگو توسط میزبان غیرفعال شده است" : "پیام خود را بنویسید";
+  }
+
+  /* ---------- گفتگو ---------- */
+  function addLog(who, t, c) {
+    const d = el("div", "m " + c);
+    if (!/sys/.test(c)) d.appendChild(el("small", "", who + " · " + hm()));
+    d.appendChild(document.createTextNode(t)); $("log").appendChild(d); $("log").scrollTop = $("log").scrollHeight;
+  }
+  function currentTab() { const a = document.querySelector(".tabs button.act"); return a && a.dataset.tab; }
+  function panelVisible() { return $("panel").classList.contains("open") || window.innerWidth > 860; }
+  function mark(dotId, tab) { if (tab && currentTab() === tab && panelVisible()) return; const d = $(dotId); if (d) d.style.display = "block"; if (!panelVisible()) { S.unread++; $("bdgBtn").textContent = S.unread; $("bdgBtn").style.display = "block"; } }
+  function notify(dotId, tab) { mark(dotId, tab); beep(); }
+  function showTab(id) {
+    document.querySelectorAll(".tabs button,.pane").forEach((x) => x.classList.remove("act"));
+    const b = document.querySelector('.tabs button[data-tab="' + id + '"]'); b.classList.add("act"); $(id).classList.add("act");
+    const dot = b.querySelector(".nd"); if (dot) dot.style.display = "none";
+    if (panelVisible()) { S.unread = 0; $("bdgBtn").style.display = "none"; }
+    if (id === "pNet") renderNet();
+    if (!$("panel").classList.contains("open") && window.innerWidth <= 860) $("panel").classList.add("open");
+  }
+  function sendChat() {
+    const v = $("chatInput").value.trim(); if (!v) return;
+    if (S.chatTo) { const P = S.peers.get(S.chatTo); if (P) { sendTo(P, { k: "chat", t: v, pv: 1 }); addLog("شما ← " + P.name, v, "me pv"); } }
+    else { broadcast({ k: "chat", t: v }); addLog("شما", v, "me"); }
+    $("chatInput").value = "";
+  }
+
+  /* ---------- پینگ زنده ---------- */
+  function paintPing(P) {
+    const pg = P.tile.querySelector(".pg"); if (P.rtt == null) return;
+    const loss = P.loss ? " · " + P.loss + "%" : "";
+    pg.textContent = "● " + P.rtt + "ms" + loss; pg.className = "pg " + cls(P.rtt);
+    renderNet(); updateAvg();
+  }
+  function updateAvg() {
+    const v = Array.from(S.peers.values()).filter((P) => P.rtt != null).map((P) => P.rtt);
+    const b = $("latPeer").querySelector("b");
+    if (!v.length) { b.textContent = "—"; b.className = ""; return; }
+    const avg = Math.round(v.reduce((a, c) => a + c, 0) / v.length); b.textContent = avg + "ms"; b.className = cls(avg);
+  }
+  function renderNet() {
+    if (currentTab() !== "pNet" && $("netBody").children.length) return;
+    const body = $("netBody"); body.textContent = "";
+    S.peers.forEach((P) => {
+      const tr = document.createElement("tr");
+      const cells = [P.name, P.rtt != null ? P.rtt + " ms" : "—", (P.loss || 0) + "%", P.kbps != null ? P.kbps + " kbps" : "—", P.pc ? (P.relay ? "واسط" : "مستقیم") : "—"];
+      cells.forEach((c, i) => { const td = el("td", i ? "l" : "", c); if (i === 1 && P.rtt != null) td.className = "l " + cls(P.rtt); tr.appendChild(td); });
+      body.appendChild(tr);
+    });
+    if (!S.peers.size) { const tr = document.createElement("tr"), td = el("td", "", "هنوز کسی متصل نیست."); td.colSpan = 5; tr.appendChild(td); body.appendChild(tr); }
+    $("nTime").textContent = S.tStart ? timerText() : "00:00";
+  }
+  function statsTick() {
+    S.peers.forEach((P) => {
+      sendTo(P, { k: "ping", t: performance.now() });
+      if (!P.pc) return;
+      P.pc.getStats().then((rep) => {
+        const all = {}; let pair = null, lost = 0, recv = 0, bytes = 0;
+        rep.forEach((r) => { all[r.id] = r; if (r.type === "candidate-pair" && r.state === "succeeded" && (r.nominated || !pair)) pair = r; if (r.type === "inbound-rtp" && !r.isRemote) { lost += r.packetsLost || 0; recv += r.packetsReceived || 0; bytes += r.bytesReceived || 0; } });
+        if (pair) {
+          const l = all[pair.localCandidateId], rm = all[pair.remoteCandidateId];
+          P.relay = (l && l.candidateType === "relay") || (rm && rm.candidateType === "relay");
+          if (P.rtt == null && pair.currentRoundTripTime) P.rtt = Math.max(1, Math.round(pair.currentRoundTripTime * 1000));
+        }
+        const now = performance.now();
+        if (P.lb) { const dt = (now - P.lb.t) / 1000, dl = lost - P.lb.l, dr = recv - P.lb.r; P.kbps = Math.max(0, Math.round((bytes - P.lb.b) * 8 / 1000 / dt)); P.loss = dl + dr > 0 ? Math.max(0, Math.round(100 * dl / (dl + dr))) : 0; }
+        P.lb = { t: now, b: bytes, l: lost, r: recv }; paintPing(P);
+      }).catch(() => {});
+    });
+    renderPeople();
+  }
+  function srvPing() {
+    const t0 = performance.now();
+    fetch("/api/health?_=" + Date.now(), { cache: "no-store" }).then((r) => r.json()).then(() => {
+      S.srvPing = Math.round(performance.now() - t0);
+      const b = $("latSrv").querySelector("b"); b.textContent = S.srvPing + "ms"; b.className = cls(S.srvPing);
+      $("nSrv").textContent = S.srvPing + " ms"; $("nSrv").className = "lat " + cls(S.srvPing);
+      if (S.myTile) { const pg = S.myTile.querySelector(".pg"); pg.textContent = "● سرور " + S.srvPing + "ms"; pg.className = "pg " + cls(S.srvPing); }
+    }).catch(() => { $("latSrv").querySelector("b").textContent = "قطع"; $("latSrv").querySelector("b").className = "r"; });
+  }
+
+  /* ---------- دکمه‌ها ---------- */
+  function toggle(kind) {
+    const tr = kind === "audio" ? S.mic : S.cam; if (!tr) return;
+    tr.enabled = !tr.enabled;
+    const b = $(kind === "audio" ? "micBtn" : "camBtn"); b.classList.toggle("off", !tr.enabled);
+    b.querySelector("span").textContent = kind === "audio" ? (tr.enabled ? "میکروفن" : "بی‌صدا") : (tr.enabled ? "دوربین" : "خاموش");
+    sendState();
+  }
+  function replaceVideo(track) {
+    S.peers.forEach((P) => {
+      if (!P.pc) return;
+      const sd = P.pc.getTransceivers().filter((t) => (t.sender.track && t.sender.track.kind === "video") || (t.receiver.track && t.receiver.track.kind === "video")).map((t) => t.sender)[0];
+      if (sd && track) sd.replaceTrack(track).catch(() => {});
+    });
+  }
+  function toggleShare() {
+    if (S.sharing) return stopShare();
+    navigator.mediaDevices.getDisplayMedia({ video: true }).then((st) => {
+      const t = st.getVideoTracks()[0]; S.screen = t; S.sharing = true;
+      replaceVideo(t); S.myTile.querySelector("video").srcObject = new MediaStream([t]); S.myTile.classList.add("scr");
+      $("shareBtn").classList.add("on"); t.onended = stopShare; sendState(); applyLayout();
+    }).catch(() => {});
+  }
+  function stopShare() {
+    if (!S.sharing) return; S.sharing = false;
+    if (S.screen) S.screen.stop(); S.screen = null;
+    if (S.cam) replaceVideo(S.cam);
+    S.myTile.querySelector("video").srcObject = S.local; S.myTile.classList.remove("scr");
+    $("shareBtn").classList.remove("on"); sendState(); applyLayout();
+  }
+  function fullscreen() { const e = $("stage"); if (document.fullscreenElement) document.exitFullscreen(); else if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); }
+  function timerText() { const s = Math.floor((Date.now() - S.tStart) / 1000); return (s >= 3600 ? pad2(Math.floor(s / 3600)) + ":" : "") + pad2(Math.floor(s / 60) % 60) + ":" + pad2(s % 60); }
+
+  /* وضعیت‌ها و واکنش‌ها */
+  (function buildReacts() {
+    const box = $("reacts");
+    [["hand", "✋ دست بالا"], ["agree", "✅ موافق"], ["disagree", "❌ مخالف"], ["away", "⏳ دور از میز"]].forEach((x) => {
+      const b = el("button", "", x[1]); b.dataset.s = x[0];
+      b.onclick = () => {
+        if (x[0] === "hand") S.hand = S.hand ? 0 : Date.now(); else S.emo = S.emo === x[0] ? "" : x[0];
+        syncReacts(); sendState();
+      };
+      box.appendChild(b);
+    });
+    ["👍", "👏", "❤️", "😂", "😮", "🎉"].forEach((e) => {
+      const b = el("button", "", e); b.onclick = () => { broadcast({ k: "react", e: e }); floatEmoji(S.myTile, e); };
+      box.appendChild(b);
+    });
+  })();
+  function syncReacts() {
+    document.querySelectorAll("#reacts [data-s]").forEach((b) => b.classList.toggle("on", b.dataset.s === "hand" ? !!S.hand : S.emo === b.dataset.s));
+    $("reactBtn").classList.toggle("on", !!S.hand || !!S.emo);
+  }
+
+  /* ---------- نظرسنجی ---------- */
+  function renderPolls() {
+    const box = $("polls"); box.textContent = "";
+    Array.from(S.polls.values()).reverse().forEach((p) => {
+      const c = el("div", "pcard"); c.appendChild(el("b", "", p.q));
+      c.appendChild(el("small", "", "توسط " + p.by + (p.open ? "" : " · پایان‌یافته")));
+      const total = Object.keys(p.votes).length;
+      p.o.forEach((t, i) => {
+        const n = Object.values(p.votes).filter((v) => v === i).length, pc = total ? Math.round(100 * n / total) : 0;
+        const b = el("button", "o" + (p.votes[S.pid] === i ? " mine" : "")); b.disabled = !p.open;
+        b.appendChild(el("span", "", t + " — " + n.toLocaleString("fa-IR") + " رأی (" + pc.toLocaleString("fa-IR") + "٪)"));
+        const bar = el("div", "bar"), fill = document.createElement("i"); fill.style.width = pc + "%"; bar.appendChild(fill); b.appendChild(bar);
+        b.onclick = () => { p.votes[S.pid] = i; broadcast({ k: "vote", id: p.id, i: i }); renderPolls(); };
+        c.appendChild(b);
+      });
+      c.appendChild(el("small", "", total.toLocaleString("fa-IR") + " نفر رأی داده‌اند"));
+      if (p.bp === S.pid && p.open) { const e = el("button", "btn sm danger", "پایان نظرسنجی"); e.onclick = () => { p.open = false; broadcast({ k: "pollend", id: p.id }); renderPolls(); }; c.appendChild(e); }
+      box.appendChild(c);
+    });
+    if (!S.polls.size) box.appendChild(el("div", "lbl", "هنوز نظرسنجی‌ای شروع نشده است."));
+  }
+  $("pollGo").onclick = () => {
+    const q = $("pollQ").value.trim().slice(0, 150), o = $("pollO").value.split("\n").map((x) => x.trim().slice(0, 80)).filter(Boolean).slice(0, 8);
+    if (!q || o.length < 2) { alert("سؤال و حداقل دو گزینه لازم است."); return; }
+    const id = rand(4), p = { id: id, q: q, o: o, by: S.name, bp: S.pid, votes: {}, open: true };
+    S.polls.set(id, p); broadcast({ k: "poll", id: id, q: q, o: o, by: S.name, bp: S.pid });
+    $("pollQ").value = ""; $("pollO").value = ""; renderPolls();
+  };
+
+  /* ---------- تخته سفید ---------- */
+  const wbc = $("wbCanvas"), wx = wbc.getContext("2d"), WB = { color: "#ef4444", size: 6, erase: false, cur: null, sent: 0, timer: null };
+  function wbSeg(s, from) {
+    const n = s.pts.length / 2; if (n - from < 1) return;
+    wx.strokeStyle = s.c; wx.lineWidth = s.w; wx.lineCap = "round"; wx.lineJoin = "round"; wx.beginPath();
+    const st = Math.max(0, from - 1);
+    wx.moveTo(s.pts[st * 2] * 1280, s.pts[st * 2 + 1] * 720);
+    for (let i = st; i < n; i++) wx.lineTo(s.pts[i * 2] * 1280 + (n === 1 ? 0.01 : 0), s.pts[i * 2 + 1] * 720);
+    wx.stroke();
+  }
+  function wbRedraw() { wx.fillStyle = "#fff"; wx.fillRect(0, 0, 1280, 720); S.strokes.forEach((s) => wbSeg(s, 0)); }
+  function wbApply(m) {
+    let s = S.strokes.get(m.id);
+    if (!s) { s = { id: m.id, c: String(m.c).slice(0, 9), w: Math.min(30, Math.max(1, Number(m.w) || 4)), pts: [] }; S.strokes.set(m.id, s); }
+    const len = s.pts.length / 2; if (m.i > len || !Array.isArray(m.p)) return;
+    const add = m.p.slice((len - m.i) * 2).map(Number); if (!add.length) return;
+    s.pts.push(...add); wbSeg(s, len);
+  }
+  function wbHistoryTo(P) {
+    S.strokes.forEach((s) => { for (let i = 0; i < s.pts.length; i += 400) sendTo(P, { k: "wbs", id: s.id, c: s.c, w: s.w, i: i / 2, p: s.pts.slice(i, i + 400) }); });
+  }
+  function wbFlush() {
+    const s = WB.cur; if (!s) return;
+    const n = s.pts.length / 2; if (n > WB.sent) { broadcast({ k: "wbs", id: s.id, c: s.c, w: s.w, i: WB.sent, p: s.pts.slice(WB.sent * 2) }); WB.sent = n; }
+  }
+  function wbPoint(e) { const r = wbc.getBoundingClientRect(); return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))]; }
+  wbc.addEventListener("pointerdown", (e) => {
+    if (!priv()) return; wbc.setPointerCapture(e.pointerId);
+    const p = wbPoint(e), s = { id: rand(5), c: WB.erase ? "#ffffff" : WB.color, w: WB.erase ? WB.size * 3 : WB.size, pts: [p[0], p[1]] };
+    S.strokes.set(s.id, s); WB.cur = s; WB.sent = 0; wbSeg(s, 0); clearInterval(WB.timer); WB.timer = setInterval(wbFlush, 60);
+  });
+  wbc.addEventListener("pointermove", (e) => { const s = WB.cur; if (!s) return; const p = wbPoint(e), n = s.pts.length / 2; s.pts.push(p[0], p[1]); wbSeg(s, n + 0); });
+  const wbEnd = () => { if (!WB.cur) return; wbFlush(); clearInterval(WB.timer); WB.cur = null; };
+  wbc.addEventListener("pointerup", wbEnd); wbc.addEventListener("pointercancel", wbEnd);
+  $("wbColor").oninput = function () { WB.color = this.value; WB.erase = false; $("wbEraser").classList.remove("on"); };
+  $("wbSize").onchange = function () { WB.size = Number(this.value); };
+  $("wbEraser").onclick = function () { WB.erase = !WB.erase; this.classList.toggle("on", WB.erase); };
+  $("wbClear").onclick = () => { if (!priv() || !confirm("تخته سفید برای همه پاک شود؟")) return; S.strokes.clear(); wbRedraw(); broadcast({ k: "wbc" }); };
+  $("wbSave").onclick = () => { const a = document.createElement("a"); a.href = wbc.toDataURL("image/png"); a.download = "whiteboard.png"; a.click(); };
+  function setView(v) {
+    S.view = v; $("vtVideo").classList.toggle("act", v === "video"); $("vtWb").classList.toggle("act", v === "wb");
+    $("grid").style.display = v === "video" ? "" : "none"; $("wbWrap").style.display = v === "wb" ? "flex" : "none";
+    if (v === "wb") $("wbDot").style.display = "none";
+  }
+  $("vtVideo").onclick = () => setView("video"); $("vtWb").onclick = () => setView("wb");
+  wbRedraw();
+
+  /* ---------- یادداشت مشترک ---------- */
+  let noteT = null;
+  $("noteArea").addEventListener("input", () => {
+    if (!priv()) return; clearTimeout(noteT);
+    noteT = setTimeout(() => { S.note = { t: $("noteArea").value.slice(0, 20000), v: Date.now() }; broadcast({ k: "note", t: S.note.t, v: S.note.v }); }, 400);
+  });
+  $("noteCopy").onclick = function () { try { navigator.clipboard.writeText($("noteArea").value); this.textContent = "کپی شد ✓"; } catch (e) {} };
+
+  /* ---------- فایل ---------- */
+  function addFileItem(n, size, url, from) {
+    S.files.push({ n: n, s: size, u: url, from: from }); renderFiles();
+    if (from !== "شما") { mark("ndFiles", "pFiles"); beep(); }
+  }
+  function renderFiles() {
+    const box = $("files"); box.textContent = "";
+    S.files.slice().reverse().forEach((f) => {
+      const r = el("div", "row2"), left = el("span", "", "📎 " + f.n + " (" + Math.max(1, Math.round(f.s / 1024)).toLocaleString("fa-IR") + " KB) · " + f.from);
+      r.appendChild(left);
+      if (f.u) { const a = el("a", "btn sm", "دانلود"); a.href = f.u; a.download = f.n; r.appendChild(a); }
+      box.appendChild(r);
+    });
+    if (!S.files.length) box.appendChild(el("div", "lbl", "هنوز فایلی ردوبدل نشده است."));
+  }
+  function sendFileTo(P, f, id) {
+    return new Promise((res) => {
+      const dc = P.dc; dc.send(JSON.stringify({ k: "fm", id: id, n: f.name, s: f.size, y: f.type })); let off = 0;
+      (function next() {
+        if (off >= f.size || dc.readyState !== "open") return res();
+        if (dc.bufferedAmount > 1048576) { setTimeout(next, 60); return; }
+        f.slice(off, off + 16384).arrayBuffer().then((b) => { dc.send(b); off += 16384; next(); });
+      })();
+    });
+  }
+  $("fileIn").onchange = function () {
+    const f = this.files[0]; this.value = ""; if (!f) return;
+    if (f.size > 10485760) { alert("حداکثر حجم فایل ۱۰ مگابایت است."); return; }
+    const open = Array.from(S.peers.values()).filter((P) => P.dc && P.dc.readyState === "open");
+    if (!open.length) { alert("هنوز کسی متصل نیست."); return; }
+    const id = rand(4); open.forEach((P) => sendFileTo(P, f, id)); addFileItem(f.name, f.size, URL.createObjectURL(f), "شما");
+  };
+
+  /* ---------- ضبط (روی دستگاه خودتان) ---------- */
+  function recHook(stream) { if (S.rec && S.rec.dest && stream.getAudioTracks().length) { try { ac().createMediaStreamSource(stream).connect(S.rec.dest); } catch (e) {} } }
+  function updateRecChip() {
+    const any = !!S.rec || Array.from(S.peers.values()).some((P) => P.rec);
+    $("recChip").style.display = any ? "inline-flex" : "none";
+  }
+  function startRec() {
+    if (!window.MediaRecorder) { alert("مرورگر شما از ضبط پشتیبانی نمی‌کند."); return; }
+    const cv = document.createElement("canvas"); cv.width = 1280; cv.height = 720; const cx = cv.getContext("2d");
+    const dest = ac().createMediaStreamDestination();
+    if (S.mic) { try { ac().createMediaStreamSource(new MediaStream([S.mic])).connect(dest); } catch (e) {} }
+    S.peers.forEach((P) => recHook2(P, dest));
+    const draw = setInterval(() => {
+      cx.fillStyle = "#000"; cx.fillRect(0, 0, 1280, 720);
+      if (S.view === "wb") { cx.drawImage(wbc, 0, 0, 1280, 720); return; }
+      const vids = Array.from($("grid").querySelectorAll(".tile")), n = vids.length, cols = n <= 1 ? 1 : n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), w = 1280 / cols, h = 720 / rows;
+      const big = $("grid").querySelector(".tile.big");
+      if (big) { try { cx.drawImage(big.querySelector("video"), 0, 0, 1280, 720); } catch (e) {} return; }
+      vids.forEach((t, i) => { try { cx.drawImage(t.querySelector("video"), (i % cols) * w + 4, Math.floor(i / cols) * h + 4, w - 8, h - 8); } catch (e) {} });
+    }, 125);
+    const stream = cv.captureStream(8); dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+    let mime = ["video/webm;codecs=vp8,opus", "video/webm"].find((m) => MediaRecorder.isTypeSupported(m)) || "";
+    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : {}), chunks = [];
+    mr.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    mr.onstop = () => {
+      clearInterval(draw); const blob = new Blob(chunks, { type: "video/webm" }), url = URL.createObjectURL(blob);
+      addFileItem("recording-" + Date.now() + ".webm", blob.size, url, "شما"); const a = document.createElement("a"); a.href = url; a.download = "conference-recording.webm"; a.click();
+    };
+    mr.start(2000); S.rec = { mr: mr, dest: dest }; $("recBtn").classList.add("on"); $("recBtn").querySelector("span").textContent = "پایان ضبط";
+    broadcast({ k: "rec", on: true }); updateRecChip();
+  }
+  function recHook2(P, dest) { if (P.stream.getAudioTracks().length) { try { ac().createMediaStreamSource(P.stream).connect(dest); } catch (e) {} } }
+  function stopRec() {
+    if (!S.rec) return; const r = S.rec; S.rec = null; try { r.mr.stop(); } catch (e) {}
+    $("recBtn").classList.remove("on"); $("recBtn").querySelector("span").textContent = "ضبط"; broadcast({ k: "rec", on: false }); updateRecChip();
+  }
+
+  /* ---------- کنترل میزبان ---------- */
+  function control(action, target, value) {
+    return call("/conference/control", { action: action, target: target, value: value }).then(() => { clearTimeout(S.pollTimer); poll(); }).catch((e) => alert("انجام نشد: " + (e.code || e.message)));
+  }
+  document.querySelectorAll("[data-set]").forEach((c) => {
+    c.onchange = () => call("/conference/control", { action: "setting", key: c.dataset.set, value: c.checked }).then(() => { S.settings[c.dataset.set] = c.checked; applySettings(); }).catch(() => { c.checked = !c.checked; });
+  });
+  $("muteAll").onclick = () => broadcast({ k: "cmd", a: "mute" });
+  $("lowerAll").onclick = () => { broadcast({ k: "cmd", a: "lowerhand" }); if (S.hand) { S.hand = 0; syncReacts(); sendState(); } };
+  function renderHost(list) {
+    const box = $("waitList"); box.textContent = ""; $("waitTitle").style.display = list.length ? "" : "none";
+    list.forEach((w) => {
+      const r = el("div", "row2"); r.appendChild(el("span", "", w.name + (w.kind === "guest" ? " (مهمان)" : "")));
+      const a = el("button", "btn sm primary", "پذیرش"); a.onclick = () => control("admit", w.pid);
+      const d = el("button", "btn sm danger", "رد"); d.onclick = () => control("deny", w.pid);
+      const x = el("span"); x.append(a, " ", d); r.appendChild(x); box.appendChild(r);
+    });
+  }
+  let lastWaitN = 0;
+
+  function applySettings() {
+    const p = priv(), st = S.settings;
+    document.querySelectorAll("[data-set]").forEach((c) => (c.checked = !!st[c.dataset.set]));
+    const micOk = p || st.micOn, camOk = p || st.camOn, shareOk = p || st.shareOn;
+    if (!micOk && S.mic && S.mic.enabled) toggle("audio");
+    if (!camOk && S.cam && S.cam.enabled) toggle("video");
+    if (!shareOk && S.sharing) stopShare();
+    $("micBtn").disabled = !S.mic || !micOk; $("camBtn").disabled = !S.cam || !camOk; $("shareBtn").disabled = !shareOk;
+    $("micBtn").title = micOk ? "" : "میزبان میکروفن را محدود کرده است"; $("camBtn").title = camOk ? "" : "میزبان دوربین را محدود کرده است";
+    updateChatEnabled();
+  }
+  function applyRole() {
+    const p = priv();
+    $("hostBox").style.display = S.isHost ? "flex" : "none"; $("endBtn").style.display = S.isHost ? "" : "none"; $("linkBtn").style.display = S.isHost && S.inviteToken ? "" : "none";
+    $("recBtn").style.display = p ? "" : "none"; $("pollForm").style.display = p ? "" : "none";
+    $("noteArea").readOnly = !p; $("wbBar").querySelectorAll("button,select,input").forEach((x) => (x.disabled = !p));
+    $("wbHint").textContent = p ? "" : "فقط میزبان و ارائه‌دهنده‌ها می‌توانند روی تخته بنویسند."; wbc.style.cursor = p ? "crosshair" : "default";
+    if (S.myTile) { /* نقش در لیست */ }
+  }
+
+  /* ---------- پایان ---------- */
+  function cleanup() {
+    clearTimeout(S.pollTimer); S.joined = false; S.timers.forEach(clearInterval); S.timers = []; stopRec();
+    Array.from(S.peers.keys()).forEach(closePeer);
+    if (S.screen) S.screen.stop(); if (S.local) S.local.getTracks().forEach((t) => t.stop());
+  }
+  function over(title, msg) {
+    cleanup(); setStatus("پایان", ""); $("overTitle").textContent = title; $("overMsg").textContent = msg || ""; $("over").style.display = "flex";
+    ["micBtn", "camBtn", "shareBtn", "reactBtn", "hangBtn", "sendBtn", "chatInput"].forEach((i) => ($(i).disabled = true)); $("endBtn").style.display = "none";
+  }
+  function leave(end) { const p = call(end ? "/conference/end" : "/conference/leave", {}).catch(() => {}); over(end ? "کنفرانس برای همه پایان یافت" : "از کنفرانس خارج شدید", ""); return p; }
+
+  /* ---------- poll ---------- */
+  function enterRoom() {
+    if (S.inRoom) return; S.inRoom = true;
+    $("lobby").style.display = "none"; $("latSrv").style.display = ""; $("latPeer").style.display = "";
+    S.myTile = makeTile("me", S.name + " (شما)", true); S.myTile.querySelector("video").srcObject = S.local; paintBadges(S.myTile, myState());
+    ["hangBtn", "reactBtn"].forEach((i) => ($(i).disabled = false));
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) $("shareBtn").style.display = "none";
+    setStatus("در انتظار سایر شرکت‌کنندگان...", "wait");
+    S.tStart = Date.now(); $("title").textContent = S.title;
+    S.timers.push(setInterval(() => { $("timer").textContent = timerText(); }, 1000));
+    S.timers.push(setInterval(statsTick, 2000)); S.timers.push(setInterval(speakerTick, 250)); S.timers.push(setInterval(srvPing, 3000)); srvPing();
+    watchLevel(S, S.mic || { kind: "none" }); renderPolls(); renderFiles(); fillDevices(); applyLayout();
+  }
+  function poll() {
+    if (!S.joined) return;
+    let restarted = false;
+    call("/conference/poll", { since: S.since }).then((r) => {
+      if (r.ended) { over("کنفرانس پایان یافت", "برگزارکننده کنفرانس را بسته است."); return; }
+      S.rejoins = 0; S.isHost = r.isHost || false; S.role = r.role || "participant";
+      if (r.waiting) { $("lobby").style.display = "flex"; $("lobbyTitle").textContent = "در انتظار تأیید میزبان..."; $("lobbyMsg").textContent = "به محض پذیرش وارد می‌شوید. این صفحه را باز نگه دارید."; $("joinBtn").style.display = "none"; return; }
+      if (!S.inRoom) enterRoom();
+      S.settings = r.settings || S.settings; S.waitingList = r.waitingList || [];
+      applyRole(); applySettings(); renderHost(S.waitingList);
+      if (S.waitingList.length > lastWaitN) { beep(520); addLog("", S.waitingList[S.waitingList.length - 1].name + " منتظر ورود است (تب تنظیمات).", "sys"); }
+      lastWaitN = S.waitingList.length;
+      const ids = {}; r.peers.forEach((p) => { ids[p.pid] = 1; ensurePeer(p); });
+      Array.from(S.peers.keys()).forEach((id) => { if (!ids[id]) { const P = S.peers.get(id); addLog("", P.name + " خارج شد", "sys"); beep(440); closePeer(id); } });
+      let chain = Promise.resolve();
+      (r.signals || []).forEach((s) => { const k = s.t + s.from + s.type; if (S.seen.has(k)) return; S.seen.add(k); chain = chain.then(() => onSignal(s)).catch((e) => console.error("signal:", e)); });
+      return chain.then(() => { if (r.last > S.since) S.since = r.last; });
+    }).catch((e) => {
+      if (e.code === "KICKED") { over("از کنفرانس حذف شدید", "میزبان شما را از این کنفرانس خارج کرده است."); return; }
+      if (e.code === "NOT_IN_ROOM" && !S.inRoom) { over("ورود شما رد شد", "میزبان درخواست ورود شما را نپذیرفت."); return; }
+      if (e.code === "NOT_IN_ROOM" && S.rejoins < 3) { S.rejoins++; restarted = true; return rejoin(); }
+      if (e.code === "SESSION_REPLACED") { over("این نشست جایگزین شد", "کنفرانس در صفحهٔ دیگری باز شده است."); return; }
+      if (e.code === "NOT_IN_ROOM") { over("ارتباط قطع شد", "برای ورود دوباره صفحه را بازخوانی کنید."); }
+    }).then(() => { if (S.joined && !restarted) S.pollTimer = setTimeout(poll, 2500); });
+  }
+  function rejoin() { Array.from(S.peers.keys()).forEach(closePeer); return doJoin(true); }
+
+  /* ---------- ورود ---------- */
+  const JOIN_ERR = {
+    ROOM_NOT_FOUND: ["این کنفرانس پایان یافته یا وجود ندارد.", "لینک دعوت معتبر نیست یا کنفرانس بسته شده است."],
+    NOT_INVITED: ["شما به این کنفرانس دعوت نشده‌اید.", "برای ورود از لینک دعوت استفاده کنید."],
+    ROOM_FULL: ["ظرفیت کنفرانس تکمیل است.", "حداکثر ۸ نفر می‌توانند همزمان حضور داشته باشند."],
+    ROOM_LOCKED: ["اتاق قفل است.", "میزبان ورود افراد جدید را بسته است."],
+    KICKED: ["شما از این کنفرانس حذف شده‌اید.", "امکان ورود دوباره وجود ندارد."]
+  };
+  function doJoin(silent) {
+    const body = { room: ROOM, token: TOKEN, name: loggedIn ? "" : $("nameIn").value.trim() };
+    if (!loggedIn) { try { const g = JSON.parse(sessionStorage.getItem(GKEY)); if (g) { body.pid = g.pid; body.key = g.key; } } catch (e) {} }
+    return api("/conference/join", body).then((r) => {
+      S.pid = r.pid; S.key = r.key || null; S.sid = r.sid; S.joinedAt = r.joinedAt; S.since = r.since; S.name = r.name; S.title = r.title;
+      S.isHost = r.isHost; S.role = r.role; S.settings = r.settings || S.settings; S.inviteToken = r.inviteToken || "";
+      if (r.iceServers && r.iceServers.length) S.ice = r.iceServers;
+      if (!loggedIn) { try { sessionStorage.setItem(GKEY, JSON.stringify({ pid: r.pid, key: r.key })); } catch (e) {} }
+      S.joined = true; S.seen.clear(); clearTimeout(S.pollTimer);
+      if (r.status === "waiting") { $("lobbyTitle").textContent = "در انتظار تأیید میزبان..."; $("lobbyMsg").textContent = "به محض پذیرش وارد می‌شوید."; $("joinBtn").style.display = "none"; }
+      else enterRoom();
+      applyRole(); applySettings(); poll();
+    }).catch((e) => {
+      if (silent) { over("ارتباط قطع شد", "برای ورود دوباره صفحه را بازخوانی کنید."); return; }
+      let m = JOIN_ERR[e.code]; if (e.code === "NOT_INVITED" && !loggedIn) m = JOIN_ERR.ROOM_NOT_FOUND;
+      if (m) { $("lobbyTitle").textContent = m[0]; $("lobbyMsg").textContent = m[1]; $("joinBtn").style.display = "none"; $("nameWrap").style.display = "none"; $("preview").style.display = "none"; }
+      else setMsg(e.code === "NAME_REQUIRED" ? "لطفاً نام خود را وارد کنید." : "ورود انجام نشد. دوباره تلاش کنید.");
+      $("joinBtn").disabled = false;
+    });
+  }
+
+  /* ---------- رویدادها ---------- */
+  $("joinBtn").onclick = () => {
+    if (!loggedIn && !$("nameIn").value.trim()) { setMsg("لطفاً نام خود را وارد کنید."); $("nameIn").focus(); return; }
+    ac(); setMsg(""); $("joinBtn").disabled = true; doJoin(false);
+  };
+  $("hangBtn").onclick = () => leave(false);
+  $("endBtn").onclick = () => { if (confirm("کنفرانس برای همهٔ شرکت‌کنندگان بسته شود؟")) leave(true); };
+  $("micBtn").onclick = () => toggle("audio"); $("camBtn").onclick = () => toggle("video");
+  $("shareBtn").onclick = toggleShare; $("fullBtn").onclick = fullscreen; $("layBtn").onclick = setLayout;
+  $("recBtn").onclick = () => (S.rec ? stopRec() : startRec());
+  $("reactBtn").onclick = (e) => { e.stopPropagation(); const r = $("reacts"); r.style.display = r.style.display === "flex" ? "none" : "flex"; };
+  document.addEventListener("click", (e) => {
+    if (!$("reacts").contains(e.target)) $("reacts").style.display = "none";
+    if (window.innerWidth <= 860 && $("panel").classList.contains("open") && !$("panel").contains(e.target) && !$("chatBtn").contains(e.target)) $("panel").classList.remove("open");
+  });
+  $("linkBtn").onclick = () => {
+    const url = location.origin + location.pathname + "?room=" + encodeURIComponent(ROOM) + "&t=" + encodeURIComponent(S.inviteToken);
+    try { navigator.clipboard.writeText(url); $("linkBtn").querySelector("span").textContent = "کپی شد ✓"; setTimeout(() => ($("linkBtn").querySelector("span").textContent = "لینک دعوت"), 2000); } catch (e) { prompt("لینک دعوت:", url); }
+  };
+  $("sendBtn").onclick = sendChat; $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter") sendChat(); });
+  $("chatBtn").onclick = () => { $("panel").classList.toggle("open"); if ($("panel").classList.contains("open")) { S.unread = 0; $("bdgBtn").style.display = "none"; } };
+  document.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
+  window.addEventListener("pagehide", () => {
+    if (!S.joined) return;
+    const h = { "Content-Type": "application/json" }; if (session && session.idToken) h.Authorization = "Bearer " + session.idToken;
+    try { fetch("/api/conference/leave", { method: "POST", keepalive: true, headers: h, body: JSON.stringify({ room: ROOM, pid: S.pid, key: S.key, sid: S.sid }) }); } catch (e) {}
+  });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && S.joined) { clearTimeout(S.pollTimer); poll(); } });
+
+  /* ---------- شروع ---------- */
+  if (!ROOM) { $("lobbyTitle").textContent = "لینک کنفرانس نامعتبر است"; $("joinBtn").style.display = "none"; $("preview").style.display = "none"; }
+  else {
+    if (!loggedIn) {
+      $("nameWrap").style.display = ""; $("lobbyMsg").textContent = "برای ورود نیازی به ساخت حساب نیست. نام خود را وارد کنید.";
+      try { const g0 = localStorage.getItem("conf_guest_name"); if (g0) $("nameIn").value = g0; } catch (e) {}
+      $("nameIn").addEventListener("input", function () { try { localStorage.setItem("conf_guest_name", this.value); } catch (e) {} });
+    } else $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید.";
+    getMedia().then((st) => {
+      S.local = st; S.cam = st.getVideoTracks()[0] || null; S.mic = st.getAudioTracks()[0] || null;
+      $("preview").srcObject = st; $("joinBtn").disabled = false; fillDevices();
+      if (!S.cam && !S.mic) setMsg("دسترسی به دوربین و میکروفن داده نشد؛ فقط می‌توانید تماشا کنید و گفتگو بنویسید.");
+      else if (!S.cam) setMsg("دوربین در دسترس نیست؛ فقط با صدا شرکت می‌کنید.");
+    });
+  }
+})();
+</script>
+</body>
+</html>
