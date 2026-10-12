@@ -117,7 +117,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   <span class="sp"></span>
   <span id="timer">00:00</span>
   <span class="q" id="quality" title="کیفیت اتصال"><span></span><span></span><span></span></span>
-  <a class="back" href="panel.html">بازگشت به پنل</a>
+  <a class="back" id="backLink" href="panel.html">بازگشت به پنل</a>
  </header>
 
  <div class="main">
@@ -630,7 +630,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       return resolveName(r.name).then(function (n) { myName = n || (role === "doctor" ? "" : "بیمار"); return r; });
     }).then(function (r) {
       if (!r) return;
-      if (role === "doctor") { $("noteTab").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
+      if (role === "doctor") { $("backLink").href = "admin/visit.html"; $("backLink").textContent = "بازگشت به پنل ادمین"; $("noteTab").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
       else { $("lobbyTitle").textContent = "آماده ورود به اتاق ویزیت"; $("joinBtn").style.display = ""; $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید."; }
       return startMedia().catch(function () { $("joinBtn").disabled = true; });
     }).catch(function (e) {
