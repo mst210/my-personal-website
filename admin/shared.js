@@ -201,6 +201,13 @@ export function renderNav(activeKey, isSuper) {
     const wrap = document.getElementById("navBar");
     if (!wrap) return;
 
+    // ستون کناری باید مستقیماً فرزند page-container باشد (در بعضی صفحه‌ها داخل #app است)
+    const container = document.querySelector(".page-container");
+    if (container && wrap.parentElement !== container) {
+        const header = container.querySelector(".top-header");
+        if (header) header.after(wrap); else container.prepend(wrap);
+    }
+
     const links = NAV_ITEMS
         .filter((item) => !item.superOnly || isSuper)
         .map((item) => `
