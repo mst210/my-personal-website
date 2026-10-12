@@ -134,12 +134,12 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 @media(min-width:861px){#chatBtn{display:none}}
 @media(min-width:861px){
  .main{grid-template-columns:1fr 450px}
- .panel{display:grid;grid-template-columns:104px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
- .tabs{grid-column:1;grid-row:1;flex-direction:column;border-bottom:0;border-left:1px solid var(--line);overflow-x:visible;overflow-y:auto;padding:6px 0}
- .tabs button{border-bottom:0;border-right:3px solid transparent;text-align:right;padding:11px 12px;white-space:normal}
- .tabs button.act{border-right-color:var(--teal);background:rgba(20,184,166,.1)}
- .tabs .nd{top:50%;left:8px;transform:translateY(-50%)}
- .pane{grid-column:2;grid-row:1}
+ .panel{display:grid;grid-template-columns:minmax(0,1fr) 104px;grid-template-rows:minmax(0,1fr)}
+ .tabs{grid-column:2;grid-row:1;flex-direction:column;border-bottom:0;border-right:1px solid var(--line);overflow-x:visible;overflow-y:auto;padding:6px 0}
+ .tabs button{border-bottom:0;border-left:3px solid transparent;text-align:right;padding:11px 12px;white-space:normal}
+ .tabs button.act{border-left-color:var(--teal);background:rgba(20,184,166,.1)}
+ .tabs .nd{top:50%;left:10px;transform:translateY(-50%)}
+ .pane{grid-column:1;grid-row:1}
 }
 </style>
 </head>
