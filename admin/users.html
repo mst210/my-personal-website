@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدیریت کاربران | پنل ادمین</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+ .ltr{direction:ltr;text-align:right;unicode-bidi:plaintext}
+ .row-actions{display:flex;gap:8px;justify-content:flex-start}
+ .row-actions .icon-btn{padding:7px 11px;font-size:12.5px}
+ .pw-row{display:flex;gap:8px}.pw-row input{flex:1}
+ .confirm-text{line-height:2;margin:0 0 18px}
+</style>
+</head>
+<body>
+<div class="page-container">
+ <div class="top-header">
+  <div class="header-title"><h1>مدیریت کاربران</h1><p>افزودن کاربر جدید و حذف حساب‌ها</p></div>
+  <div class="header-actions">
+   <button class="icon-btn btn-primary" id="addBtn" hidden><i class="fa-solid fa-user-plus"></i> افزودن کاربر</button>
+   <button class="icon-btn" id="logoutBtn" hidden><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+  </div>
+ </div>
+ <div class="nav-bar" id="navBar" hidden></div>
+ <section id="loading" class="status-box"><i class="fa-solid fa-spinner fa-spin"></i> در حال بررسی دسترسی...</section>
+ <section id="denied" class="status-box error" hidden><i class="fa-solid fa-lock"></i><div id="deniedText">برای ورود ابتدا از <a href="index.html" style="text-decoration:underline">داشبورد</a> وارد شوید.</div></section>
+
+ <section id="app" hidden>
+  <div class="stat-grid" id="stats"></div>
+  <div class="section-card">
+   <h2><i class="fa-solid fa-users"></i> فهرست کاربران</h2>
+   <div class="toolbar">
+    <input class="search-input" id="search" type="search" placeholder="جستجو با نام، ایمیل، موبایل یا شهر...">
+    <div id="meta" class="hint" style="margin:0"></div>
+   </div>
+   <div id="listStatus" class="status-box" hidden></div>
+   <div class="table-wrap">
+    <table class="data-table" id="table" hidden>
+     <thead><tr><th>کاربر</th><th>موبایل</th><th>شهر</th><th>تاریخ ثبت‌نام</th><th>عملیات</th></tr></thead>
+     <tbody id="body"></tbody>
+    </table>
+   </div>
+  </div>
+ </section>
+</div>
+
+<!-- افزودن کاربر -->
+<div class="modal-overlay" id="addOv" hidden>
+ <div class="modal-box">
+  <div class="modal-head"><h3>افزودن کاربر جدید</h3><button class="modal-close" id="addClose" aria-label="بستن"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="form-error" id="addErr"></div>
+  <form id="addForm" autocomplete="off">
+   <div class="row-2">
+    <div class="field"><label>نام *</label><input id="fFirst" maxlength="60" required></div>
+    <div class="field"><label>نام خانوادگی *</label><input id="fLast" maxlength="60" required></div>
+   </div>
+   <div class="row-2">
+    <div class="field"><label>ایمیل *</label><input id="fEmail" type="email" dir="ltr" required></div>
+    <div class="field"><label>موبایل</label><input id="fPhone" dir="ltr" inputmode="tel" placeholder="09123456789"></div>
+   </div>
+   <div class="field"><label>رمز عبور * (حداقل ۶ کاراکتر)</label>
+    <div class="pw-row"><input id="fPass" dir="ltr" minlength="6" maxlength="128" required><button type="button" class="icon-btn" id="genBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> ساخت رمز</button></div>
+    <div class="hint">رمز را به کاربر اطلاع دهید؛ او می‌تواند بعداً با «فراموشی رمز» آن را عوض کند.</div></div>
+   <div class="row-2">
+    <div class="field"><label>استان</label><input id="fProv" maxlength="80"></div>
+    <div class="field"><label>شهر</label><input id="fCity" maxlength="80"></div>
+   </div>
+   <div class="field"><label>آدرس</label><textarea id="fAddr" maxlength="500" style="min-height:70px"></textarea></div>
+   <div class="modal-actions"><button type="button" class="icon-btn" id="addCancel">انصراف</button><button type="submit" class="icon-btn btn-primary" id="addSubmit">افزودن کاربر</button></div>
+  </form>
+ </div>
+</div>
+
+<!-- تأیید حذف -->
+<div class="modal-overlay" id="delOv" hidden>
+ <div class="modal-box" style="max-width:460px">
+  <div class="modal-head"><h3>حذف کاربر</h3><button class="modal-close" id="delClose" aria-label="بستن"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="form-error" id="delErr"></div>
+  <p class="confirm-text" id="delText"></p>
+  <div class="modal-actions"><button class="icon-btn" id="delCancel">انصراف</button><button class="icon-btn btn-danger" id="delOk"><i class="fa-solid fa-trash"></i> حذف کاربر</button></div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { apiFetch, friendlyError, showToast, formatDate, escapeHtml, initials, renderNav, readSession, saveSession } from "./shared.js";
+const $ = id => document.getElementById(id);
+const S = { perms: [], isSuper: false, myUid: null, users: [], target: null };
+const can = a => S.isSuper || S.perms.includes("users." + a);
+
+async function boot() {
+  if (!readSession()?.idToken) { $("loading").hidden = true; $("denied").hidden = false; return; }
+  try {
+    const me = await apiFetch("/admin/me");
+    S.perms = me.permissions || []; S.isSuper = !!me.isSuper; S.myUid = me.uid;
+    $("navBar").hidden = false; renderNav("users", S.isSuper); $("logoutBtn").hidden = false;
+    if (!can("view")) throw Object.assign(new Error(), { code: "FORBIDDEN" });
+    $("addBtn").hidden = !can("add");
+    $("loading").hidden = true; $("app").hidden = false;
+    await load();
+  } catch (e) {
+    $("loading").hidden = true;
+    if (e.status === 401) { saveSession(null); $("denied").hidden = false; return; }
+    $("deniedText").textContent = friendlyError(e); $("denied").hidden = false;
+  }
+}
+$("logoutBtn").onclick = () => { saveSession(null); location.reload(); };
+
+async function load() {
+  const st = $("listStatus"); st.hidden = false; st.className = "status-box"; st.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال بارگذاری...'; $("table").hidden = true;
+  try { S.users = (await apiFetch("/admin/users")).users || []; render(); }
+  catch (e) { st.className = "status-box error"; st.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>${escapeHtml(friendlyError(e))}`; }
+}
+const nameOf = u => u.fullName || [u.firstName, u.lastName].filter(Boolean).join(" ") || "";
+function render() {
+  const month = Date.now() - 30 * 864e5;
+  const fresh = S.users.filter(u => u.createdAt && Date.parse(u.createdAt) > month).length;
+  $("stats").innerHTML = [["کل کاربران", S.users.length, "fa-users"], ["ثبت‌نام ۳۰ روز اخیر", fresh, "fa-user-clock"], ["دارای موبایل", S.users.filter(u => u.phone).length, "fa-mobile-screen"]]
+    .map(([l, v, i]) => `<div class="stat-card"><div class="icon"><i class="fa-solid ${i}"></i></div><div><div class="num">${v.toLocaleString("fa-IR")}</div><div class="label">${l}</div></div></div>`).join("");
+  const q = $("search").value.trim().toLowerCase();
+  const rows = S.users.filter(u => !q || [nameOf(u), u.email, u.phone, u.city].join(" ").toLowerCase().includes(q))
+    .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+  $("meta").textContent = rows.length.toLocaleString("fa-IR") + " کاربر";
+  const st = $("listStatus");
+  if (!rows.length) { st.hidden = false; st.className = "status-box"; st.innerHTML = '<i class="fa-regular fa-folder-open"></i>' + (q ? "کاربری با این جستجو پیدا نشد." : "هنوز کاربری ثبت نشده است."); $("table").hidden = true; return; }
+  st.hidden = true; $("table").hidden = false;
+  $("body").innerHTML = rows.map(u => `<tr>
+    <td><div class="user-cell"><div class="avatar">${escapeHtml(initials(nameOf(u) || u.email))}</div><div><div class="name">${escapeHtml(nameOf(u) || "بدون نام")}${u.id === S.myUid ? " (شما)" : ""}</div><div class="sub ltr">${escapeHtml(u.email || u.id)}</div></div></div></td>
+    <td class="ltr">${escapeHtml(u.phone || "—")}</td><td>${escapeHtml(u.city || "—")}</td><td>${formatDate(u.createdAt)}</td>
+    <td><div class="row-actions">${can("delete") && u.id !== S.myUid ? `<button class="icon-btn btn-danger" data-del="${escapeHtml(u.id)}"><i class="fa-solid fa-trash"></i> حذف</button>` : ""}</div></td></tr>`).join("");
+  $("body").querySelectorAll("[data-del]").forEach(b => b.onclick = () => askDelete(b.dataset.del));
+}
+$("search").oninput = render;
+
+/* افزودن */
+const openAdd = () => { $("addForm").reset(); $("addErr").classList.remove("show"); $("addOv").hidden = false; $("fFirst").focus(); };
+const closeAdd = () => $("addOv").hidden = true;
+$("addBtn").onclick = openAdd; $("addClose").onclick = closeAdd; $("addCancel").onclick = closeAdd;
+$("genBtn").onclick = () => {
+  const c = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", a = crypto.getRandomValues(new Uint32Array(10));
+  $("fPass").value = Array.from(a, n => c[n % c.length]).join("");
+};
+$("addForm").onsubmit = async e => {
+  e.preventDefault(); $("addErr").classList.remove("show");
+  const b = $("addSubmit"); b.disabled = true; b.textContent = "در حال افزودن...";
+  try {
+    await apiFetch("/admin/users", { method: "POST", body: JSON.stringify({
+      firstName: $("fFirst").value.trim(), lastName: $("fLast").value.trim(), email: $("fEmail").value.trim(), phone: $("fPhone").value.trim(),
+      password: $("fPass").value, province: $("fProv").value.trim(), city: $("fCity").value.trim(), address: $("fAddr").value.trim() }) });
+    closeAdd(); showToast("کاربر اضافه شد."); await load();
+  } catch (err) { $("addErr").textContent = friendlyError(err); $("addErr").classList.add("show"); }
+  b.disabled = false; b.textContent = "افزودن کاربر";
+};
+
+/* حذف */
+function askDelete(id) {
+  S.target = S.users.find(u => u.id === id); if (!S.target) return;
+  $("delErr").classList.remove("show");
+  $("delText").innerHTML = `حساب «<b>${escapeHtml(nameOf(S.target) || S.target.email || id)}</b>» همراه با سفارش‌ها، تیکت‌ها و اعلان‌هایش برای همیشه حذف می‌شود و قابل بازگشت نیست.`;
+  $("delOv").hidden = false;
+}
+const closeDel = () => $("delOv").hidden = true;
+$("delClose").onclick = closeDel; $("delCancel").onclick = closeDel;
+$("delOk").onclick = async () => {
+  const b = $("delOk"); b.disabled = true;
+  try { await apiFetch("/admin/users/" + encodeURIComponent(S.target.id), { method: "DELETE" }); closeDel(); showToast("کاربر حذف شد."); await load(); }
+  catch (err) { $("delErr").textContent = friendlyError(err); $("delErr").classList.add("show"); }
+  b.disabled = false;
+};
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeAdd(); closeDel(); } });
+boot();
+</script>
+</body>
+</html>
