@@ -252,6 +252,28 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     });
   }
 
+  /* ---------- نام نمایشی (نام پروفایل، نه ایمیل) ---------- */
+  function looksLikeEmail(v) { return /@/.test(String(v || "")); }
+  function cleanName(v) { v = String(v || "").trim().slice(0, 80); return looksLikeEmail(v) ? "" : v; }
+  function resolveName(serverName) {
+    var u = (session && session.user) || {}, uid = u.uid || u.localId;
+    var quick = cleanName(u.fullName) || cleanName([u.firstName, u.lastName].filter(Boolean).join(" ")) || cleanName(u.displayName);
+    if (!uid) return Promise.resolve(quick || cleanName(serverName));
+    return api("/firestore?path=" + encodeURIComponent("users/" + uid)).then(function (r) {
+      var d = (r && r.data) || {};
+      return cleanName(d.fullName) || cleanName([d.firstName, d.lastName].filter(Boolean).join(" ")) || quick || cleanName(serverName);
+    }).catch(function () { return quick || cleanName(serverName); });
+  }
+  function denyAccess(msg) {
+    var lb = $("lobby"); lb.style.display = "flex"; lb.className = "joined";
+    $("lobbyTitle").textContent = "دسترسی به ویزیت آنلاین فعال نیست";
+    $("lobbyMsg").textContent = msg || "برای استفاده از ویزیت آنلاین، دسترسی حساب شما باید توسط پزشک فعال شود.";
+    $("joinBtn").style.display = "none"; $("queue").style.display = "none"; $("msg").textContent = ""; var su = document.querySelector(".setup"); if (su) su.style.display = "none";
+    setStatus("بدون دسترسی", "bad");
+    var a = document.createElement("a"); a.href = "panel.html"; a.className = "btn"; a.style.cssText = "text-align:center;text-decoration:none;display:block;margin-top:10px"; a.textContent = "بازگشت به پنل";
+    $("lobbyMsg").appendChild(a);
+  }
+
   /* ---------- رسانه ---------- */
   function startMedia() {
     return navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: { echoCancellation: true, noiseSuppression: true } })
@@ -519,13 +541,17 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   /* ---------- بیمار ---------- */
   function patientJoin() {
     setMsg(""); $("joinBtn").style.display = "none";
-    api("/visit/join", { method: "POST", body: "{}" })
+    api("/visit/join", { method: "POST", body: JSON.stringify({ name: myName }) })
       .then(function (r) {
         room = r.room; since = r.since; setStatus("در انتظار ورود دکتر...", "wait"); enableCall();
         $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا ورود دکتر این صفحه را باز نگه دارید.";
         $("peer").textContent = "دکتر"; $("peer").style.display = ""; poll();
       })
-      .catch(function () { setMsg("ورود به اتاق انجام نشد. دوباره تلاش کنید."); $("joinBtn").style.display = ""; });
+      .catch(function (e) {
+        if (e && (e.code === "VISIT_NOT_ALLOWED" || e.code === "FORBIDDEN")) { denyAccess(); return; }
+        if (e && e.code === "VISIT_CLOSED") { denyAccess("ویزیت آنلاین در حال حاضر غیرفعال است. بعداً دوباره تلاش کنید."); return; }
+        setMsg("ورود به اتاق انجام نشد. دوباره تلاش کنید."); $("joinBtn").style.display = "";
+      });
   }
 
   /* ---------- دکتر ---------- */
@@ -599,11 +625,18 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
     $("lobbyMsg").appendChild(a); setStatus("ابتدا وارد حساب خود شوید", "bad");
   } else {
     api("/visit/me").then(function (r) {
-      role = r.role; myName = String(r.name || "");
+      if (r.allowed === false) { denyAccess(r.reason === "CLOSED" ? "ویزیت آنلاین در حال حاضر غیرفعال است." : ""); return; }
+      role = r.role;
+      return resolveName(r.name).then(function (n) { myName = n || (role === "doctor" ? "" : "بیمار"); return r; });
+    }).then(function (r) {
+      if (!r) return;
       if (role === "doctor") { $("noteTab").style.display = ""; $("lobbyTitle").textContent = "بیماران منتظر"; $("queue").style.display = "block"; loadQueue(); queueTimer = setInterval(loadQueue, 5000); }
       else { $("lobbyTitle").textContent = "آماده ورود به اتاق ویزیت"; $("joinBtn").style.display = ""; $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید."; }
       return startMedia().catch(function () { $("joinBtn").disabled = true; });
-    }).catch(function () { setMsg("نشست شما منقضی شده است. دوباره وارد پنل شوید."); $("joinBtn").disabled = true; });
+    }).catch(function (e) {
+      if (e && (e.code === "VISIT_NOT_ALLOWED" || e.code === "FORBIDDEN")) { denyAccess(); return; }
+      setMsg("نشست شما منقضی شده است. دوباره وارد پنل شوید."); $("joinBtn").disabled = true;
+    });
   }
 })();
 </script>
