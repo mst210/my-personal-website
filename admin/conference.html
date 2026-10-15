@@ -22,6 +22,11 @@
  .linkbox{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
  .linkbox input{flex:1;min-width:200px;direction:ltr;font-size:12px}
  .acts{display:flex;gap:8px;flex-wrap:wrap}
+ .rp-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+ .rp-table th,.rp-table td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--border-color)}
+ .rp-table th{color:var(--text-muted);font-weight:600;font-size:12px}
+ .rp-chat{max-height:260px;overflow:auto;border:1px solid var(--border-color);border-radius:12px;padding:8px 12px;font-size:13px;line-height:2;margin:8px 0}
+ .rp-chip{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid var(--border-color);font-size:12px;color:var(--text-muted);margin-left:6px}
 </style>
 </head>
 <body>
@@ -40,6 +45,12 @@
    <div id="rooms"></div>
   </div>
 
+  <div class="section-card" id="repCard" hidden>
+   <h2><i class="fa-solid fa-chart-column"></i> گزارش جلسه‌ها</h2>
+   <div class="hint">بعد از پایان هر جلسه (پایان توسط میزبان، بسته‌شدن اتاق، یا بسته‌شدن خودکار) گزارش حضور و گفتگو اینجا ثبت می‌شود.</div>
+   <div id="reports"></div>
+  </div>
+
   <div class="section-card" id="formCard" hidden>
    <h2><i class="fa-solid fa-users-rectangle"></i> <span id="formTitle">تشکیل اتاق کنفرانس جدید</span></h2>
    <input class="field" id="title" maxlength="100" placeholder="عنوان کنفرانس (مثلاً: جلسهٔ هفتگی)">
@@ -47,6 +58,7 @@
    <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="permRoom"> اتاق دائمی: لینک ثابت می‌ماند و اتاق خودکار بسته نمی‌شود (فقط با «حذف اتاق» از بین می‌رود)</label>
    <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="waitRoom"> اتاق انتظار: ورود مهمان‌ها (و کاربران دعوت‌نشده) پس از تأیید من انجام شود</label>
    <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="guestAuthRoom"> ورود مهمان‌ها فقط با نام کاربری و رمز (بعد از ساخت اتاق، از دکمهٔ «ورودی‌های مهمان» برای هر نفر تعریف کنید)</label>
+   <label class="chk" style="margin-bottom:10px" id="regenWrap" hidden><input type="checkbox" id="regenTok"> ساخت لینک دعوت جدید (لینک قبلی باطل می‌شود و باید لینک تازه را بفرستید)</label>
    <div class="toolbar">
     <input class="search-input" id="search" type="search" placeholder="جستجو با نام، ایمیل یا تلفن...">
     <button class="icon-btn" id="selAll" type="button">انتخاب همهٔ نتایج</button>
@@ -66,7 +78,7 @@
 <script type="module">
 import { apiFetch, friendlyError, showToast, escapeHtml, renderNav, readSession, saveSession } from "./shared.js";
 const $ = id => document.getElementById(id);
-const S = { perms: [], isSuper: false, users: [], rooms: [], sel: new Set(), editId: null, openLogins: new Set(), logins: {}, pw: {} };
+const S = { perms: [], isSuper: false, users: [], rooms: [], sel: new Set(), editId: null, openLogins: new Set(), logins: {}, pw: {}, reports: [], repData: {}, openRep: null };
 const can = a => S.isSuper || S.perms.includes("conference." + a);
 const api = (p, m, b) => apiFetch("/admin/conference" + p, m ? { method: m, body: b ? JSON.stringify(b) : undefined } : {});
 const ROOT = location.origin + location.pathname.replace(/admin\/[^/]*$/, "");
@@ -81,6 +93,7 @@ async function boot() {
     if (!can("view")) throw Object.assign(new Error(), { code: "FORBIDDEN" });
     $("loading").hidden = true; $("app").hidden = false;
     if (can("add")) { $("formCard").hidden = false; loadUsers(); }
+    $("repCard").hidden = false; loadReports();
     await loadRooms();
     setInterval(() => { if (!document.hidden && !S.openLogins.size) loadRooms(); }, 15000);
   } catch (e) {
@@ -128,7 +141,7 @@ function renderRooms() {
      <button class="icon-btn" data-copy="${escapeHtml(r.id)}"><i class="fa-regular fa-copy"></i> کپی لینک دعوت</button></div>
     <div class="acts">
      <a class="icon-btn btn-primary" href="${escapeHtml(link(r)).replace(/&amp;/g, "&amp;")}"><i class="fa-solid fa-video"></i> ورود به اتاق</a>
-     ${can("add") ? `<button class="icon-btn" data-edit="${escapeHtml(r.id)}"><i class="fa-solid fa-user-pen"></i> ویرایش دعوت‌شدگان</button>` : ""}
+     ${can("add") ? `<button class="icon-btn" data-edit="${escapeHtml(r.id)}"><i class="fa-solid fa-pen-to-square"></i> ویرایش اتاق</button>` : ""}
      ${can("add") ? `<button class="icon-btn" data-logins="${escapeHtml(r.id)}"><i class="fa-solid fa-key"></i> ورودی‌های مهمان${r.guestAuth ? " ✓" : ""}</button>` : ""}
      ${can("delete") ? `<button class="icon-btn" style="color:var(--danger)" data-end="${escapeHtml(r.id)}"><i class="fa-solid fa-circle-stop"></i> ${r.permanent ? "حذف اتاق دائمی" : "پایان کنفرانس"}</button>` : ""}
     </div><div class="lg" id="lg-${escapeHtml(r.id)}" hidden style="margin-top:12px"></div></div>`).join("");
@@ -145,20 +158,23 @@ function renderRooms() {
 function startEdit(id) {
   const r = S.rooms.find(x => x.id === id); if (!r) return;
   S.editId = id; S.sel = new Set(r.invitedUids); $("title").value = r.title;
-  $("waitRoom").parentElement.hidden = true; $("permRoom").parentElement.hidden = true; $("guestAuthRoom").parentElement.hidden = true; $("formTitle").textContent = "ویرایش دعوت‌شدگان: " + r.title; $("saveLabel").textContent = "ذخیره تغییرات"; $("cancelEdit").hidden = false;
+  $("waitRoom").checked = !!r.waiting; $("permRoom").checked = !!r.permanent; $("guestAuthRoom").checked = !!r.guestAuth;
+  $("regenTok").checked = false; $("regenWrap").hidden = false;
+  $("formTitle").textContent = "ویرایش اتاق: " + r.title; $("saveLabel").textContent = "ذخیره تغییرات"; $("cancelEdit").hidden = false;
   renderPick(); $("formCard").scrollIntoView({ behavior: "smooth" });
 }
 function resetForm() {
-  S.editId = null; S.sel.clear(); $("waitRoom").checked = false; $("permRoom").checked = false; $("title").value = ""; $("formTitle").textContent = "تشکیل اتاق کنفرانس جدید";
-  $("saveLabel").textContent = "تشکیل کنفرانس"; $("cancelEdit").hidden = true; $("waitRoom").parentElement.hidden = false; $("permRoom").parentElement.hidden = false; $("guestAuthRoom").parentElement.hidden = false; $("guestAuthRoom").checked = false; renderPick();
+  S.editId = null; S.sel.clear(); $("waitRoom").checked = false; $("permRoom").checked = false; $("guestAuthRoom").checked = false; $("regenTok").checked = false; $("regenWrap").hidden = true;
+  $("title").value = ""; $("formTitle").textContent = "تشکیل اتاق کنفرانس جدید"; $("saveLabel").textContent = "تشکیل کنفرانس"; $("cancelEdit").hidden = true; renderPick();
 }
 $("cancelEdit").onclick = resetForm;
 $("saveBtn").onclick = async () => {
   const btn = $("saveBtn"); btn.disabled = true;
   const body = { title: $("title").value.trim(), invitedUids: [...S.sel] };
-  if (!S.editId) { body.waitingRoom = $("waitRoom").checked; body.permanent = $("permRoom").checked; body.guestAuth = $("guestAuthRoom").checked; }
+  body.waitingRoom = $("waitRoom").checked; body.permanent = $("permRoom").checked; body.guestAuth = $("guestAuthRoom").checked;
+  if (S.editId && $("regenTok").checked) body.regenerateToken = true;
   try {
-    if (S.editId) { await api("/rooms/" + encodeURIComponent(S.editId), "PUT", body); showToast("تغییرات ذخیره شد."); }
+    if (S.editId) { await api("/rooms/" + encodeURIComponent(S.editId), "PUT", body); showToast(body.regenerateToken ? "تغییرات ذخیره شد. لینک دعوت جدید ساخته شد." : "تغییرات ذخیره شد."); }
     else {
       const res = await api("/rooms", "POST", body);
       showToast("کنفرانس تشکیل شد. لینک دعوت را از کارت بالا کپی کنید.");
@@ -172,7 +188,7 @@ $("saveBtn").onclick = async () => {
 async function endRoom(id) {
   const rm = S.rooms.find(x => x.id === id);
   if (!confirm(rm && rm.permanent ? "اتاق دائمی حذف شود؟ لینک آن دیگر کار نخواهد کرد." : "کنفرانس برای همهٔ شرکت‌کنندگان بسته شود؟")) return;
-  try { await api("/rooms/" + encodeURIComponent(id), "DELETE"); showToast("کنفرانس بسته شد."); if (S.editId === id) resetForm(); await loadRooms(); }
+  try { await api("/rooms/" + encodeURIComponent(id), "DELETE"); showToast("کنفرانس بسته شد. گزارش آن در بخش «گزارش جلسه‌ها» ثبت شد."); if (S.editId === id) resetForm(); await loadRooms(); loadReports(); }
   catch (e) { showToast(friendlyError(e), "error"); }
 }
 
@@ -269,6 +285,90 @@ async function mountLogins(id) {
     catch (e) { showToast(lgErr(e), "error"); }
   });
 }
+/* ---------- گزارش جلسه‌ها ---------- */
+const fmtDT = ms => ms ? new Date(ms).toLocaleString("fa-IR", { dateStyle: "medium", timeStyle: "short" }) : "—";
+const fmtTm = ms => ms ? new Date(ms).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }) : "—";
+const fmtDur = sec => {
+  sec = Math.round(sec || 0); const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), n = x => x.toLocaleString("fa-IR");
+  return h ? `${n(h)} ساعت و ${n(m)} دقیقه` : m ? `${n(m)} دقیقه` : `${n(sec)} ثانیه`;
+};
+const REASON = { HOST_ENDED: "پایان توسط میزبان", ADMIN_DELETED: "بسته‌شدن از پنل", EXPIRED: "بسته‌شدن خودکار (بی‌استفاده)", IDLE: "اتاق دائمی بی‌استفاده", ENDED: "پایان جلسه" };
+const KIND = { user: "عضو سایت", guest: "مهمان", credential: "ورودی اختصاصی" };
+
+async function loadReports() {
+  const box = $("reports");
+  try { S.reports = (await api("/reports")).reports || []; renderReports(); }
+  catch (e) { box.innerHTML = `<div class="status-box error"><i class="fa-solid fa-circle-exclamation"></i>${escapeHtml(friendlyError(e))}</div>`; }
+}
+function renderReports() {
+  if (!S.reports.length) { $("reports").innerHTML = '<div class="hint" style="margin:0">هنوز گزارشی ثبت نشده است. بعد از پایان اولین جلسه اینجا نمایش داده می‌شود.</div>'; return; }
+  $("reports").innerHTML = S.reports.map(r => {
+    const id = escapeHtml(r.id);
+    return `<div class="u-row" style="display:block"><div class="room-top">
+      <div><h4>${escapeHtml(r.title || "کنفرانس")} ${r.permanent ? '<span class="rp-chip">دائمی</span>' : ""}</h4>
+       <div class="u-meta">${fmtDT(r.startedAt)} · مدت ${fmtDur(r.durationSec)} · ${(r.attendeeCount || 0).toLocaleString("fa-IR")} نفر · ${escapeHtml(REASON[r.reason] || "")}</div></div>
+      <div class="acts">
+       <button class="icon-btn" data-rview="${id}"><i class="fa-solid fa-eye"></i> مشاهده گزارش</button>
+       ${can("delete") ? `<button class="icon-btn" style="color:var(--danger)" data-rdel="${id}"><i class="fa-regular fa-trash-can"></i></button>` : ""}
+      </div></div><div id="rp-${id}" hidden style="margin-top:10px"></div></div>`;
+  }).join("");
+  $("reports").querySelectorAll("[data-rview]").forEach(b => b.onclick = () => toggleReport(b.dataset.rview));
+  $("reports").querySelectorAll("[data-rdel]").forEach(b => b.onclick = () => delReport(b.dataset.rdel));
+  if (S.openRep) { if (S.reports.some(x => x.id === S.openRep)) showReport(S.openRep); else S.openRep = null; }
+}
+async function toggleReport(id) {
+  if (S.openRep === id) { S.openRep = null; const b = $("rp-" + id); if (b) { b.hidden = true; b.innerHTML = ""; } return; }
+  if (S.openRep) { const o = $("rp-" + S.openRep); if (o) { o.hidden = true; o.innerHTML = ""; } }
+  S.openRep = id; await showReport(id);
+}
+async function showReport(id) {
+  const box = $("rp-" + id); if (!box) return;
+  box.hidden = false; box.innerHTML = '<div class="hint"><i class="fa-solid fa-spinner fa-spin"></i> در حال بارگذاری...</div>';
+  try { S.repData[id] = await api("/reports/" + encodeURIComponent(id)); }
+  catch (e) { box.innerHTML = `<div class="status-box error">${escapeHtml(friendlyError(e))}</div>`; return; }
+  const d = S.repData[id], r = d.report, att = d.attendees || [], chat = d.chat || [];
+  box.innerHTML = `
+   <div class="u-meta" style="line-height:2.2">
+    <span class="rp-chip">شروع: ${fmtDT(r.startedAt)}</span><span class="rp-chip">پایان: ${fmtDT(r.endedAt)}</span><span class="rp-chip">مدت: ${fmtDur(r.durationSec)}</span>
+    <span class="rp-chip">برگزارکننده: ${escapeHtml(r.hostName || "—")}</span><span class="rp-chip">اوج حضور: ${(r.peakParticipants || 0).toLocaleString("fa-IR")} نفر</span>
+    <span class="rp-chip">عضو: ${(r.userCount || 0).toLocaleString("fa-IR")}</span><span class="rp-chip">مهمان: ${(r.guestCount || 0).toLocaleString("fa-IR")}</span><span class="rp-chip">ورودی اختصاصی: ${(r.credentialCount || 0).toLocaleString("fa-IR")}</span>
+    <span class="rp-chip">پیام‌ها: ${(r.messageCount || 0).toLocaleString("fa-IR")}</span></div>
+   <div style="overflow:auto"><table class="rp-table"><thead><tr><th>نام</th><th>نوع</th><th>نام کاربری</th><th>ورود</th><th>خروج</th><th>مدت حضور</th><th>دفعات ورود</th></tr></thead><tbody>
+   ${att.map(a => `<tr><td>${escapeHtml(a.name)}</td><td>${escapeHtml(KIND[a.kind] || a.kind)}</td><td style="direction:ltr;text-align:right">${escapeHtml(a.username || "—")}</td><td>${fmtTm(a.joinedAt)}</td><td>${fmtTm(a.leftAt)}</td><td>${fmtDur(a.durationSec)}</td><td>${(a.joins || 1).toLocaleString("fa-IR")}</td></tr>`).join("") || '<tr><td colspan="7">—</td></tr>'}
+   </tbody></table></div>
+   <div class="u-meta" style="margin-top:8px">گفتگوی عمومی${d.chatTruncated ? " (فقط ۵۰۰ پیام اول)" : ""}:</div>
+   <div class="rp-chat">${chat.map(m => `<div><span class="u-meta">${fmtTm(m.ts)}</span> <b>${escapeHtml(m.name)}</b>: ${escapeHtml(m.t)}</div>`).join("") || '<span class="u-meta">پیامی ثبت نشده است.</span>'}</div>
+   <div class="acts"><button class="icon-btn" data-rcsv="${escapeHtml(id)}"><i class="fa-solid fa-file-csv"></i> دانلود Excel (CSV)</button>
+   <button class="icon-btn" data-rprint="${escapeHtml(id)}"><i class="fa-solid fa-print"></i> چاپ / ذخیره PDF</button></div>`;
+  box.querySelector("[data-rcsv]").onclick = () => reportCsv(id);
+  box.querySelector("[data-rprint]").onclick = () => reportPrint(id);
+}
+function reportCsv(id) {
+  const d = S.repData[id], r = d.report, cell = v => { let s = String(v ?? ""); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const p2 = n => String(n).padStart(2, "0"), t = ms => { if (!ms) return ""; const x = new Date(ms); return `${x.getFullYear()}-${p2(x.getMonth() + 1)}-${p2(x.getDate())} ${p2(x.getHours())}:${p2(x.getMinutes())}:${p2(x.getSeconds())}`; };
+  const rows = [["عنوان", r.title], ["برگزارکننده", r.hostName], ["شروع", t(r.startedAt)], ["پایان", t(r.endedAt)], ["مدت (دقیقه)", Math.round((r.durationSec || 0) / 60)], [],
+    ["نام", "نوع", "نام کاربری", "ورود", "خروج", "مدت حضور (دقیقه)", "دفعات ورود"],
+    ...(d.attendees || []).map(a => [a.name, KIND[a.kind] || a.kind, a.username, t(a.joinedAt), t(a.leftAt), Math.round((a.durationSec || 0) / 60), a.joins])];
+  const blob = new Blob(["\uFEFF" + rows.map(x => x.map(cell).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "conference-report-" + t(r.startedAt).slice(0, 10) + ".csv"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function reportPrint(id) {
+  const d = S.repData[id], r = d.report, e = escapeHtml, w = window.open("", "_blank"); if (!w) { showToast("پنجرهٔ چاپ مسدود شد؛ پاپ‌آپ را مجاز کنید.", "error"); return; }
+  w.document.write(`<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><title>گزارش ${e(r.title)}</title>
+   <style>body{font-family:Tahoma,sans-serif;padding:24px;color:#111}h1{font-size:20px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}th,td{border:1px solid #bbb;padding:6px 8px;text-align:right}th{background:#eee}.m{color:#444;line-height:2}</style></head><body>
+   <h1>گزارش جلسه: ${e(r.title)}</h1>
+   <div class="m">برگزارکننده: ${e(r.hostName || "—")}<br>شروع: ${fmtDT(r.startedAt)} — پایان: ${fmtDT(r.endedAt)}<br>مدت: ${fmtDur(r.durationSec)} · تعداد شرکت‌کنندگان: ${(r.attendeeCount || 0).toLocaleString("fa-IR")} · اوج حضور: ${(r.peakParticipants || 0).toLocaleString("fa-IR")} · تعداد پیام‌ها: ${(r.messageCount || 0).toLocaleString("fa-IR")}</div>
+   <table><thead><tr><th>نام</th><th>نوع</th><th>نام کاربری</th><th>ورود</th><th>خروج</th><th>مدت حضور</th></tr></thead><tbody>
+   ${(d.attendees || []).map(a => `<tr><td>${e(a.name)}</td><td>${e(KIND[a.kind] || a.kind)}</td><td>${e(a.username || "—")}</td><td>${fmtTm(a.joinedAt)}</td><td>${fmtTm(a.leftAt)}</td><td>${fmtDur(a.durationSec)}</td></tr>`).join("")}</tbody></table>
+   <script>window.onload=function(){window.print()}<\/script></body></html>`);
+  w.document.close();
+}
+async function delReport(id) {
+  if (!confirm("این گزارش برای همیشه حذف شود؟")) return;
+  try { await api("/reports/" + encodeURIComponent(id), "DELETE"); if (S.openRep === id) S.openRep = null; showToast("گزارش حذف شد."); await loadReports(); }
+  catch (e) { showToast(friendlyError(e), "error"); }
+}
+
 boot();
 </script>
 </body>
