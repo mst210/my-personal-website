@@ -219,6 +219,10 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
       <h2 id="lobbyTitle">ورود به اتاق کنفرانس</h2>
       <video id="preview" autoplay playsinline muted></video>
       <label id="nameWrap" style="display:none">نام شما (برای نمایش به سایر شرکت‌کنندگان)<input class="field" id="nameIn" maxlength="60" autocomplete="name" placeholder="مثلاً: علی رضایی"></label>
+      <div id="credWrap" style="display:none">
+       <label>نام کاربری<input class="field" id="userIn" maxlength="30" dir="ltr" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
+       <label>رمز عبور<input class="field" id="passIn" type="password" maxlength="128" dir="ltr" autocomplete="current-password"></label>
+      </div>
       <div id="devRow" style="display:flex;gap:8px"><label style="flex:1">دوربین<select class="field devcam"></select></label><label style="flex:1">میکروفن<select class="field devmic"></select></label></div>
       <button class="btn primary" id="joinBtn" disabled>ورود به کنفرانس</button>
       <div id="lobbyMsg" style="color:var(--muted);font-size:.85rem"></div>
@@ -1225,8 +1229,22 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
     ROOM_LOCKED: ["اتاق قفل است.", "میزبان ورود افراد جدید را بسته است."],
     KICKED: ["شما از این کنفرانس حذف شده‌اید.", "امکان ورود دوباره وجود ندارد."]
   };
+  /* ورود مهمان با نام کاربری و رمز (اگر میزبان برای اتاق فعال کرده باشد) */
+  let CRED = false;
+  function showCred() {
+    CRED = true; $("nameWrap").style.display = "none"; $("credWrap").style.display = "";
+    $("lobbyMsg").textContent = "نام کاربری و رمز عبوری که میزبان به شما داده را وارد کنید.";
+  }
+  const CRED_ERR = {
+    BAD_CREDENTIALS: "نام کاربری یا رمز عبور اشتباه است.",
+    LOGIN_LOCKED: "تلاش‌های ناموفق زیاد بود. چند دقیقه بعد دوباره امتحان کنید.",
+    LOGIN_DISABLED: "این ورودی غیرفعال شده است. با میزبان تماس بگیرید.",
+    LOGIN_IN_USE: "این نام کاربری همین حالا در دستگاه دیگری استفاده می‌شود. اگر خودتان هستید، ۳۰ ثانیه صبر کنید و دوباره امتحان کنید.",
+    CREDENTIALS_REQUIRED: "برای ورود، نام کاربری و رمز عبور را وارد کنید."
+  };
   function doJoin(silent) {
     const body = { room: ROOM, token: TOKEN, name: loggedIn ? "" : $("nameIn").value.trim() };
+    if (CRED) { body.username = $("userIn").value.trim(); body.password = $("passIn").value; }
     if (!loggedIn) { try { const g = JSON.parse(sessionStorage.getItem(GKEY)); if (g) { body.pid = g.pid; body.key = g.key; } } catch (e) {} }
     return api("/conference/join", body).then((r) => {
       S.pid = r.pid; S.key = r.key || null; S.sid = r.sid; S.joinedAt = r.joinedAt; S.since = r.since; S.name = r.name; S.title = r.title;
@@ -1239,6 +1257,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
       applyRole(); applySettings(); poll();
     }).catch((e) => {
       if (silent) { over("ارتباط قطع شد", "برای ورود دوباره صفحه را بازخوانی کنید."); return; }
+      if (CRED_ERR[e.code]) { if (e.code === "CREDENTIALS_REQUIRED") showCred(); setMsg(CRED_ERR[e.code]); $("joinBtn").disabled = false; return; }
       let m = JOIN_ERR[e.code]; if (e.code === "NOT_INVITED" && !loggedIn) m = JOIN_ERR.ROOM_NOT_FOUND;
       if (m) { $("lobbyTitle").textContent = m[0]; $("lobbyMsg").textContent = m[1]; $("joinBtn").style.display = "none"; $("nameWrap").style.display = "none"; $("preview").style.display = "none"; }
       else setMsg(e.code === "NAME_REQUIRED" ? "لطفاً نام خود را وارد کنید." : "ورود انجام نشد. دوباره تلاش کنید.");
@@ -1248,7 +1267,8 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 
   /* ---------- رویدادها ---------- */
   $("joinBtn").onclick = () => {
-    if (!loggedIn && !$("nameIn").value.trim()) { setMsg("لطفاً نام خود را وارد کنید."); $("nameIn").focus(); return; }
+    if (CRED) { if (!$("userIn").value.trim() || !$("passIn").value) { setMsg("نام کاربری و رمز عبور را وارد کنید."); return; } }
+    else if (!loggedIn && !$("nameIn").value.trim()) { setMsg("لطفاً نام خود را وارد کنید."); $("nameIn").focus(); return; }
     ac(); setMsg(""); $("joinBtn").disabled = true;
     if (S.mic) S.mic.enabled = false; if (S.cam) S.cam.enabled = false; /* ورود با دوربین و میکروفن خاموش */
     doJoin(false);
@@ -1296,6 +1316,7 @@ td.l{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
       $("nameWrap").style.display = ""; $("lobbyMsg").textContent = "برای ورود نیازی به ساخت حساب نیست. نام خود را وارد کنید.";
       try { const g0 = localStorage.getItem("conf_guest_name"); if (g0) $("nameIn").value = g0; } catch (e) {}
       $("nameIn").addEventListener("input", function () { try { localStorage.setItem("conf_guest_name", this.value); } catch (e) {} });
+      api("/conference/info", { room: ROOM, token: TOKEN }).then((r) => { if (r && r.guestAuth) showCred(); }).catch(() => {});
     } else $("lobbyMsg").textContent = "پیش از ورود، تصویر و صدای خود را بررسی کنید.";
     getMedia().then((st) => {
       S.local = st; S.cam = st.getVideoTracks()[0] || null; S.mic = st.getAudioTracks()[0] || null;
