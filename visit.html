@@ -645,7 +645,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
           (iceReady || Promise.resolve()).then(function () { return sendSignal("rejoin", {}); });
           poll(); return;
         }
-        setStatus("در انتظار ورود دکتر...", "wait");
+        setStatus("در انتظار ورود پزشک...", "wait");
         $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا زمان اتصال این صفحه را باز نگه دارید.";
         poll();
       })
