@@ -646,7 +646,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
           poll(); return;
         }
         setStatus("در انتظار ورود دکتر...", "wait");
-        $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا ورود دکتر این صفحه را باز نگه دارید.";
+        $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا زمان اتصال این صفحه را باز نگه دارید.";
         poll();
       })
       .catch(function (e) {
