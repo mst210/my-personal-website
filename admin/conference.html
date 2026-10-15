@@ -46,6 +46,7 @@
    <div class="hint" style="margin-top:10px">اعضای انتخاب‌شده وقتی وارد پنل خود شوند، پنجرهٔ چشمک‌زن ورود به کنفرانس را می‌بینند. بقیه با لینک دعوت (بدون نیاز به حساب) وارد می‌شوند.</div>
    <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="permRoom"> اتاق دائمی: لینک ثابت می‌ماند و اتاق خودکار بسته نمی‌شود (فقط با «حذف اتاق» از بین می‌رود)</label>
    <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="waitRoom"> اتاق انتظار: ورود مهمان‌ها (و کاربران دعوت‌نشده) پس از تأیید من انجام شود</label>
+   <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="guestAuthRoom"> ورود مهمان‌ها فقط با نام کاربری و رمز (بعد از ساخت اتاق، از دکمهٔ «ورودی‌های مهمان» برای هر نفر تعریف کنید)</label>
    <div class="toolbar">
     <input class="search-input" id="search" type="search" placeholder="جستجو با نام، ایمیل یا تلفن...">
     <button class="icon-btn" id="selAll" type="button">انتخاب همهٔ نتایج</button>
@@ -65,7 +66,7 @@
 <script type="module">
 import { apiFetch, friendlyError, showToast, escapeHtml, renderNav, readSession, saveSession } from "./shared.js";
 const $ = id => document.getElementById(id);
-const S = { perms: [], isSuper: false, users: [], rooms: [], sel: new Set(), editId: null };
+const S = { perms: [], isSuper: false, users: [], rooms: [], sel: new Set(), editId: null, openLogins: new Set(), logins: {}, pw: {} };
 const can = a => S.isSuper || S.perms.includes("conference." + a);
 const api = (p, m, b) => apiFetch("/admin/conference" + p, m ? { method: m, body: b ? JSON.stringify(b) : undefined } : {});
 const ROOT = location.origin + location.pathname.replace(/admin\/[^/]*$/, "");
@@ -81,7 +82,7 @@ async function boot() {
     $("loading").hidden = true; $("app").hidden = false;
     if (can("add")) { $("formCard").hidden = false; loadUsers(); }
     await loadRooms();
-    setInterval(() => { if (!document.hidden) loadRooms(); }, 15000);
+    setInterval(() => { if (!document.hidden && !S.openLogins.size) loadRooms(); }, 15000);
   } catch (e) {
     $("loading").hidden = true;
     if (e.status === 401) { saveSession(null); $("denied").hidden = false; return; }
@@ -128,8 +129,11 @@ function renderRooms() {
     <div class="acts">
      <a class="icon-btn btn-primary" href="${escapeHtml(link(r)).replace(/&amp;/g, "&amp;")}"><i class="fa-solid fa-video"></i> ورود به اتاق</a>
      ${can("add") ? `<button class="icon-btn" data-edit="${escapeHtml(r.id)}"><i class="fa-solid fa-user-pen"></i> ویرایش دعوت‌شدگان</button>` : ""}
+     ${can("add") ? `<button class="icon-btn" data-logins="${escapeHtml(r.id)}"><i class="fa-solid fa-key"></i> ورودی‌های مهمان${r.guestAuth ? " ✓" : ""}</button>` : ""}
      ${can("delete") ? `<button class="icon-btn" style="color:var(--danger)" data-end="${escapeHtml(r.id)}"><i class="fa-solid fa-circle-stop"></i> ${r.permanent ? "حذف اتاق دائمی" : "پایان کنفرانس"}</button>` : ""}
-    </div></div>`).join("");
+    </div><div class="lg" id="lg-${escapeHtml(r.id)}" hidden style="margin-top:12px"></div></div>`).join("");
+  $("rooms").querySelectorAll("[data-logins]").forEach(b => b.onclick = () => toggleLogins(b.dataset.logins));
+  S.openLogins.forEach(id => { if (S.rooms.some(x => x.id === id)) mountLogins(id); else S.openLogins.delete(id); });
   $("rooms").querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => {
     const r = S.rooms.find(x => x.id === b.dataset.copy);
     try { await navigator.clipboard.writeText(link(r)); showToast("لینک دعوت کپی شد."); }
@@ -141,18 +145,18 @@ function renderRooms() {
 function startEdit(id) {
   const r = S.rooms.find(x => x.id === id); if (!r) return;
   S.editId = id; S.sel = new Set(r.invitedUids); $("title").value = r.title;
-  $("waitRoom").parentElement.hidden = true; $("permRoom").parentElement.hidden = true; $("formTitle").textContent = "ویرایش دعوت‌شدگان: " + r.title; $("saveLabel").textContent = "ذخیره تغییرات"; $("cancelEdit").hidden = false;
+  $("waitRoom").parentElement.hidden = true; $("permRoom").parentElement.hidden = true; $("guestAuthRoom").parentElement.hidden = true; $("formTitle").textContent = "ویرایش دعوت‌شدگان: " + r.title; $("saveLabel").textContent = "ذخیره تغییرات"; $("cancelEdit").hidden = false;
   renderPick(); $("formCard").scrollIntoView({ behavior: "smooth" });
 }
 function resetForm() {
   S.editId = null; S.sel.clear(); $("waitRoom").checked = false; $("permRoom").checked = false; $("title").value = ""; $("formTitle").textContent = "تشکیل اتاق کنفرانس جدید";
-  $("saveLabel").textContent = "تشکیل کنفرانس"; $("cancelEdit").hidden = true; $("waitRoom").parentElement.hidden = false; $("permRoom").parentElement.hidden = false; renderPick();
+  $("saveLabel").textContent = "تشکیل کنفرانس"; $("cancelEdit").hidden = true; $("waitRoom").parentElement.hidden = false; $("permRoom").parentElement.hidden = false; $("guestAuthRoom").parentElement.hidden = false; $("guestAuthRoom").checked = false; renderPick();
 }
 $("cancelEdit").onclick = resetForm;
 $("saveBtn").onclick = async () => {
   const btn = $("saveBtn"); btn.disabled = true;
   const body = { title: $("title").value.trim(), invitedUids: [...S.sel] };
-  if (!S.editId) { body.waitingRoom = $("waitRoom").checked; body.permanent = $("permRoom").checked; }
+  if (!S.editId) { body.waitingRoom = $("waitRoom").checked; body.permanent = $("permRoom").checked; body.guestAuth = $("guestAuthRoom").checked; }
   try {
     if (S.editId) { await api("/rooms/" + encodeURIComponent(S.editId), "PUT", body); showToast("تغییرات ذخیره شد."); }
     else {
@@ -170,6 +174,100 @@ async function endRoom(id) {
   if (!confirm(rm && rm.permanent ? "اتاق دائمی حذف شود؟ لینک آن دیگر کار نخواهد کرد." : "کنفرانس برای همهٔ شرکت‌کنندگان بسته شود؟")) return;
   try { await api("/rooms/" + encodeURIComponent(id), "DELETE"); showToast("کنفرانس بسته شد."); if (S.editId === id) resetForm(); await loadRooms(); }
   catch (e) { showToast(friendlyError(e), "error"); }
+}
+
+/* ---------- ورودی‌های مهمان (نام کاربری و رمز برای هر اتاق) ---------- */
+const lgErr = e => ({
+  ALREADY_EXISTS: "این نام کاربری قبلاً برای این اتاق ساخته شده است.",
+  INVALID_USERNAME: "نام کاربری باید ۳ تا ۳۰ کاراکتر از حروف کوچک انگلیسی، عدد، _ یا - باشد.",
+  INVALID_PASSWORD: "رمز عبور باید ۴ تا ۶۴ کاراکتر باشد.",
+  DUPLICATE_USERNAME: "نام کاربری تکراری در فهرست وجود دارد.",
+})[e && e.code] || friendlyError(e);
+const lgRand = n => { const c = "abcdefghjkmnpqrstuvwxyz23456789"; const a = new Uint8Array(n); crypto.getRandomValues(a); return Array.from(a, x => c[x % c.length]).join(""); };
+const lgPath = id => "/rooms/" + encodeURIComponent(id) + "/logins";
+const lgText = (r, u) => `لینک ورود: ${link(r)}\nنام کاربری: ${u}\nرمز عبور: ${S.pw[r.id + "|" + u]}`;
+
+function toggleLogins(id) {
+  if (S.openLogins.has(id)) { S.openLogins.delete(id); const b = $("lg-" + id); if (b) { b.hidden = true; b.innerHTML = ""; } }
+  else { S.openLogins.add(id); mountLogins(id); }
+}
+
+async function mountLogins(id) {
+  const box = $("lg-" + id), r = S.rooms.find(x => x.id === id); if (!box || !r) return;
+  box.hidden = false;
+  try { S.logins[id] = (await api(lgPath(id))).logins || []; }
+  catch (e) { box.innerHTML = `<div class="status-box error">${escapeHtml(lgErr(e))}</div>`; return; }
+  const eid = escapeHtml(id);
+  const rows = S.logins[id].map(l => {
+    const known = S.pw[id + "|" + l.username], u = escapeHtml(l.username);
+    return `<div class="u-row"><div><h4>${escapeHtml(l.name || l.username)}${l.online ? ' <span class="u-meta" style="color:var(--success)">· آنلاین</span>' : ""}${l.active ? "" : ' <span class="u-meta" style="color:var(--danger)">· غیرفعال</span>'}</h4>
+      <div class="u-meta" style="direction:ltr;text-align:right">${u}${known ? " · " + escapeHtml(known) : ""}</div></div>
+      <div class="acts">
+       ${known ? `<button class="icon-btn" data-lcopy="${u}"><i class="fa-regular fa-copy"></i> کپی اطلاعات ورود</button>` : ""}
+       <button class="icon-btn" data-lpw="${u}"><i class="fa-solid fa-rotate"></i> رمز جدید</button>
+       <button class="icon-btn" data-ltog="${u}">${l.active ? "غیرفعال کردن" : "فعال کردن"}</button>
+       <button class="icon-btn" style="color:var(--danger)" data-ldel="${u}"><i class="fa-regular fa-trash-can"></i></button>
+      </div></div>`;
+  }).join("") || '<div class="hint" style="margin:0">هنوز ورودی‌ای تعریف نشده است.</div>';
+  box.innerHTML = `
+   <div class="hint" style="margin:0 0 8px">برای هر نفر یک نام کاربری و رمز بسازید و همراه لینک دعوت به او بدهید. رمزها در سرور فقط به‌صورت رمزنگاری‌شده ذخیره می‌شوند و فقط تا بسته شدن این صفحه اینجا دیده می‌شوند.</div>
+   <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="ga-${eid}" ${r.guestAuth ? "checked" : ""}> مهمان‌ها فقط با نام کاربری و رمز وارد شوند</label>
+   <div class="toolbar">
+    <input class="search-input" id="ln-${eid}" maxlength="60" placeholder="نام نمایشی (مثلاً علی رضایی)">
+    <input class="search-input" id="lu-${eid}" maxlength="30" dir="ltr" autocapitalize="none" placeholder="نام کاربری (a-z و عدد)">
+    <input class="search-input" id="lp-${eid}" maxlength="64" dir="ltr" placeholder="رمز عبور">
+    <button class="icon-btn" id="lgen-${eid}" type="button">تولید رمز</button>
+    <button class="icon-btn btn-primary" id="ladd-${eid}" type="button"><i class="fa-solid fa-plus"></i> افزودن</button>
+   </div>
+   <div class="toolbar">
+    <input class="search-input" id="lbn-${eid}" type="number" min="1" max="20" value="5" style="max-width:90px">
+    <button class="icon-btn" id="lbulk-${eid}" type="button">ساخت خودکار چند ورودی (guest1، guest2، ...)</button>
+   </div>
+   <div id="lgl-${eid}">${rows}</div>`;
+
+  $("ga-" + id).onchange = async function () {
+    try { await api("/rooms/" + encodeURIComponent(id), "PUT", { guestAuth: this.checked }); showToast(this.checked ? "ورود مهمان‌ها با نام کاربری و رمز فعال شد." : "ورود مهمان‌ها دوباره فقط با نام شد."); await loadRooms(); }
+    catch (e) { this.checked = !this.checked; showToast(lgErr(e), "error"); }
+  };
+  $("lgen-" + id).onclick = () => { $("lp-" + id).value = lgRand(6); };
+  $("ladd-" + id).onclick = async () => {
+    const username = $("lu-" + id).value.trim().toLowerCase(), password = $("lp-" + id).value, name = $("ln-" + id).value.trim();
+    if (!username || !password) { showToast("نام کاربری و رمز را وارد کنید.", "error"); return; }
+    try {
+      await api(lgPath(id), "POST", { logins: [{ username, password, name }] });
+      S.pw[id + "|" + username] = password; showToast("ورودی ساخته شد."); await mountLogins(id);
+    } catch (e) { showToast(lgErr(e), "error"); }
+  };
+  $("lbulk-" + id).onclick = async () => {
+    const n = Math.max(1, Math.min(20, parseInt($("lbn-" + id).value, 10) || 0));
+    const used = new Set((S.logins[id] || []).map(l => l.username)), list = []; let i = 1;
+    while (list.length < n && i < 1000) { const u = "guest" + i; if (!used.has(u)) list.push({ username: u, password: lgRand(6), name: "مهمان " + i.toLocaleString("fa-IR") }); i++; }
+    try {
+      await api(lgPath(id), "POST", { logins: list });
+      list.forEach(x => { S.pw[id + "|" + x.username] = x.password; });
+      showToast(n.toLocaleString("fa-IR") + " ورودی ساخته شد."); await mountLogins(id);
+    } catch (e) { showToast(lgErr(e), "error"); }
+  };
+  const act = (attr, fn) => box.querySelectorAll("[" + attr + "]").forEach(b => b.onclick = () => fn(b.getAttribute(attr)));
+  act("data-lcopy", async u => {
+    try { await navigator.clipboard.writeText(lgText(r, u)); showToast("اطلاعات ورود کپی شد."); }
+    catch { showToast("کپی انجام نشد.", "error"); }
+  });
+  act("data-lpw", async u => {
+    const pw = lgRand(6);
+    try { await api(lgPath(id) + "/" + encodeURIComponent(u), "PUT", { password: pw }); S.pw[id + "|" + u] = pw; showToast("رمز جدید ثبت شد."); await mountLogins(id); }
+    catch (e) { showToast(lgErr(e), "error"); }
+  });
+  act("data-ltog", async u => {
+    const cur = (S.logins[id] || []).find(l => l.username === u);
+    try { await api(lgPath(id) + "/" + encodeURIComponent(u), "PUT", { active: !(cur && cur.active) }); await mountLogins(id); }
+    catch (e) { showToast(lgErr(e), "error"); }
+  });
+  act("data-ldel", async u => {
+    if (!confirm("ورودی «" + u + "» حذف شود؟")) return;
+    try { await api(lgPath(id) + "/" + encodeURIComponent(u), "DELETE"); delete S.pw[id + "|" + u]; await mountLogins(id); }
+    catch (e) { showToast(lgErr(e), "error"); }
+  });
 }
 boot();
 </script>
