@@ -1,6 +1,7 @@
 /* =========================================================
    پنجرهٔ چشمک‌زن دعوت به کنفرانس
-   - فقط وقتی کاربر واردشده به یک کنفرانس «باز» دعوت شده باشد نمایش داده می‌شود.
+   - وقتی کاربر واردشده به یک کنفرانس «باز» دعوت شده باشد، یا اعلان همگانی (notifyAll) فعال باشد نمایش داده می‌شود.
+   - با ظاهر شدن کنفرانس جدید، صدای بوق پخش می‌شود (و تا ۳ بار هر ۱۲ ثانیه تکرار، مگر کاربر «بعداً» بزند).
    - اگر کنفرانسی نباشد هیچ چیزی در صفحه اضافه نمی‌شود.
    استفاده: <script src="conference-alert.js" defer></script>
 ========================================================= */
@@ -17,6 +18,54 @@
   var rooms = [];
   var host = null;
   var busy = false;
+  var audioCtx = null;
+  var repeatLeft = 0;
+  var unlockArmed = false;
+
+  function tone(ctx, t0, freq, dur) {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.3, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t0); o.stop(t0 + dur + 0.03);
+  }
+
+  /* مرورگرها تا قبل از اولین کلیک/لمس کاربر اجازهٔ پخش صدا نمی‌دهند؛ در آن حالت با اولین تعامل پخش می‌شود */
+  function armUnlock() {
+    if (unlockArmed) return;
+    unlockArmed = true;
+    var go = function () {
+      unlockArmed = false;
+      ["pointerdown", "keydown", "touchstart"].forEach(function (ev) { document.removeEventListener(ev, go, true); });
+      if (hasVisibleAlert()) playBeep();
+    };
+    ["pointerdown", "keydown", "touchstart"].forEach(function (ev) { document.addEventListener(ev, go, true); });
+  }
+
+  function hasVisibleAlert() {
+    var min = minimized();
+    return rooms.some(function (r) { return !min[r.id]; });
+  }
+
+  function playBeep() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      audioCtx.resume().then(function () {
+        if (audioCtx.state !== "running") { armUnlock(); return; }
+        var t = audioCtx.currentTime;
+        tone(audioCtx, t, 880, 0.18);
+        tone(audioCtx, t + 0.26, 1175, 0.18);
+        tone(audioCtx, t + 0.52, 880, 0.18);
+        tone(audioCtx, t + 0.78, 1175, 0.28);
+      }).catch(armUnlock);
+    } catch (e) {}
+  }
+
+  function repeatBeep() {
+    if (repeatLeft > 0 && !document.hidden && hasVisibleAlert()) { repeatLeft--; playBeep(); }
+  }
 
   function readSession() {
     try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; }
@@ -67,7 +116,11 @@
     fetchActive(session, true).then(function (list) {
       var changed = JSON.stringify(list.map(function (r) { return r.id; })) !==
                     JSON.stringify(rooms.map(function (r) { return r.id; }));
+      var known = rooms.map(function (r) { return r.id; });
+      var min = minimized();
+      var fresh = list.some(function (r) { return known.indexOf(r.id) < 0 && !min[r.id]; });
       rooms = list;
+      if (fresh) { repeatLeft = 3; playBeep(); }
       if (changed || (!list.length && host)) render();
     }).catch(function () {}).then(function () { busy = false; });
   }
@@ -123,7 +176,7 @@
     }).join("");
 
     host.querySelectorAll("[data-min]").forEach(function (b) {
-      b.onclick = function () { setMinimized(b.dataset.min, true); render(); };
+      b.onclick = function () { setMinimized(b.dataset.min, true); repeatLeft = 0; render(); };
     });
     host.querySelectorAll("[data-open]").forEach(function (b) {
       b.onclick = function () { setMinimized(b.dataset.open, false); render(); };
@@ -133,4 +186,5 @@
   document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
   setTimeout(tick, 1200);
   setInterval(tick, POLL_MS);
+  setInterval(repeatBeep, 12000);
 })();
