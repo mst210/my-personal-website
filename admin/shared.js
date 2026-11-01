@@ -109,6 +109,8 @@ export const ERROR_MESSAGES = {
     CANNOT_DELETE_SELF: "حساب خودتان را نمی‌توانید حذف کنید.",
     CANNOT_DELETE_ADMIN: "ابتدا این کاربر را از «مدیریت ادمین‌ها» حذف کنید.",
     INVALID_PAGE: "این بخش از سایت شناخته‌شده نیست.",
+    REQUEST_EXISTS: "درخواست قبلی شما هنوز در انتظار بررسی است.",
+    ALREADY_APPROVED: "درخواست شما قبلاً تأیید شده است.",
     ROOM_NOT_FOUND: "این کنفرانس پایان یافته یا وجود ندارد.",
     INVALID_ROOM: "شناسهٔ اتاق نامعتبر است.",
 };
