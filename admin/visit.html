@@ -28,8 +28,15 @@
  <section id="app" hidden>
   <div class="stat-grid" id="stats"></div>
 
+  <div class="section-card" id="reqCard">
+   <h2><i class="fa-solid fa-inbox"></i> درخواست‌های ویزیت آنلاین <span class="badge draft" id="reqBadge" hidden></span></h2>
+   <div class="hint">بیمار از پنل کاربری خود درخواست ثبت می‌کند. با «تأیید»، دسترسی ورود به ویزیت به او داده می‌شود و پس از پایان ویزیت (دکمهٔ «پایان» توسط پزشک) خودکار برداشته می‌شود.</div>
+   <div id="reqList"></div>
+   <details style="margin-top:10px"><summary class="hint" style="cursor:pointer">سوابق اخیر (تأییدشده، ردشده، انجام‌شده)</summary><div id="reqHist" style="margin-top:8px"></div></details>
+  </div>
+
   <div class="section-card" id="waitCard" hidden>
-   <h2><i class="fa-solid fa-hourglass-half"></i> بیماران منتظر</h2>
+   <h2><i class="fa-solid fa-hourglass-half"></i> صف انتظار ویزیت</h2>
    <div id="waitList"></div>
   </div>
 
@@ -72,7 +79,8 @@ async function boot() {
     $("loading").hidden = true; $("app").hidden = false;
     $("roomBtn").hidden = false; $("waitCard").hidden = false;
     await Promise.all([loadSettings(), loadUsers()]);
-    loadWaiting(); setInterval(() => { if (!document.hidden) loadWaiting(); }, 5000);
+    loadRequests(); loadWaiting();
+    setInterval(() => { if (!document.hidden) { loadWaiting(); loadRequests(); } }, 6000);
   } catch (e) {
     $("loading").hidden = true;
     if (e.status === 401) { saveSession(null); $("denied").hidden = false; return; }
@@ -127,10 +135,42 @@ async function setAccess(box) {
 async function loadWaiting() {
   try {
     const rooms = (await apiFetch("/visit/waiting")).rooms || [];
-    $("waitList").innerHTML = rooms.length ? rooms.map(r => `<div class="u-row"><div><h4>${escapeHtml(r.name || "بیمار")}</h4><div class="u-meta" style="direction:rtl">در صف انتظار</div></div>
+    $("waitList").innerHTML = rooms.length ? rooms.map((r, i) => `<div class="u-row"><div><h4>${(i + 1).toLocaleString("fa-IR")}. ${escapeHtml(r.name || "بیمار")}</h4><div class="u-meta" style="direction:rtl">${r.status === "active" ? "جلسه در جریان" : "در صف انتظار"}</div></div>
       <a class="icon-btn btn-primary" href="../visit.html"><i class="fa-solid fa-video"></i> شروع ویزیت</a></div>`).join("")
       : '<div class="hint" style="margin:0">فعلاً بیماری منتظر نیست. این فهرست هر ۵ ثانیه تازه می‌شود.</div>';
   } catch { $("waitList").innerHTML = '<div class="hint" style="margin:0">دریافت فهرست انتظار ممکن نشد.</div>'; }
+}
+const fmtDate = ms => ms ? new Date(Number(ms)).toLocaleString("fa-IR", { dateStyle: "short", timeStyle: "short" }) : "";
+const ST = { pending: ["در انتظار", "draft"], approved: ["تأییدشده", "published"], rejected: ["ردشده", "draft"], done: ["انجام‌شده", "published"] };
+function reqRow(r, withActions) {
+  const st = ST[r.status] || [r.status, "draft"];
+  return `<div class="u-row"><div><h4>${escapeHtml(r.name || "بیمار")}</h4>
+    <div class="u-meta" style="direction:rtl">${escapeHtml(r.phone || "")}${r.phone ? " · " : ""}${fmtDate(r.createdAt)}</div>
+    ${r.note ? `<div class="hint" style="margin:6px 0 0">توضیح بیمار: ${escapeHtml(r.note)}</div>` : ""}</div>
+    <div class="u-act"><span class="badge ${st[1]}">${st[0]}</span>
+    ${withActions ? `<button class="icon-btn btn-primary" data-a="approve" data-u="${escapeHtml(r.id)}"><i class="fa-solid fa-check"></i> تأیید</button>
+    <button class="icon-btn" data-a="reject" data-u="${escapeHtml(r.id)}"><i class="fa-solid fa-xmark"></i> رد</button>` : ""}</div></div>`;
+}
+async function loadRequests() {
+  try {
+    const all = (await api("/requests")).requests || [];
+    const pend = all.filter(r => r.status === "pending").sort((a, b) => a.createdAt - b.createdAt);
+    const hist = all.filter(r => r.status !== "pending").sort((a, b) => (b.decidedAt || b.createdAt) - (a.decidedAt || a.createdAt)).slice(0, 30);
+    $("reqBadge").hidden = !pend.length; $("reqBadge").textContent = pend.length.toLocaleString("fa-IR") + " جدید";
+    $("reqList").innerHTML = pend.length ? pend.map(r => reqRow(r, true)).join("") : '<div class="hint" style="margin:0">درخواست جدیدی وجود ندارد. این فهرست هر ۶ ثانیه تازه می‌شود.</div>';
+    $("reqHist").innerHTML = hist.length ? hist.map(r => reqRow(r, false)).join("") : '<div class="hint" style="margin:0">سابقه‌ای نیست.</div>';
+    $("reqList").querySelectorAll("[data-a]").forEach(b => b.onclick = () => decide(b));
+  } catch (e) { $("reqList").innerHTML = `<div class="hint" style="margin:0">${escapeHtml(friendlyError(e))}</div>`; }
+}
+async function decide(btn) {
+  if (!can("edit")) return showToast("مجوز ویرایش ندارید.", "error");
+  const uid = btn.dataset.u, action = btn.dataset.a;
+  btn.disabled = true;
+  try {
+    await api("/requests/" + encodeURIComponent(uid), "PUT", { action });
+    showToast(action === "approve" ? "تأیید شد؛ بیمار اکنون می‌تواند وارد ویزیت شود." : "درخواست رد شد.");
+    await Promise.all([loadRequests(), loadUsers()]);
+  } catch (e) { showToast(friendlyError(e), "error"); btn.disabled = false; }
 }
 $("search").oninput = render; $("filter").onchange = render;
 boot();
