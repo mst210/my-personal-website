@@ -2164,6 +2164,24 @@
                 </div>
 
 
+                <!-- VISIT REQUEST -->
+
+                <div
+                    class="menu-item"
+                    id="visit-request-menu-item"
+                    onclick="switchDashboardTab('visit-request', this)">
+
+                    <i class="fa-solid fa-stethoscope"></i>
+
+                    <span>
+                        درخواست ویزیت آنلاین
+                    </span>
+
+                    <span id="visit-request-dot" style="display:none;margin-right:auto;width:9px;height:9px;border-radius:50%;background:var(--accent-teal)"></span>
+
+                </div>
+
+
                   <!-- VISIT ROOM -->
 
                 <div
@@ -2467,6 +2485,24 @@
                                 <i class="fa-solid fa-paper-plane"></i>
                             </button>
                         </form>
+                    </div>
+
+                </div>
+
+
+                <!-- ================= VISIT REQUEST ================= -->
+
+                <div
+                    id="tab-visit-request"
+                    class="tab-content">
+
+                    <div class="panel-title">
+                        <i class="fa-solid fa-stethoscope"></i>
+                        <span>ویزیت آنلاین</span>
+                    </div>
+
+                    <div id="vr-box" style="border:1px solid var(--border-color);background:var(--card-bg);border-radius:18px;padding:22px;text-align:center;max-width:560px;margin:0 auto">
+                        <div id="vr-loading" style="color:var(--text-muted)"><i class="fa-solid fa-spinner fa-spin"></i> در حال بررسی...</div>
                     </div>
 
                 </div>
@@ -4168,6 +4204,83 @@
         }
     }
 
+    /* ---------- درخواست ویزیت آنلاین ---------- */
+    let vrTimer = null;
+
+    function vrRender(state) {
+        const box = document.getElementById("vr-box");
+        const st = state && state.status;
+        const icon = (cls, color) => `<div style="font-size:42px;color:${color};margin-bottom:10px"><i class="fa-solid ${cls}"></i></div>`;
+        let html = "";
+
+        if (st === "pending") {
+            html = icon("fa-hourglass-half", "#f59e0b") +
+                `<h3 style="margin:0 0 8px">درخواست شما ثبت شد</h3>
+                 <p style="color:var(--text-muted);line-height:2;margin:0">منتظر تأیید پزشک باشید. پس از تأیید، همین‌جا دکمهٔ ورود به اتاق ویزیت فعال می‌شود.</p>`;
+        } else if (st === "approved") {
+            html = icon("fa-circle-check", "var(--success)") +
+                `<h3 style="margin:0 0 8px">درخواست شما تأیید شد</h3>
+                 <p style="color:var(--text-muted);line-height:2;margin:0 0 16px">وارد اتاق ویزیت شوید تا در صف انتظار قرار بگیرید. جایگاه شما در صف نمایش داده می‌شود.</p>
+                 <button class="submit-btn" style="width:auto;padding:0 28px" onclick="location.href='visit.html'"><i class="fa-solid fa-video"></i> ورود به اتاق ویزیت</button>`;
+        } else {
+            const rejected = st === "rejected";
+            const done = st === "done";
+            html = icon(rejected ? "fa-circle-xmark" : "fa-stethoscope", rejected ? "var(--danger)" : "var(--accent-teal)") +
+                `<h3 style="margin:0 0 8px">${rejected ? "درخواست قبلی شما تأیید نشد" : done ? "ویزیت قبلی شما انجام شد" : "درخواست ویزیت آنلاین"}</h3>
+                 <p style="color:var(--text-muted);line-height:2;margin:0 0 14px">برای هر ویزیت لازم است یک درخواست جدید ثبت کنید. پس از تأیید پزشک می‌توانید وارد اتاق ویزیت شوید.</p>
+                 <textarea id="vr-note" class="form-control" maxlength="300" rows="3" placeholder="توضیح کوتاه دربارهٔ موضوع ویزیت (اختیاری)" style="margin-bottom:14px"></textarea>
+                 <button id="vr-submit" class="submit-btn" style="width:auto;padding:0 28px"><i class="fa-solid fa-paper-plane"></i> ثبت درخواست ویزیت</button>
+                 <div id="vr-msg" style="margin-top:10px;font-size:13.5px;color:var(--danger)"></div>`;
+        }
+
+        box.innerHTML = html;
+        document.getElementById("visit-request-dot").style.display = st === "approved" ? "" : "none";
+
+        const btn = document.getElementById("vr-submit");
+        if (btn) btn.onclick = vrSubmit;
+    }
+
+    async function loadVisitRequest() {
+        try {
+            const r = await apiFetch("/visit/request");
+            vrRender(r.request);
+        } catch (error) {
+            const box = document.getElementById("vr-box");
+            if (box) box.innerHTML = '<div style="color:var(--danger)">دریافت وضعیت درخواست ممکن نشد. دوباره تلاش کنید.</div>';
+        }
+    }
+
+    async function vrSubmit() {
+        const btn = document.getElementById("vr-submit");
+        const msg = document.getElementById("vr-msg");
+        const note = (document.getElementById("vr-note") || {}).value || "";
+        btn.disabled = true;
+        msg.textContent = "";
+
+        try {
+            await apiFetch("/visit/request", { method: "POST", body: JSON.stringify({ note }) });
+            await loadVisitRequest();
+        } catch (error) {
+            const map = {
+                VISIT_CLOSED: "ویزیت آنلاین در حال حاضر غیرفعال است.",
+                REQUEST_EXISTS: "درخواست قبلی شما هنوز در انتظار بررسی است.",
+                ALREADY_APPROVED: "درخواست شما قبلاً تأیید شده است."
+            };
+            msg.textContent = map[error.code] || "ثبت درخواست انجام نشد. دوباره تلاش کنید.";
+            btn.disabled = false;
+            if (error.code === "REQUEST_EXISTS" || error.code === "ALREADY_APPROVED") loadVisitRequest();
+        }
+    }
+
+    function startVisitRequestPolling() {
+        loadVisitRequest();
+        clearInterval(vrTimer);
+        vrTimer = setInterval(() => {
+            const tab = document.getElementById("tab-visit-request");
+            if (tab && tab.classList.contains("active") && !document.hidden) loadVisitRequest();
+        }, 10000);
+    }
+
     window.switchDashboardTab = function(tab, element) {
         document.querySelectorAll(".tab-content").forEach(item => { item.classList.remove("active"); });
         document.querySelectorAll(".menu-item").forEach(item => { item.classList.remove("active"); });
@@ -4181,6 +4294,7 @@
         if (tab === "cart") renderCart();
         if (tab === "notifications") renderNotifications();
         if (tab === "tickets") loadUserTickets();
+        if (tab === "visit-request") startVisitRequestPolling();
     };
 
     /*
@@ -4385,6 +4499,7 @@
             // فقط کاربرانی که پزشک دسترسی ویزیت داده است، گزینهٔ ورود به اتاق را می‌بینند
             apiFetch("/visit/me").then(r => {
                 if (r && r.allowed !== false) document.getElementById("visit-menu-item").style.display = "";
+                apiFetch("/visit/request").then(q => { if (q && q.request && q.request.status === "approved") document.getElementById("visit-request-dot").style.display = ""; }).catch(() => {});
             }).catch(() => {});
 
             const activeCount = await loadActiveOrders();
@@ -4394,7 +4509,10 @@
             startOrdersRealtime();
 
             const params = new URLSearchParams(window.location.search);
-            if (params.get("cart") === "1") {
+            if (params.get("tab") === "visit") {
+                switchDashboardTab("visit-request", document.getElementById("visit-request-menu-item"));
+                landingTabChosen = true;
+            } else if (params.get("cart") === "1") {
                 setTimeout(() => { openCart(); }, 300);
                 landingTabChosen = true;
             } else if (!landingTabChosen) {
