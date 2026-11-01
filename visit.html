@@ -52,6 +52,12 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 .btn:hover{background:rgba(255,255,255,.12)}
 .btn.primary{background:linear-gradient(135deg,var(--blue),var(--teal));border-color:transparent;color:#fff}
 .btn[disabled]{opacity:.4;cursor:not-allowed}
+.qcard{display:none;text-align:center;border:1px solid var(--line);background:linear-gradient(160deg,rgba(2,132,199,.14),rgba(20,184,166,.1));border-radius:16px;padding:18px 14px}
+.qnum{font-size:2.6rem;font-weight:800;line-height:1.2;background:linear-gradient(135deg,var(--blue),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.qtxt{font-weight:700;margin-top:2px}.qsub{color:var(--muted);font-size:.85rem;margin-top:6px}
+.qbar{height:8px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:12px;overflow:hidden}
+.qbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .6s ease}
+.qcard.turn .qnum{background:none;color:var(--ok);-webkit-text-fill-color:var(--ok)}
 .qrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
 .dock{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
 .dk{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:68px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--card2);font-size:.74rem}
@@ -139,6 +145,10 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
        <div class="meter" title="سطح صدای میکروفن"><div id="meterBar"></div></div>
       </div>
       <button class="btn primary" id="joinBtn" style="display:none">ورود به اتاق انتظار</button>
+      <div id="myQueue" class="qcard" role="status" aria-live="polite">
+       <div class="qnum" id="qNum">–</div><div class="qtxt" id="qTxt"></div>
+       <div class="qbar"><i id="qFill"></i></div><div class="qsub" id="qSub"></div>
+      </div>
       <div id="queue" style="display:none"><div id="queueList"></div></div>
       <div id="lobbyMsg" style="color:var(--muted);font-size:.9rem"></div>
       <div id="msg" role="alert"></div>
@@ -204,7 +214,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   }
   var $ = function (i) { return document.getElementById(i); };
   var session = null, role = null, room = null, since = 0, pc, dc, localStream, screenStream;
-  var pollTimer, pingTimer, queueTimer, connectTimer, tickTimer, statTimer, meterTimer, audioCtx;
+  var posTimer, qStart = 0, pollTimer, pingTimer, queueTimer, connectTimer, tickTimer, statTimer, meterTimer, audioCtx;
   var connected = false, pendingIce = [], sendChain = Promise.resolve(), seen = {}, cand = { host: 0, srflx: 0, relay: 0 };
   var myName = "", inflight = false, reconTimer = null, reconStart = 0, offerAt = 0, RECON_MAX = 300000;
   var sharing = false, handUp = false, lastHand = false, rx = null, unread = 0, tStart = 0, swapped = false;
@@ -272,10 +282,10 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
   function denyAccess(msg) {
     var lb = $("lobby"); lb.style.display = "flex"; lb.className = "joined";
     $("lobbyTitle").textContent = "دسترسی به ویزیت آنلاین فعال نیست";
-    $("lobbyMsg").textContent = msg || "برای استفاده از ویزیت آنلاین، دسترسی حساب شما باید توسط پزشک فعال شود.";
+    $("lobbyMsg").textContent = msg || "برای ورود به ویزیت آنلاین ابتدا از پنل کاربری خود «درخواست ویزیت» ثبت کنید. پس از تأیید پزشک می‌توانید وارد شوید.";
     $("joinBtn").style.display = "none"; $("queue").style.display = "none"; $("msg").textContent = ""; var su = document.querySelector(".setup"); if (su) su.style.display = "none";
     setStatus("بدون دسترسی", "bad");
-    var a = document.createElement("a"); a.href = "panel.html"; a.className = "btn"; a.style.cssText = "text-align:center;text-decoration:none;display:block;margin-top:10px"; a.textContent = "بازگشت به پنل";
+    var a = document.createElement("a"); a.href = "panel.html?tab=visit"; a.className = "btn primary"; a.style.cssText = "text-align:center;text-decoration:none;display:block;margin-top:10px"; a.textContent = "ثبت درخواست ویزیت / وضعیت درخواست";
     $("lobbyMsg").appendChild(a);
   }
 
@@ -646,8 +656,8 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
           poll(); return;
         }
         setStatus("در انتظار ورود پزشک...", "wait");
-        $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا زمان اتصال این صفحه را باز نگه دارید.";
-        poll();
+        $("lobbyTitle").textContent = "در صف انتظار هستید"; $("lobbyMsg").textContent = "تا زمان اتصال این صفحه را باز نگه دارید. جایگاه شما خودکار به‌روز می‌شود.";
+        startPos(); poll();
       })
       .catch(function (e) {
         if (e && (e.code === "VISIT_NOT_ALLOWED" || e.code === "FORBIDDEN")) { denyAccess(); return; }
@@ -656,6 +666,29 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       });
   }
 
+  /* ---------- جایگاه بیمار در صف ---------- */
+  function stopPos() { clearInterval(posTimer); posTimer = null; var c = $("myQueue"); if (c) c.style.display = "none"; }
+  function fa(n) { return Number(n).toLocaleString("fa-IR"); }
+  function loadPos() {
+    api("/visit/position").then(function (r) {
+      var c = $("myQueue");
+      if (!r || !r.inQueue) { if (r && r.active) stopPos(); return; }
+      c.style.display = "block";
+      var ahead = r.ahead || 0, total = r.total || 1;
+      if (ahead > qStart) qStart = ahead;
+      if (!qStart) qStart = ahead;
+      c.className = "qcard" + (ahead === 0 ? " turn" : "");
+      c.style.display = "block";
+      $("qNum").textContent = ahead === 0 ? "نوبت شماست" : fa(ahead);
+      $("qNum").style.fontSize = ahead === 0 ? "1.7rem" : "";
+      $("qTxt").textContent = ahead === 0 ? "پزشک به‌زودی وارد می‌شود" : "نفر جلوتر از شما در صف هستند";
+      $("qSub").textContent = "جایگاه شما: " + fa(r.position) + " از " + fa(total) + (r.inSession ? " · پزشک در حال ویزیت بیمار دیگری است" : "");
+      var pct = qStart > 0 ? Math.round(((qStart - ahead) / qStart) * 100) : 100;
+      $("qFill").style.width = Math.max(ahead === 0 ? 100 : 8, pct) + "%";
+    }).catch(function () {});
+  }
+  function startPos() { stopPos(); qStart = 0; loadPos(); posTimer = setInterval(loadPos, 4000); }
+
   /* ---------- دکتر ---------- */
   function loadQueue() {
     api("/visit/waiting").then(function (r) {
@@ -663,7 +696,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
       if (!r.rooms.length) { box.textContent = "فعلاً کسی منتظر نیست."; box.style.color = "var(--muted)"; return; }
       r.rooms.forEach(function (x) {
         var row = document.createElement("div"); row.className = "qrow";
-        var nm = document.createElement("span"); nm.textContent = x.name + (x.status === "active" ? " (جلسه در جریان)" : "");
+        var nm = document.createElement("span"); nm.textContent = (r.rooms.indexOf(x) + 1).toLocaleString("fa-IR") + ". " + x.name + (x.status === "active" ? " (جلسه در جریان)" : "");
         var b = document.createElement("button"); b.className = "btn primary"; b.textContent = x.status === "active" ? "بازگشت به جلسه" : "شروع ویزیت";
         b.onclick = function () { doctorPick(x); }; row.appendChild(nm); row.appendChild(b); box.appendChild(row);
       });
@@ -684,7 +717,7 @@ select,textarea,.field{background:var(--bg);border:1px solid var(--line);border-
 
   /* ---------- خروج / پایان ---------- */
   function shutdown(title, msg, btnLabel) {
-    clearTimeout(pollTimer); clearInterval(queueTimer); clearInterval(tickTimer); clearInterval(statTimer); clearInterval(pingTimer); stopRecon(); stopMeter(); stopShare();
+    clearTimeout(pollTimer); stopPos(); clearInterval(queueTimer); clearInterval(tickTimer); clearInterval(statTimer); clearInterval(pingTimer); stopRecon(); stopMeter(); stopShare();
     room = null; dropPeer();
     if (localStream) localStream.getTracks().forEach(function (t) { t.stop(); });
     $("remoteVideo").srcObject = null; $("localVideo").srcObject = null; $("rbadges").textContent = ""; setMsg("");
